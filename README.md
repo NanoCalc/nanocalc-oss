@@ -1,5 +1,5 @@
 # NanoCalc Open Source Repository
-![NanoCalc Logo](link-to-your-logo-image.png)
+![NanoCalc Logo](https://github.com/NanoCalc/nanocalc-oss/assets/34662089/ccfab544-a9ab-4043-bf98-251da4179e90)
 
 ## Getting Started
 ### Running in debug (local development) mode:
