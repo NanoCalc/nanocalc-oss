@@ -1,14 +1,14 @@
-import os 
-from flask import Flask, request, url_for, send_from_directory ,render_template, jsonify
-from werkzeug.utils import secure_filename
 from fret_calc import Overlap_calculation
 from ri_calc import n_calculation, n_k_calculation
 from plq_sim import energyLevel, donorExcitation, acceptorExcitation
 from tmm_sim import calculation
+import os 
 import zipfile
 import cherrypy
-from functools import wraps
 import uuid
+from flask import Flask, request, url_for, send_from_directory ,render_template, jsonify
+from werkzeug.utils import secure_filename
+from functools import wraps
 
 # Creates the web app 
 app = Flask(__name__)
@@ -21,18 +21,18 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 def allowed_file(filename, ext):
-    '''Restricts file types for uploading'''
+    """Returns True if the file extension is in the list of allowed extensions"""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ext
 
 def save_file_with_uuid(directory, file, extension):
-    """Save a file with a UUID-based name and return the path."""
+    """Save a file with a UUID-based name and return its path."""
     filename = f"{uuid.uuid4()}.{extension}"
     filepath = os.path.join(directory, filename)
     file.save(filepath)
     return filepath
 
-
-def generateZip(path, webapp):
+def generate_zip(path, webapp):
+    """Generate a zip file from a directory and return its name"""
     zip_file_name = f"{uuid.uuid4()}-generated-data.zip"
     zip_file_path = os.path.join(UPLOAD_FOLDER, webapp, zip_file_name)
     with zipfile.ZipFile(zip_file_path, mode="w") as z:
@@ -41,8 +41,8 @@ def generateZip(path, webapp):
             z.write(file_path, arcname=filename)
     return zip_file_name
 
-
 def log_vistor(f):
+    """Decorator to log the amount of unique visitors to the website"""
     @wraps(f)
     def wrapper(*args, **kwargs):
         ip = request.remote_addr
@@ -52,6 +52,7 @@ def log_vistor(f):
                 file.write(ip + '\n')
         return f(*args, **kwargs)
     return wrapper
+
 
 # Main/Home view
 @app.route('/', methods = ['GET'])
@@ -135,7 +136,7 @@ def fret_calc():
                 })
         
         data = Overlap_calculation(form_list[0], form_list[3], form_list[1], form_list[2], UPLOAD_FOLDER)
-        zip_file_name = generateZip(data, webapp)
+        zip_file_name = generate_zip(data, webapp)
 
         return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName, webapp=webapp)
                
@@ -184,7 +185,7 @@ def ri_calc():
 
                
             data_n_k = n_k_calculation(form_list[0], form_list[1], UPLOAD_FOLDER)
-            zip_file_name = generateZip(data_n_k, webapp)
+            zip_file_name = generate_zip(data_n_k, webapp)
             return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp)    
 
 
@@ -217,7 +218,7 @@ def ri_calc():
                     })
                     
             data_n = n_calculation(form_list[0], form_list[1], UPLOAD_FOLDER)
-            zip_file_name = generateZip(data_n, webapp) 
+            zip_file_name = generate_zip(data_n, webapp) 
             return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp) 
             
     return render_template("ricalc.html")
@@ -245,10 +246,10 @@ def plq_sim():
 
         if action == 'Calculate Acceptor Excitation':
             data = acceptorExcitation(xif, UPLOAD_FOLDER)
-            zip_file_name = generateZip(data, webapp)
+            zip_file_name = generate_zip(data, webapp)
         elif action == 'Calculate Donor Excitation':
             data = donorExcitation(xif,UPLOAD_FOLDER)
-            zip_file_name = generateZip(data,webapp)
+            zip_file_name = generate_zip(data,webapp)
 
         return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp)
 
@@ -295,7 +296,7 @@ def tmm_sim():
 
         input_dir = os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim' ,'input_files')
         data = calculation(xif, UPLOAD_FOLDER, input_dir)
-        zip_file_name = generateZip(data, webapp)
+        zip_file_name = generate_zip(data, webapp)
 
         return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName, webapp=webapp)
 
@@ -306,8 +307,8 @@ def tmm_sim():
 def eu_converter():
     return render_template("euconverter.html")
 
-ssl_cert_path = '/app/ssl/fullchain.pem'
-ssl_key_path = '/app/ssl/privkey.pem'
+sslCertPath = '/app/ssl/fullchain.pem'
+sslKeyPath = '/app/ssl/privkey.pem'
 
 # Run the web app
 if __name__ == "__main__":
@@ -324,8 +325,8 @@ if __name__ == "__main__":
             'server.socket_host': '0.0.0.0',
             'server.socket_port': 443,
             'server.ssl_module': 'builtin',
-            'server.ssl_certificate': ssl_cert_path,
-            'server.ssl_private_key': ssl_key_path,
+            'server.ssl_certificate': sslCertPath,
+            'server.ssl_private_key': sslKeyPath,
         })
 
         cherrypy.tree.graft(app, '/') 
