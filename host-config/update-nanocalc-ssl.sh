@@ -4,6 +4,7 @@
 DOMAIN="nanocalc.org"
 VOLUME_NAME="nanocalc_ssl"
 
+./update-visitors.sh
 # Check if the renewal was for our specific domain
 if [[ "$RENEWED_DOMAINS" == *"$DOMAIN"* ]]; then
     # Copy the actual certificate files (not symbolic links) to the Docker volume

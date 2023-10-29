@@ -21,6 +21,7 @@ if [[ "$current_id" != "$latest_id" ]]; then
     read answer
     if [[ "$answer" == "y" ]]; then
         # Prepare for upgrade 
+        ./update-visitors.sh
         docker stop nanocalc-container
         sleep 5
         docker rmi nanocalc-image
