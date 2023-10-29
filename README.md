@@ -1,4 +1,8 @@
-### Debug/local dev mode:
+# NanoCalc Open Source Repository
+![NanoCalc Logo](link-to-your-logo-image.png)
+
+## Getting Started
+### Running in debug (local development) mode:
 
 #### Build the image:
 ```shell 
@@ -10,7 +14,7 @@ docker build -t nanocalc-image .
 docker run --rm --name nanocalc-container -e DEBUG=True -p 80:80 nanocalc-image
 ```
 ---
-### Production mode:
+### Running in production:
 
 #### Build the image:
 ```shell 
