@@ -3,10 +3,10 @@ WORKDIR /app
 
 COPY requirements.txt \
     flaskapp.py \
-    plqSim.py \
-    fretServer.py \
-    riServer.py \
-    tmmSim.py \
+    plq_sim.py \
+    fret_calc.py \
+    ri_calc.py \
+    tmm_sim.py \
     init_script.sh \
     visitors.txt \
     /app/
