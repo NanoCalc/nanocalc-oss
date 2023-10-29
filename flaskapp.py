@@ -1,10 +1,10 @@
 import os 
 from flask import Flask, request, url_for, send_from_directory ,render_template, jsonify
 from werkzeug.utils import secure_filename
-from fretServer import Overlap_calculation
-from riServer import n_calculation, n_k_calculation
-from plqSim import energyLevel, donorExcitation, acceptorExcitation
-from tmmSim import calculation
+from fret_calc import Overlap_calculation
+from ri_calc import n_calculation, n_k_calculation
+from plq_sim import energyLevel, donorExcitation, acceptorExcitation
+from tmm_sim import calculation
 import zipfile
 import cherrypy
 from functools import wraps
@@ -78,6 +78,7 @@ def get_ip_count():
 @app.route('/fret', methods=['GET', 'POST'])
 def fret_calc():
     appName = "FRET-Calc"
+    webapp = "fret"
     if request.method == 'POST':
         form_list = []
 
@@ -132,11 +133,11 @@ def fret_calc():
                     "expected_ext": "dat",
                     "redirect": "fret"
                 })
-            
+        
         data = Overlap_calculation(form_list[0], form_list[3], form_list[1], form_list[2], UPLOAD_FOLDER)
-        zip_file_name = generateZip(data, 'fret')
+        zip_file_name = generateZip(data, webapp)
 
-        return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName)
+        return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName, webapp=webapp)
                
     return render_template("fret.html")
 
@@ -150,6 +151,7 @@ def get_data(webapp, name):
 @app.route('/ricalc', methods=['GET', 'POST'])
 def ri_calc():
     appName = "RI-Calc"
+    webapp = "ri"
     if request.method == "POST":
         form_list = []
         
@@ -179,10 +181,11 @@ def ri_calc():
                         "expected_ext": "dat",
                         "redirect": "ricalc"
                     })
-                    
+
+               
             data_n_k = n_k_calculation(form_list[0], form_list[1], UPLOAD_FOLDER)
-            zip_file_name = generateZip(data_n_k, 'ri')
-            return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName)    
+            zip_file_name = generateZip(data_n_k, webapp)
+            return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp)    
 
 
         elif not request.files.getlist("dacf"):
@@ -214,8 +217,8 @@ def ri_calc():
                     })
                     
             data_n = n_calculation(form_list[0], form_list[1], UPLOAD_FOLDER)
-            zip_file_name = generateZip(data_n, 'ri') 
-            return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName) 
+            zip_file_name = generateZip(data_n, webapp) 
+            return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp) 
             
     return render_template("ricalc.html")
 
@@ -223,6 +226,7 @@ def ri_calc():
 @app.route('/plqsim', methods=['GET', 'POST'])
 def plq_sim():
     appName = "PLQSim"
+    webapp = "plqsim"
     if request.method == "POST":
         index_file = request.files.getlist("xif")
         for file in index_file:
@@ -241,12 +245,12 @@ def plq_sim():
 
         if action == 'Calculate Acceptor Excitation':
             data = acceptorExcitation(xif, UPLOAD_FOLDER)
-            zip_file_name = generateZip(data,'plqsim')
+            zip_file_name = generateZip(data, webapp)
         elif action == 'Calculate Donor Excitation':
             data = donorExcitation(xif,UPLOAD_FOLDER)
-            zip_file_name = generateZip(data,'plqsim')
+            zip_file_name = generateZip(data,webapp)
 
-        return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName)
+        return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp)
 
     return render_template("plqsim.html")
 
@@ -254,6 +258,7 @@ def plq_sim():
 @app.route('/tmmsim', methods=['GET', 'POST'])
 def tmm_sim():
     appName = "TMMSim"
+    webapp = "tmmsim"
     if request.method == "POST":
         xif = request.files["xif"]
         if xif and allowed_file(xif.filename, ['xlsx']):
@@ -290,9 +295,9 @@ def tmm_sim():
 
         input_dir = os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim' ,'input_files')
         data = calculation(xif, UPLOAD_FOLDER, input_dir)
-        zip_file_name = generateZip(data, 'tmmsim')
+        zip_file_name = generateZip(data, webapp)
 
-        return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName)
+        return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName, webapp=webapp)
 
     return render_template("tmmsim.html")
 
