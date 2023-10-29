@@ -1,6 +1,6 @@
-from fret_calc import Overlap_calculation
+from fret_calc import overlap_calculation
 from ri_calc import n_calculation, n_k_calculation
-from plq_sim import energyLevel, donorExcitation, acceptorExcitation
+from plq_sim import energy_level, donor_excitation, acceptor_excitation
 from tmm_sim import calculation
 import os 
 import zipfile
@@ -135,7 +135,7 @@ def fret_calc():
                     "redirect": "fret"
                 })
         
-        data = Overlap_calculation(form_list[0], form_list[3], form_list[1], form_list[2], UPLOAD_FOLDER)
+        data = overlap_calculation(form_list[0], form_list[3], form_list[1], form_list[2], UPLOAD_FOLDER)
         zip_file_name = generate_zip(data, webapp)
 
         return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName, webapp=webapp)
@@ -241,14 +241,14 @@ def plq_sim():
                     "redirect": "plqsim"
                 })
 
-        energyLevel(xif, UPLOAD_FOLDER) # Generate Energy Level plot for both choices
+        energy_level(xif, UPLOAD_FOLDER) # Generate Energy Level plot for both choices
         action = request.form.get('action')
 
         if action == 'Calculate Acceptor Excitation':
-            data = acceptorExcitation(xif, UPLOAD_FOLDER)
+            data = acceptor_excitation(xif, UPLOAD_FOLDER)
             zip_file_name = generate_zip(data, webapp)
         elif action == 'Calculate Donor Excitation':
-            data = donorExcitation(xif,UPLOAD_FOLDER)
+            data = donor_excitation(xif,UPLOAD_FOLDER)
             zip_file_name = generate_zip(data,webapp)
 
         return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp)
