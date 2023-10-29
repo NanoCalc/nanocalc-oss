@@ -1,0 +1,45 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
+%}
+
+<section class="container">
+  <img src="../static/images/logo.png" class="container__imagem" />
+  <div class="container__texto">
+    <h1>Welcome to the Nano Calculator website</h1>
+    <p id="ipCount"></p>
+    <p class="texto__paragrafo">
+      If you have any critics or suggestions regarding the <b>theory</b> behind
+      the web applications, get in touch with our team's professor, Graziâni, at
+      <a class="links" href="mailto:gcandiotto@iq.ufrj.br"
+        >gcandiotto@iq.ufrj.br</a
+      >
+    </p>
+    <p class="texto__paragrafo">
+      Otherwise, regarding <b>technical</b> errors and improvements, send an
+      e-mail to the domain's admininistrator at
+      <a class="links" href="mailto:omarmesquita@eq.ufrj.br"
+        >omarmesquita@eq.ufrj.br</a
+      >
+    </p>
+  </div>
+  <img
+    src="../static/images/opensource.png"
+    class="container__imagem imagem__opensourcelogo"
+  />
+  <div class="container__texto texto__opensourcedescricao">
+    <h1>This website's source code is open!</h1>
+    <p class="texto__paragrafo">
+      While the intricate calculations and methods behind the web apps remain
+      proprietary, you're welcome to delve into both the frontend and backend of
+      this website. Discover the inner workings in our public repository at
+      GitHub.<br />
+    </p>
+    <div class="wrapper">
+      <img class="opensourcelogo__sprite" src="../static/images/gh.png" />
+      <a class="links" href="https://github.com/OmarMesqq/nanocalc-oss"
+        >NanoCalc OSS</a
+      >
+    </div>
+  </div>
+</section>
+<script src="../static/js/visitor_count.js"></script>
+{% endblock %}

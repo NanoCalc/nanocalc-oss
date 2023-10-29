@@ -1,0 +1,10 @@
+openpyxl
+pandas
+numpy
+detect_delimiter
+matplotlib
+tabulate 
+scipy 
+flask 
+werkzeug
+cherrypy

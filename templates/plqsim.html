@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}PLQ-Sim{% endblock %}
+
+{% block content %}
+
+<div class="container fret">
+    <div>
+        <div class="logoWrapper">
+            <img src="../static/images/plq.png">
+        </div>
+        <div>
+            <img class="fret__imagem" src="../static/images/dine.png"> <img class="fret__imagem"
+                src="../static/images/namor.png">
+        </div>
+        <div>
+            <img class="fret__imgbottom" src="../static/images/ufrj.png"> <img class="fret__imgbottom"
+                src="../static/images/ufpr.png">
+        </div>
+    </div>
+    <div class="fret__texto">
+        <form method=post enctype=multipart/form-data>
+            <div class="texto__botao">
+                Input file (.xlsx):<br>
+                <input type="file" name="xif"><br>
+            </div>
+            <input type="submit" name="action" class="texto__botao texto__submitBotao"
+                value="Calculate Acceptor Excitation">
+            <input type="submit" name="action" class="texto__botao texto__submitBotao"
+                value="Calculate Donor Excitation">
+        </form>
+        <footer class="texto__botao texto__footer">
+            <p class="texto__paragrafo">
+                Download some <a
+                    href="https://github.com/NanoCalc/PLQ-Sim/releases/download/1.0-beta/data-sample.zip"><b>sample
+                        data</b></a> 
+                and <a href="https://github.com/NanoCalc/PLQ-Sim/releases/tag/1.0-beta"><b>PLQ-Sim
+                        binaries</b></a> on our GitHub page.
+            </p>
+        </footer>
+    </div>
+</div>
+{% endblock %}

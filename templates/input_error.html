@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Input error!{% endblock %}
+{% block content %}
+<div class="container fret" style="margin: 5em; display: block;">
+  <h1>That's an input error!</h1>
+  <h3>
+    {% if data.error == "file_type" %} The {{ data.file_name }} needs a {{
+    data.expected_ext }} extension. {% elif data.error == "file_count" %} Too
+    many csv files. Maximum allowed is 10. {% endif %}
+  </h3>
+  <h3>
+    Don't worry.
+    <a class="links" href="https://nanocalc.org/{{ data.redirect }}"
+      >Let's try again</a
+    >.
+  </h3>
+</div>
+{% endblock %}

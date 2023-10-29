@@ -1,0 +1,74 @@
+{% extends "base.html" %} {% block title %}EU Converter{% endblock %} {% block
+content %}
+<main class="container" style="margin: 5em; display: block">
+    <h1 style="margin-bottom: 1em;">Energy Unit Converter</h1>
+
+    <div class="energyUnit">
+      <input
+        type="text"
+        id="hartrees"
+        class="input-field"
+        data-unit="Hartrees"
+        step="0.000001"
+      />
+      <label for="hartrees">Hartrees</label>
+    </div>
+    
+    <div class="energyUnit">
+      <input
+        type="text"
+        id="ev"
+        class="input-field"
+        data-unit="eV"
+        step="0.000001"
+      />
+      <label for="ev"> eV</label>
+    </div>
+    
+    <div class="energyUnit">
+      <input
+        type="text"
+        id="kj_per_mol"
+        class="input-field"
+        data-unit="kJ_per_mol"
+        step="0.000001"
+      />
+      <label for="kj_per_mol"> kJ/mol</label>
+    </div>
+    
+    <div class="energyUnit">
+      <input
+        type="text"
+        id="kcal_per_mol"
+        class="input-field"
+        data-unit="kcal_per_mol"
+        step="0.000001"
+      />
+      <label for="kcal_per_mol"> kcal/mol</label>
+    </div>
+    
+    <div class="energyUnit">
+      <input
+        type="text"
+        id="cm_minus1"
+        class="input-field"
+        data-unit="cm_minus1"
+        step="0.000001"
+      />
+      <label for="cm_minus1"> cm⁻¹</label>
+    </div>
+
+    <div class="energyUnit">
+      <input
+        type="text"
+        id="nm_minus1"
+        class="input-field"
+        data-unit="nm_minus1"
+        step="0.000001"
+      />
+      <label for="nm_minus1"> nm⁻¹</label>
+    </div>
+
+    <script defer src="../static/js/euconverter_logic.js"></script>
+</main>
+{% endblock %}

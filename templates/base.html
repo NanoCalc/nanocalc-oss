@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <title>{% block title %}Nano Calc{% endblock %}</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="../static/css/style.css" />
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
+  </head>
+  <body>
+    <nav class="navbar">
+      <ul class="navbar__lista">
+        <li>
+          <a class="lista__itens" href="{{url_for('welcome')}}">Home</a>
+        </li>
+        <li>
+          <a class="lista__itens" href="{{url_for('fret_calc')}}">FRET Calc</a>
+        </li>
+        <li>
+          <a class="lista__itens" href="{{url_for('ri_calc')}}">RI Calc</a>
+        </li>
+        <li>
+          <a class="lista__itens" href="{{url_for('plq_sim')}}">PLQ Sim</a>
+        </li>
+        <li>
+          <a class="lista__itens" href="{{url_for('tmm_sim')}}">TMM Sim</a>
+        </li>
+        <li>
+          <a class="lista__itens" href="{{url_for('eu_converter')}}"
+            >EU Converter</a
+          >
+        </li>
+        <li>
+          <a class="lista__itens" href="{{url_for('about_us')}}">About</a>
+        </li>
+      </ul>
+    </nav>
+    {% block content %}{% endblock %}
+  </body>
+</html>
