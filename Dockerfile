@@ -38,7 +38,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 443
 
-
 USER root
 COPY init_script.sh /app/init_script.sh
 RUN chmod +x /app/init_script.sh
