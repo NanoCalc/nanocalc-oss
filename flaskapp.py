@@ -4,8 +4,8 @@ from plq_sim import energy_level, donor_excitation, acceptor_excitation
 from tmm_sim import calculation
 import os 
 import zipfile
-import cherrypy
 import uuid
+from waitress import serve
 from flask import Flask, request, url_for, send_from_directory ,render_template, jsonify
 from werkzeug.utils import secure_filename
 from functools import wraps
@@ -307,8 +307,6 @@ def tmm_sim():
 def eu_converter():
     return render_template("euconverter.html")
 
-sslCertPath = '/app/ssl/fullchain.pem'
-sslKeyPath = '/app/ssl/privkey.pem'
 
 # Run the web app
 if __name__ == "__main__":
@@ -321,14 +319,4 @@ if __name__ == "__main__":
             debug=True,
         )
     else:
-        cherrypy.config.update({
-            'server.socket_host': '0.0.0.0',
-            'server.socket_port': 443,
-            'server.ssl_module': 'builtin',
-            'server.ssl_certificate': sslCertPath,
-            'server.ssl_private_key': sslKeyPath,
-        })
-
-        cherrypy.tree.graft(app, '/') 
-        cherrypy.engine.start()
-        cherrypy.engine.block()
+        serve(app)
