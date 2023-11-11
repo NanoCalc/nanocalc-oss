@@ -1,4 +1,6 @@
 FROM python:3-alpine
+EXPOSE 8080
+ENV PATH="/home/nanocalc/.local/bin:${PATH}"
 WORKDIR /app
 
 COPY requirements.txt /app/
@@ -12,7 +14,6 @@ COPY flaskapp.py \
     fret_calc.py \
     ri_calc.py \
     tmm_sim.py \
-    init_script.sh \
     visitors.txt \
     /app/
 
@@ -34,11 +35,7 @@ RUN mkdir -p /app/upload/fret/emission_files \
     /app/upload/tmmsim/result
 
 
-ENV PATH="/home/nanocalc/.local/bin:${PATH}"
 RUN chown -R nanocalc:nanocalc /app
 
-EXPOSE 443
-
-COPY init_script.sh /app/init_script.sh
-RUN chmod +x /app/init_script.sh
-ENTRYPOINT ["/app/init_script.sh"]
+USER nanocalc
+CMD ["python", "flaskapp.py"]
