@@ -34,7 +34,6 @@ RUN mkdir -p /app/upload/fret/emission_files \
     /app/upload/tmmsim/result
 
 
-
 ENV PATH="/home/nanocalc/.local/bin:${PATH}"
 RUN chown -R nanocalc:nanocalc /app
 
