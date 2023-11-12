@@ -5,7 +5,7 @@
 
 ### Build the image:
 ```shell 
-docker build -t nanocalc-image .
+docker build -t nanocalc-image . --network=host
 ```
 ---
 ### Running in debug (local development) mode:
