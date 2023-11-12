@@ -81,72 +81,75 @@ def get_ip_count():
     unique_ip_count = len(ip_addresses)
     return jsonify({'count': unique_ip_count})
 
-# FRET Calculator view
-@app.route('/fret', methods=['GET', 'POST'])
-def fret_calc():
+# FRET Calculator - initial view
+@app.route('/fret', methods=['GET'])
+def fret_calc():           
+    return render_template("fret.html")
+
+# FRET Calculator - data upload
+@app.route('/fret/submit', methods=['POST'])
+def fret_calc_submit():
     appName = "FRET-Calc"
     webapp = "fret"
-    if request.method == 'POST':
-        form_list = []
 
-        files = request.files.getlist("xif") 
-        for file in files:
-            if allowed_file(file.filename,['xlsx']):
-                xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'index_files'), file, 'xlsx')
-                form_list.append(xif)
-            else:
-                return render_template("input_error.html", data={
-                    "error": "file_type",
-                    "file_name": "index file",
-                    "expected_ext": "xlsx",
-                    "redirect": "fret"
-                })
-                                    
-        files = request.files.getlist("ef")
-        for file in files:
-            if allowed_file(file.filename,['dat']):
-                ef = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'emission_files'), file, 'dat')
-                form_list.append(ef)
-            else:
-                return render_template("input_error.html", data={
-                    "error": "file_type",
-                    "file_name": "emission file",
-                    "expected_ext": "dat",
-                    "redirect": "fret"
-                })
-            
-        files = request.files.getlist("rfi")
-        for file in files: 
-            if allowed_file(file.filename,['dat']):
-                rfi = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'refractive_index_files'), file, 'dat')
-                form_list.append(rfi)
-            else:
-                return render_template("input_error.html", data={
-                    "error": "file_type",
-                    "file_name": "refractive index file",
-                    "expected_ext": "dat",
-                    "redirect": "fret"
-                })
+    form_list = []
 
-        files = request.files.getlist("ecf")
-        for file in files: 
-            if allowed_file(file.filename,['dat']):
-                ecf = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'extinction_coefficient_files'), file, 'dat')
-                form_list.append(ecf)
-            else:
-                return render_template("input_error.html", data={
-                    "error": "file_type",
-                    "file_name": "extinction coefficient file",
-                    "expected_ext": "dat",
-                    "redirect": "fret"
-                })
+    files = request.files.getlist("xif") 
+    for file in files:
+        if allowed_file(file.filename,['xlsx']):
+            xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'index_files'), file, 'xlsx')
+            form_list.append(xif)
+        else:
+            return render_template("input_error.html", data={
+                "error": "file_type",
+                "file_name": "index file",
+                "expected_ext": "xlsx",
+                "redirect": "fret"
+            })
+                                
+    files = request.files.getlist("ef")
+    for file in files:
+        if allowed_file(file.filename,['dat']):
+            ef = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'emission_files'), file, 'dat')
+            form_list.append(ef)
+        else:
+            return render_template("input_error.html", data={
+                "error": "file_type",
+                "file_name": "emission file",
+                "expected_ext": "dat",
+                "redirect": "fret"
+            })
         
-        data = overlap_calculation(form_list[0], form_list[3], form_list[1], form_list[2], UPLOAD_FOLDER)
-        zip_file_name = generate_zip(data, webapp)
+    files = request.files.getlist("rfi")
+    for file in files: 
+        if allowed_file(file.filename,['dat']):
+            rfi = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'refractive_index_files'), file, 'dat')
+            form_list.append(rfi)
+        else:
+            return render_template("input_error.html", data={
+                "error": "file_type",
+                "file_name": "refractive index file",
+                "expected_ext": "dat",
+                "redirect": "fret"
+            })
+    
+    files = request.files.getlist("ecf")
+    for file in files: 
+        if allowed_file(file.filename,['dat']):
+            ecf = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'extinction_coefficient_files'), file, 'dat')
+            form_list.append(ecf)
+        else:
+            return render_template("input_error.html", data={
+                "error": "file_type",
+                "file_name": "extinction coefficient file",
+                "expected_ext": "dat",
+                "redirect": "fret"
+            })
+    
+    data = overlap_calculation(form_list[0], form_list[3], form_list[1], form_list[2], UPLOAD_FOLDER)
+    zip_file_name = generate_zip(data, webapp)
+    return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName, webapp=webapp)
 
-        return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName, webapp=webapp)
-               
-    return render_template("fret.html")
 
 # Route to allow download of generated data
 @app.route('/download/<webapp>/<path:name>', methods=['GET'])
