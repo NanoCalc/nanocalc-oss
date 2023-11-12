@@ -162,80 +162,82 @@ def get_data(webapp, name):
     uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], webapp) 
     return send_from_directory(directory=uploads, path=name)
 
-# RI Calculator view
-@app.route('/ricalc', methods=['GET', 'POST'])
+
+# RI Calculator - initial view
+@app.route('/ricalc', methods=['GET'])
 def ri_calc():
+    return render_template("ricalc.html")
+
+
+# RI Calculator - data upload
+@app.route('/ricalc/submit', methods=['POST'])
+def ri_calc_submit():
     appName = "RI-Calc"
     webapp = "ri"
-    if request.method == "POST":
-        form_list = []
-        
-        if not request.files.getlist("kf"):
-            files = request.files.getlist("xif")
-            for file in files:
-                if allowed_file(file.filename,['xlsx']):
-                    xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'index_files'), file, 'xlsx')
-                    form_list.append(xif)
-                else:
-                    return render_template("input_error.html", data={
-                        "error": "file_type",
-                        "file_name": "index file",
-                        "expected_ext": "xlsx",
-                        "redirect": "ricalc"
-                    })
-                    
-            files = request.files.getlist("dacf")
-            for file in files:
-                if allowed_file(file.filename,['dat']):
-                    dacf = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'abs_coefficient_files'), file, 'dat')
-                    form_list.append(dacf)
-                else:
-                    return render_template("input_error.html", data={
-                        "error": "file_type",
-                        "file_name": "abs coefficient file",
-                        "expected_ext": "dat",
-                        "redirect": "ricalc"
-                    })
-
-               
-            data_n_k = n_k_calculation(form_list[0], form_list[1], UPLOAD_FOLDER)
-            zip_file_name = generate_zip(data_n_k, webapp)
-            return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp)    
-
-
-        elif not request.files.getlist("dacf"):
-            files = request.files.getlist("xif")
-            for file in files:
-                if allowed_file(file.filename,['xlsx']):
-                    xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'index_files'), file, 'xlsx')
-                    form_list.append(xif)
-                else:
-                    return render_template("input_error.html", data={
-                        "error": "file_type",
-                        "file_name": "index file",
-                        "expected_ext": "xlsx",
-                        "redirect": "ricalc"
-                    })
-                    
-
-            files = request.files.getlist("kf")
-            for file in files:
-                if allowed_file(file.filename,['dat']):
-                    kf = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'k_files'), file, 'dat')
-                    form_list.append(kf)
-                else:
-                    return render_template("input_error.html", data={
-                        "error": "file_type",
-                        "file_name": "K file",
-                        "expected_ext": "dat",
-                        "redirect": "ricalc"
-                    })
-                    
-            data_n = n_calculation(form_list[0], form_list[1], UPLOAD_FOLDER)
-            zip_file_name = generate_zip(data_n, webapp) 
-            return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp) 
+    
+    form_list = []
+    
+    if not request.files.getlist("kf"):
+        files = request.files.getlist("xif")
+        for file in files:
+            if allowed_file(file.filename,['xlsx']):
+                xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'index_files'), file, 'xlsx')
+                form_list.append(xif)
+            else:
+                return render_template("input_error.html", data={
+                    "error": "file_type",
+                    "file_name": "index file",
+                    "expected_ext": "xlsx",
+                    "redirect": "ricalc"
+                })
+                
+        files = request.files.getlist("dacf")
+        for file in files:
+            if allowed_file(file.filename,['dat']):
+                dacf = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'abs_coefficient_files'), file, 'dat')
+                form_list.append(dacf)
+            else:
+                return render_template("input_error.html", data={
+                    "error": "file_type",
+                    "file_name": "abs coefficient file",
+                    "expected_ext": "dat",
+                    "redirect": "ricalc"
+                })
+           
+        data_n_k = n_k_calculation(form_list[0], form_list[1], UPLOAD_FOLDER)
+        zip_file_name = generate_zip(data_n_k, webapp)
+        return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp)    
+    elif not request.files.getlist("dacf"):
+        files = request.files.getlist("xif")
+        for file in files:
+            if allowed_file(file.filename,['xlsx']):
+                xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'index_files'), file, 'xlsx')
+                form_list.append(xif)
+            else:
+                return render_template("input_error.html", data={
+                    "error": "file_type",
+                    "file_name": "index file",
+                    "expected_ext": "xlsx",
+                    "redirect": "ricalc"
+                })
+                
+        files = request.files.getlist("kf")
+        for file in files:
+            if allowed_file(file.filename,['dat']):
+                kf = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'k_files'), file, 'dat')
+                form_list.append(kf)
+            else:
+                return render_template("input_error.html", data={
+                    "error": "file_type",
+                    "file_name": "K file",
+                    "expected_ext": "dat",
+                    "redirect": "ricalc"
+                })
+                
+        data_n = n_calculation(form_list[0], form_list[1], UPLOAD_FOLDER)
+        zip_file_name = generate_zip(data_n, webapp) 
+        return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp) 
             
-    return render_template("ricalc.html")
 
 # PLQSim view
 @app.route('/plqsim', methods=['GET', 'POST'])

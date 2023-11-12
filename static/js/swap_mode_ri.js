@@ -5,7 +5,7 @@ const swapmode = () => {
 
   if (dacfElement) {
     fretTexto.innerHTML = `
-          <form class="form-center" method="post" enctype="multipart/form-data">
+          <form class="form-center" method="post" enctype="multipart/form-data" action="/ricalc/submit">
               <div class="texto__botao">
                   Input file (.xlsx):<br>
                   <input type="file" name="xif"><br>
@@ -27,7 +27,7 @@ const swapmode = () => {
       `;
   } else if (kfElement) {
     fretTexto.innerHTML = `
-          <form class="form-center" method="post" enctype="multipart/form-data">
+          <form class="form-center" method="post" enctype="multipart/form-data" action="/ricalc/submit">
               <div class="texto__botao">
                   Input file (.xlsx):<br>
                   <input type="file" name="xif"><br>
