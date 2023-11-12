@@ -239,85 +239,89 @@ def ri_calc_submit():
         zip_file_name = generate_zip(data_n, webapp) 
         return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp) 
             
-
-# PLQSim view
-@app.route('/plqsim', methods=['GET', 'POST'])
+# PLQSim view - initial view
+@app.route('/plqsim', methods=['GET'])
 def plq_sim():
-    appName = "PLQSim"
-    webapp = "plqsim"
-    if request.method == "POST":
-        index_file = request.files.getlist("xif")
-        for file in index_file:
-            if allowed_file(file.filename,['xlsx']):
-                xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'plqsim', 'input_files'), file, 'xlsx')
-            else:
-                return render_template("input_error.html", data={
-                    "error": "file_type",
-                    "file_name": "index file",
-                    "expected_ext": "xlsx",
-                    "redirect": "plqsim"
-                })
-
-        energy_level(xif, UPLOAD_FOLDER) # Generate Energy Level plot for both choices
-        action = request.form.get('action')
-
-        if action == 'Calculate Acceptor Excitation':
-            data = acceptor_excitation(xif, UPLOAD_FOLDER)
-            zip_file_name = generate_zip(data, webapp)
-        elif action == 'Calculate Donor Excitation':
-            data = donor_excitation(xif,UPLOAD_FOLDER)
-            zip_file_name = generate_zip(data,webapp)
-
-        return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp)
-
     return render_template("plqsim.html")
 
-# TMMSim view 
-@app.route('/tmmsim', methods=['GET', 'POST'])
-def tmm_sim():
-    appName = "TMMSim"
-    webapp = "tmmsim"
-    if request.method == "POST":
-        xif = request.files["xif"]
-        if xif and allowed_file(xif.filename, ['xlsx']):
-            xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim' ,'input_files'), xif, 'xlsx')
+# PLQSim view - data upload
+@app.route('/plqsim/submit', methods=['POST'])
+def plq_sim_submit():
+    appName = "PLQSim"
+    webapp = "plqsim"
+    
+    index_file = request.files.getlist("xif")
+    for file in index_file:
+        if allowed_file(file.filename,['xlsx']):
+            xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'plqsim', 'input_files'), file, 'xlsx')
         else:
             return render_template("input_error.html", data={
                 "error": "file_type",
                 "file_name": "index file",
                 "expected_ext": "xlsx",
-                "redirect": "tmmsim"
+                "redirect": "plqsim"
             })
 
-        layer_files = request.files.getlist("layer_files")
-        if len(layer_files) > 10:
-            return render_template("input_error.html", data={
-                "error": "file_count",
-                "redirect": "tmmsim"
-            })
+    energy_level(xif, UPLOAD_FOLDER) # Generate Energy Level plot for both choices
+    action = request.form.get('action')
 
-        csv_paths = []
-        for file in layer_files:
-            if allowed_file(file.filename, ['csv']):
-                csv_path = os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim' ,'input_files', secure_filename(file.filename))
-                file.save(csv_path)
-                csv_paths.append(csv_path)
-            else:
-                return render_template("input_error.html", data={
-                    "error": "file_type",
-                    "file_name": "layer file",
-                    "expected_ext": "csv",
-                    "redirect": "tmmsim"
-                })
-        
-
-        input_dir = os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim' ,'input_files')
-        data = calculation(xif, UPLOAD_FOLDER, input_dir)
+    if action == 'Calculate Acceptor Excitation':
+        data = acceptor_excitation(xif, UPLOAD_FOLDER)
         zip_file_name = generate_zip(data, webapp)
 
-        return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName, webapp=webapp)
+    elif action == 'Calculate Donor Excitation':
+        data = donor_excitation(xif,UPLOAD_FOLDER)
+        zip_file_name = generate_zip(data,webapp)
 
+    return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp)
+
+# TMMSim view - initial view
+@app.route('/tmmsim', methods=['GET'])
+def tmm_sim():
     return render_template("tmmsim.html")
+
+
+# TMMSim view - data upload
+@app.route('/tmmsim/submit', methods=['POST'])
+def tmm_sim_submit():
+    appName = "TMMSim"
+    webapp = "tmmsim"
+
+    xif = request.files["xif"]
+    if xif and allowed_file(xif.filename, ['xlsx']):
+        xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim' ,'input_files'), xif, 'xlsx')
+    else:
+        return render_template("input_error.html", data={
+            "error": "file_type",
+            "file_name": "index file",
+            "expected_ext": "xlsx",
+            "redirect": "tmmsim"
+        })
+    layer_files = request.files.getlist("layer_files")
+    if len(layer_files) > 10:
+        return render_template("input_error.html", data={
+            "error": "file_count",
+            "redirect": "tmmsim"
+        })
+    csv_paths = []
+    for file in layer_files:
+        if allowed_file(file.filename, ['csv']):
+            csv_path = os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim' ,'input_files', secure_filename(file.filename))
+            file.save(csv_path)
+            csv_paths.append(csv_path)
+        else:
+            return render_template("input_error.html", data={
+                "error": "file_type",
+                "file_name": "layer file",
+                "expected_ext": "csv",
+                "redirect": "tmmsim"
+            })
+    
+    input_dir = os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim' ,'input_files')
+    data = calculation(xif, UPLOAD_FOLDER, input_dir)
+    zip_file_name = generate_zip(data, webapp)
+    return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName, webapp=webapp)
+
 
 # Energy Unit Converter view 
 @app.route('/euconverter', methods=['GET'])

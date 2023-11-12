@@ -16,7 +16,7 @@
     </div>
   </div>
   <div class="fret__texto">
-    <form method=post enctype=multipart/form-data>
+    <form method=post enctype=multipart/form-data action="{{url_for('tmm_sim_submit')}}">
       <div class="texto__botao">
         Input file (.xlsx):<br>
         <input type="file" name="xif"><br>
