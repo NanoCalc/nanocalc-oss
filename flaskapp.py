@@ -2,6 +2,7 @@ from fret_calc import overlap_calculation
 from ri_calc import n_calculation, n_k_calculation
 from plq_sim import energy_level, donor_excitation, acceptor_excitation
 from tmm_sim import calculation
+from upload_error import UploadError
 import os 
 import zipfile
 import uuid
@@ -112,12 +113,8 @@ def fret_calc_submit():
             xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'index_files'), file, 'xlsx')
             form_list.append(xif)
         else:
-            return render_template("input_error.html", data={
-                "error": "file_type",
-                "file_name": "index file",
-                "expected_ext": "xlsx",
-                "redirect": "fret"
-            })
+            upload_error = UploadError("file_type", "index file", "xlsx", "fret")
+            return render_template("input_error.html", data=upload_error.to_dict())
                                 
     files = request.files.getlist("ef")
     for file in files:
@@ -125,12 +122,8 @@ def fret_calc_submit():
             ef = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'emission_files'), file, 'dat')
             form_list.append(ef)
         else:
-            return render_template("input_error.html", data={
-                "error": "file_type",
-                "file_name": "emission file",
-                "expected_ext": "dat",
-                "redirect": "fret"
-            })
+            upload_error = UploadError("file_type", "emission file", "dat", "fret")
+            return render_template("input_error.html", data=upload_error.to_dict())
         
     files = request.files.getlist("rfi")
     for file in files: 
@@ -138,12 +131,8 @@ def fret_calc_submit():
             rfi = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'refractive_index_files'), file, 'dat')
             form_list.append(rfi)
         else:
-            return render_template("input_error.html", data={
-                "error": "file_type",
-                "file_name": "refractive index file",
-                "expected_ext": "dat",
-                "redirect": "fret"
-            })
+            upload_error = UploadError("file_type", "refractive index file", "dat", "fret")
+            return render_template("input_error.html", data=upload_error.to_dict())
     
     files = request.files.getlist("ecf")
     for file in files: 
@@ -151,12 +140,8 @@ def fret_calc_submit():
             ecf = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'extinction_coefficient_files'), file, 'dat')
             form_list.append(ecf)
         else:
-            return render_template("input_error.html", data={
-                "error": "file_type",
-                "file_name": "extinction coefficient file",
-                "expected_ext": "dat",
-                "redirect": "fret"
-            })
+            upload_error = UploadError("file_type", "extinction coefficient file", "dat", "fret")
+            return render_template("input_error.html", data=upload_error.to_dict())
     
     data = overlap_calculation(form_list[0], form_list[3], form_list[1], form_list[2], UPLOAD_FOLDER)
     zip_file_name = generate_zip(data, webapp)
@@ -184,12 +169,8 @@ def ri_calc_submit():
                 xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'index_files'), file, 'xlsx')
                 form_list.append(xif)
             else:
-                return render_template("input_error.html", data={
-                    "error": "file_type",
-                    "file_name": "index file",
-                    "expected_ext": "xlsx",
-                    "redirect": "ricalc"
-                })
+                upload_error = UploadError("file_type", "index file", "xlsx", "ricalc")
+                return render_template("input_error.html", data=upload_error.to_dict())
                 
         files = request.files.getlist("dacf")
         for file in files:
@@ -197,16 +178,13 @@ def ri_calc_submit():
                 dacf = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'abs_coefficient_files'), file, 'dat')
                 form_list.append(dacf)
             else:
-                return render_template("input_error.html", data={
-                    "error": "file_type",
-                    "file_name": "abs coefficient file",
-                    "expected_ext": "dat",
-                    "redirect": "ricalc"
-                })
+                upload_error = UploadError("file_type", "absorption coefficient file", "dat", "ricalc")
+                return render_template("input_error.html", data=upload_error.to_dict())
            
         data_n_k = n_k_calculation(form_list[0], form_list[1], UPLOAD_FOLDER)
         zip_file_name = generate_zip(data_n_k, webapp)
         return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp)    
+    
     elif not request.files.getlist("dacf"):
         files = request.files.getlist("xif")
         for file in files:
@@ -214,12 +192,8 @@ def ri_calc_submit():
                 xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'index_files'), file, 'xlsx')
                 form_list.append(xif)
             else:
-                return render_template("input_error.html", data={
-                    "error": "file_type",
-                    "file_name": "index file",
-                    "expected_ext": "xlsx",
-                    "redirect": "ricalc"
-                })
+                upload_error = UploadError("file_type", "index file", "xlsx", "ricalc")
+                return render_template("input_error.html", data=upload_error.to_dict())
                 
         files = request.files.getlist("kf")
         for file in files:
@@ -227,12 +201,8 @@ def ri_calc_submit():
                 kf = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'k_files'), file, 'dat')
                 form_list.append(kf)
             else:
-                return render_template("input_error.html", data={
-                    "error": "file_type",
-                    "file_name": "K file",
-                    "expected_ext": "dat",
-                    "redirect": "ricalc"
-                })
+                upload_error = UploadError("file_type", "K file", "dat", "ricalc")
+                return render_template("input_error.html", data=upload_error.to_dict())
                 
         data_n = n_calculation(form_list[0], form_list[1], UPLOAD_FOLDER)
         zip_file_name = generate_zip(data_n, webapp) 
@@ -254,12 +224,8 @@ def plq_sim_submit():
         if allowed_file(file.filename,['xlsx']):
             xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'plqsim', 'input_files'), file, 'xlsx')
         else:
-            return render_template("input_error.html", data={
-                "error": "file_type",
-                "file_name": "index file",
-                "expected_ext": "xlsx",
-                "redirect": "plqsim"
-            })
+            upload_error = UploadError("file_type", "index file", "xlsx", "plqsim")
+            return render_template("input_error.html", data=upload_error.to_dict())
 
     energy_level(xif, UPLOAD_FOLDER) # Generate Energy Level plot for both choices
     action = request.form.get('action')
@@ -287,21 +253,18 @@ def tmm_sim_submit():
     webapp = "tmmsim"
 
     xif = request.files["xif"]
+    
     if xif and allowed_file(xif.filename, ['xlsx']):
         xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim' ,'input_files'), xif, 'xlsx')
     else:
-        return render_template("input_error.html", data={
-            "error": "file_type",
-            "file_name": "index file",
-            "expected_ext": "xlsx",
-            "redirect": "tmmsim"
-        })
+        upload_error = UploadError("file_type", "index file", "xlsx", "tmmsim")
+        return render_template("input_error.html", data=upload_error.to_dict())
+
     layer_files = request.files.getlist("layer_files")
     if len(layer_files) > 10:
-        return render_template("input_error.html", data={
-            "error": "file_count",
-            "redirect": "tmmsim"
-        })
+        upload_error = UploadError(error_type="file_count", redirect_url="tmmsim", file_name=None, expected_ext=None)
+        return render_template("input_error.html", data=upload_error.to_dict())
+    
     csv_paths = []
     for file in layer_files:
         if allowed_file(file.filename, ['csv']):
@@ -309,12 +272,8 @@ def tmm_sim_submit():
             file.save(csv_path)
             csv_paths.append(csv_path)
         else:
-            return render_template("input_error.html", data={
-                "error": "file_type",
-                "file_name": "layer file",
-                "expected_ext": "csv",
-                "redirect": "tmmsim"
-            })
+            upload_error = UploadError("file_type", "layer file", "csv", "tmmsim")
+            return render_template("input_error.html", data=upload_error.to_dict())
     
     input_dir = os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim' ,'input_files')
     data = calculation(xif, UPLOAD_FOLDER, input_dir)

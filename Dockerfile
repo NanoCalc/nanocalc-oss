@@ -10,6 +10,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 USER root
 
 COPY flaskapp.py \
+    upload_error.py \
     plq_sim.py \
     fret_calc.py \
     ri_calc.py \
