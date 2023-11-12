@@ -64,6 +64,23 @@ def set_cache_headers(response):
     response.headers['Cache-Control'] = 'public, max-age=86400' 
     return response
 
+
+# Route to allow download of generated data
+@app.route('/download/<webapp>/<path:name>', methods=['GET'])
+def get_data(webapp, name):
+    uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], webapp) 
+    return send_from_directory(directory=uploads, path=name)
+
+# Entry point to get the unique visitor count   
+@app.route('/api/ipcount', methods = ['GET'])
+def get_ip_count():
+    ips_path = os.path.join(app.root_path,'visitors.txt') 
+    with open(ips_path, 'r') as file:
+        ip_addresses = file.read().splitlines()
+
+    unique_ip_count = len(ip_addresses)
+    return jsonify({'count': unique_ip_count})
+
 # Main/Home view
 @app.route('/', methods = ['GET'])
 @log_vistor
@@ -76,15 +93,6 @@ def welcome():
 def about_us():
     return render_template("about.html")
 
-# Entry point to get the unique visitor count   
-@app.route('/api/ipcount', methods = ['GET'])
-def get_ip_count():
-    ips_path = os.path.join(app.root_path,'visitors.txt') 
-    with open(ips_path, 'r') as file:
-        ip_addresses = file.read().splitlines()
-
-    unique_ip_count = len(ip_addresses)
-    return jsonify({'count': unique_ip_count})
 
 # FRET Calculator - initial view
 @app.route('/fret', methods=['GET'])
@@ -154,13 +162,6 @@ def fret_calc_submit():
     data = overlap_calculation(form_list[0], form_list[3], form_list[1], form_list[2], UPLOAD_FOLDER)
     zip_file_name = generate_zip(data, webapp)
     return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName, webapp=webapp)
-
-
-# Route to allow download of generated data
-@app.route('/download/<webapp>/<path:name>', methods=['GET'])
-def get_data(webapp, name):
-    uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], webapp) 
-    return send_from_directory(directory=uploads, path=name)
 
 
 # RI Calculator - initial view
