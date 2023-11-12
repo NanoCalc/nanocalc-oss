@@ -7,7 +7,7 @@ import zipfile
 import uuid
 from flask_caching import Cache
 from waitress import serve
-from flask import Flask, request, url_for, send_from_directory ,render_template, jsonify
+from flask import Flask, request, url_for, send_from_directory, render_template
 from werkzeug.utils import secure_filename
 from functools import wraps
 
@@ -58,6 +58,13 @@ def log_vistor(f):
         return f(*args, **kwargs)
     return wrapper
 
+def get_ip_count():
+    ips_path = os.path.join(app.root_path,'visitors.txt') 
+    with open(ips_path, 'r') as file:
+        ip_addresses = file.read().splitlines()
+
+    unique_ip_count = len(ip_addresses)
+    return unique_ip_count
 
 @app.after_request
 def set_cache_headers(response):
@@ -71,21 +78,13 @@ def get_data(webapp, name):
     uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], webapp) 
     return send_from_directory(directory=uploads, path=name)
 
-# Entry point to get the unique visitor count   
-@app.route('/api/ipcount', methods = ['GET'])
-def get_ip_count():
-    ips_path = os.path.join(app.root_path,'visitors.txt') 
-    with open(ips_path, 'r') as file:
-        ip_addresses = file.read().splitlines()
-
-    unique_ip_count = len(ip_addresses)
-    return jsonify({'count': unique_ip_count})
 
 # Main/Home view
 @app.route('/', methods = ['GET'])
 @log_vistor
 def welcome():
-    return render_template("index.html")
+    unique_ip_count = get_ip_count()
+    return render_template("index.html", visitors=unique_ip_count)
 
 # About us view 
 @app.route('/about', methods = ['GET'])
