@@ -59,6 +59,11 @@ def log_vistor(f):
     return wrapper
 
 
+@app.after_request
+def set_cache_headers(response):
+    response.headers['Cache-Control'] = 'public, max-age=86400' 
+    return response
+
 # Main/Home view
 @app.route('/', methods = ['GET'])
 @log_vistor
