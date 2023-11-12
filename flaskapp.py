@@ -5,6 +5,7 @@ from tmm_sim import calculation
 import os 
 import zipfile
 import uuid
+from flask_caching import Cache
 from waitress import serve
 from flask import Flask, request, url_for, send_from_directory ,render_template, jsonify
 from werkzeug.utils import secure_filename
@@ -18,6 +19,10 @@ UPLOAD_FOLDER = '/app/upload'
 MAX_CONTENT_LENGTH = 1 * 1024 * 1024    # 1 MB file size limit
 app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER 
+
+# Cache configuration
+app.config['CACHE_TYPE'] = 'simple'  
+cache = Cache(app)
 
 
 def allowed_file(filename, ext):
@@ -62,6 +67,7 @@ def welcome():
 
 # About us view 
 @app.route('/about', methods = ['GET'])
+@cache.cached(timeout=86400)
 def about_us():
     return render_template("about.html")
 
@@ -304,6 +310,7 @@ def tmm_sim():
 
 # Energy Unit Converter view 
 @app.route('/euconverter', methods=['GET'])
+@cache.cached(timeout=86400)
 def eu_converter():
     return render_template("euconverter.html")
 
