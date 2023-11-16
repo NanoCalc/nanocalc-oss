@@ -1,20 +1,21 @@
 import unittest
 import requests
 from bs4 import BeautifulSoup
-import argparse
-import sys
+# import argparse
+# import sys
 
 
-def parse_custom_args():
-    parser = argparse.ArgumentParser(add_help=False)
-    parser.add_argument('--HOST', default='http://172.17.0.2', help='Host to run tests against')
-    args, unknown = parser.parse_known_args()
-    return args, unknown
+# def parse_custom_args():
+#     parser = argparse.ArgumentParser(add_help=False)
+#     parser.add_argument('--HOST', default='http://172.17.0.2', help='Host to run tests against')
+#     args, unknown = parser.parse_known_args()
+#     return args, unknown
 
-args, unknown = parse_custom_args()
-sys.argv = [sys.argv[0]] + unknown
+# args, unknown = parse_custom_args()
+# sys.argv = [sys.argv[0]] + unknown
+
 class NanoCalcE2ETest(unittest.TestCase):
-    HOST = args.HOST
+    HOST = "http://localhost:8080"
     
     def validator(self, url, files, webapp, data): 
         """
@@ -40,7 +41,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
         print(f"Download Response Status Code: {download_response.status_code}")
         print(f"Download Response Headers: {download_response.headers}")
-        print(f"Download Response Content (Snippet): {download_response.content}")
+        #print(f"Download Response Content (Snippet): {download_response.content}")
         
         self.assertEqual(download_response.status_code, 200)
         self.assertTrue(download_response.content.startswith(b'PK'))

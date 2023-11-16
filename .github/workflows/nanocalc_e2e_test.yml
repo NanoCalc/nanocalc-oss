@@ -57,7 +57,7 @@ jobs:
 
     - name: Run tests
       run: |
-        python test/nanocalc_e2e_test.py --HOST=http://localhost:8080
+        python test/nanocalc_e2e_test.py 
 
     - name: Clean up
       run: |

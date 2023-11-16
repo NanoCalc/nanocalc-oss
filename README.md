@@ -19,5 +19,12 @@ docker run --rm --name nanocalc-container -e DEBUG=True -p 8080:8080 nanocalc-im
 docker run --rm -d --name nanocalc-container -e DEBUG=False -p 8080:8080 nanocalc-image
 ```
 
+--- 
+### Running without container:
+`
+DEBUG=True PORT=8080 UPLOAD_FOLDER="./app/upload" python flaskapp.py
+`
+
+
 ## References:
 [How to Create Efficient Python Docker Image](https://www.makeuseof.com/python-docker-image-create-efficient/)
