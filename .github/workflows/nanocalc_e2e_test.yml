@@ -2,9 +2,7 @@ name: Nano Calc test suite
 
 on:
   push:
-    branches-ignore: []  # Later only run on main
   pull_request:
-    branches-ignore: []
 
 jobs:
   build:
@@ -12,14 +10,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    
+
     - name: Set up Python 3.x
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
 
     - name: Set up mocks 
-      run: | 
+      run: |
         for file in fret_calc.py ri_calc.py plq_sim.py tmm_sim.py; do cp mock_apps.py "$file"; done
         rm mock_apps.py
 
@@ -27,7 +25,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    
+
     - name: Install test dependencies
       run: |
         python -m pip install --upgrade pip
@@ -49,8 +47,7 @@ jobs:
                  ./upload/tmmsim/input_files \
                  ./upload/tmmsim/result
 
-    
-   - name: Start Flask server in debug mode
+    - name: Start Flask server in debug mode
       run: |
         export UPLOAD_FOLDER='./upload'
         export DEBUG=True
