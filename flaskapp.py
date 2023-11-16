@@ -16,7 +16,7 @@ from functools import wraps
 app = Flask(__name__)
 
 # App configuration
-UPLOAD_FOLDER = '/app/upload'
+UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', '/app/upload')
 MAX_CONTENT_LENGTH = 1 * 1024 * 1024    # 1 MB file size limit
 app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER 
