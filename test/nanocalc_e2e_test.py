@@ -1,10 +1,21 @@
 import unittest
 import requests
 from bs4 import BeautifulSoup
+import argparse
+import sys
 
-HOST = 'http://172.17.0.2'
 
+def parse_custom_args():
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument('--HOST', default='http://172.17.0.2', help='Host to run tests against')
+    args, unknown = parser.parse_known_args()
+    return args, unknown
+
+args, unknown = parse_custom_args()
+sys.argv = [sys.argv[0]] + unknown
 class NanoCalcE2ETest(unittest.TestCase):
+    HOST = args.HOST
+    
     def validator(self, url, files, webapp, data): 
         """
         Asserts: 
@@ -19,7 +30,7 @@ class NanoCalcE2ETest(unittest.TestCase):
         soup = BeautifulSoup(response.content, 'html.parser')         
         download_link = soup.find('a', class_='links')['href']
 
-        download_url = f"{HOST}{download_link}" 
+        download_url = f"{self.HOST}{download_link}" 
         print(f'{webapp} download url: {download_url}') 
         download_response = requests.get(download_url)
         
@@ -46,7 +57,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
 
     def test_fret_calc_upload_success(self):
-        url = f'{HOST}/fret/submit' 
+        url = f'{self.HOST}/fret/submit' 
         with open('samples/fret/input.xlsx', 'rb') as xif, \
              open('samples/fret/emission.dat', 'rb') as ef, \
              open('samples/fret/refractive.dat', 'rb') as rfi, \
@@ -58,7 +69,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
 
     def test_fret_calc_upload_error(self):
-        url = f'{HOST}/fret/submit' 
+        url = f'{self.HOST}/fret/submit' 
         with open('samples/broken/broken_input.xlsx', 'rb') as xif, \
              open('samples/broken/broken_data.dat', 'rb') as ef, \
              open('samples/broken/broken_data.dat', 'rb') as rfi, \
@@ -78,7 +89,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
 
     def test_plq_sim_acceptor_upload_success(self):
-        url = f'{HOST}/plqsim/submit'
+        url = f'{self.HOST}/plqsim/submit'
         with open('samples/plqsim/input.xlsx', 'rb') as xif: 
             files = {'xif': xif}
             data = {'action': 'Calculate Acceptor Excitation'}
@@ -87,7 +98,7 @@ class NanoCalcE2ETest(unittest.TestCase):
     
     
     def test_plq_sim_acceptor_upload_error(self):
-        url = f'{HOST}/plqsim/submit'
+        url = f'{self.HOST}/plqsim/submit'
         with open('samples/broken/broken_input.xlsx', 'rb') as xif: 
             files = {'xif': xif}
             data = {'action': 'Calculate Acceptor Excitation'}
@@ -96,7 +107,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
     
     def test_plq_sim_donor_upload_success(self):
-        url = f'{HOST}/plqsim/submit' 
+        url = f'{self.HOST}/plqsim/submit' 
         with open('samples/plqsim/input.xlsx', 'rb') as xif: 
             files = {'xif': xif}
             data = {'action': 'Calculate Donor Excitation'}
@@ -105,7 +116,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
 
     def test_plq_sim_donor_upload_error(self):
-        url = f'{HOST}/plqsim/submit' 
+        url = f'{self.HOST}/plqsim/submit' 
         with open('samples/broken/broken_input.xlsx', 'rb') as xif: 
             files = {'xif': xif}
             data = {'action': 'Calculate Donor Excitation'}
@@ -114,7 +125,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
     
     def test_tmm_sim_bhj_upload_success(self):
-        url = f'{HOST}/tmmsim/submit' 
+        url = f'{self.HOST}/tmmsim/submit' 
         files = []
         try: 
             with open('samples/tmm/input_bhj.xlsx', 'rb') as xif, \
@@ -156,7 +167,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
     
     def test_tmm_sim_bilayer_upload_success(self):
-        url = f'{HOST}/tmmsim/submit' 
+        url = f'{self.HOST}/tmmsim/submit' 
         files = []
         try: 
             with open('samples/tmm/input_bilayer.xlsx', 'rb') as xif, \

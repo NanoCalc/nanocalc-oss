@@ -1,0 +1,47 @@
+name: Nano Calc test suite
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Set up mocks 
+      run: | 
+        for file in fret_calc.py ri_calc.py plq_sim.py tmm_sim.py; do cp mock_apps.py "$file"; done
+        rm mock_apps.py
+
+    - name: Install project dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Install test dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r test/requirements.txt
+    
+    - name: Start Flask server
+      run: |
+        python flaskapp.py &
+        sleep 5  # Allow some time for the server to start
+
+    - name: Run tests
+      run: |
+        python test/nanocalc_tests.py --HOST=http://localhost:5000
+
+    - name: Clean up
+      run: |
+        kill $!  # Kills the last background process (Flask server)
