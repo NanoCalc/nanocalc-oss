@@ -33,10 +33,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r test/requirements.txt
     
-    - name: Start Flask server
+    - name: Start Flask server in debug mode
       run: |
+        export DEBUG=True
+        export PORT=8080
         python flaskapp.py &
-        sleep 10  
+        sleep 10 
 
     - name: Run tests
       run: |

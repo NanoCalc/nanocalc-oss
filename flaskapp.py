@@ -310,11 +310,12 @@ def eu_converter():
 # Run the web app
 if __name__ == "__main__":
     debug_mode = os.environ.get('DEBUG', 'False').lower() == 'true'
+    port = int(os.environ.get('PORT', 8080)) 
 
     if debug_mode:
         app.run(
             host='0.0.0.0',
-            port=80,
+            port=port,
             debug=True,
         )
     else:
