@@ -38,6 +38,12 @@ jobs:
         python flaskapp.py &
         sleep 5  # Allow some time for the server to start
 
+    - name: List files in test directory
+      run: ls -lR
+
+    - name: pwd
+      run: pwd
+
     - name: Run tests
       run: |
         python test/nanocalc_e2e_test.py --HOST=http://localhost:5000
