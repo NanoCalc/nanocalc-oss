@@ -2,9 +2,9 @@ name: Nano Calc test suite
 
 on:
   push:
-    branches: [ main ]
+    branches-ignore: []  # Later only run on main
   pull_request:
-    branches: [ main ]
+    branches-ignore: []
 
 jobs:
   build:
