@@ -27,7 +27,25 @@ class NanoCalcE2ETest(unittest.TestCase):
         self.assertTrue(download_response.content.startswith(b'PK'))
 
 
-    def test_fret_calc_upload(self):
+    def error_validator(self, url, files, webapp, data):
+        """
+        Asserts: 
+        - response status code is 200 OK 
+        - error message is shown
+        """
+
+        response = requests.post(url, files=files, data=data)
+        self.assertEqual(response.status_code, 200)
+
+        soup = BeautifulSoup(response.content, 'html.parser')         
+        error_header = soup.find('h1')
+        self.assertIsNotNone(error_header)
+        self.assertEqual(error_header.text.strip(), "That's an input error!")
+        print(f'{webapp} has successfully shown an error message.')
+        
+
+
+    def test_fret_calc_upload_success(self):
         url = f'{HOST}/fret/submit' 
         with open('samples/fret/input.xlsx', 'rb') as xif, \
              open('samples/fret/emission.dat', 'rb') as ef, \
@@ -39,15 +57,27 @@ class NanoCalcE2ETest(unittest.TestCase):
             self.validator(url, files, 'FRET-Calc', data=None)
 
 
-    def test_ri_calc_decadic_upload(self):
+    def test_fret_calc_upload_error(self):
+        url = f'{HOST}/fret/submit' 
+        with open('samples/broken/broken_input.xlsx', 'rb') as xif, \
+             open('samples/broken/broken_data.dat', 'rb') as ef, \
+             open('samples/broken/broken_data.dat', 'rb') as rfi, \
+             open('samples/broken/broken_data.dat', 'rb') as ecf:
+
+            files = {'xif': xif, 'ef': ef, 'rfi': rfi, 'ecf': ecf}
+
+            self.error_validator(url, files, 'FRET-Calc', data=None)
+
+    @unittest.skip
+    def test_ri_calc_decadic_upload_success(self):
+        pass 
+
+    @unittest.skip
+    def test_ri_calc_k_upload_success(self):
         pass 
 
 
-    def test_ri_calc_k_upload(self):
-        pass 
-
-
-    def test_plq_sim_acceptor_upload(self):
+    def test_plq_sim_acceptor_upload_success(self):
         url = f'{HOST}/plqsim/submit'
         with open('samples/plqsim/input.xlsx', 'rb') as xif: 
             files = {'xif': xif}
@@ -55,8 +85,17 @@ class NanoCalcE2ETest(unittest.TestCase):
 
             self.validator(url, files, 'PLQ-Sim Acceptor Calculation', data)
     
+    
+    def test_plq_sim_acceptor_upload_error(self):
+        url = f'{HOST}/plqsim/submit'
+        with open('samples/broken/broken_input.xlsx', 'rb') as xif: 
+            files = {'xif': xif}
+            data = {'action': 'Calculate Acceptor Excitation'}
 
-    def test_plq_sim_donor_upload(self):
+            self.error_validator(url, files, 'PLQ-Sim Acceptor Calculation', data)
+
+    
+    def test_plq_sim_donor_upload_success(self):
         url = f'{HOST}/plqsim/submit' 
         with open('samples/plqsim/input.xlsx', 'rb') as xif: 
             files = {'xif': xif}
@@ -64,8 +103,17 @@ class NanoCalcE2ETest(unittest.TestCase):
 
             self.validator(url, files, 'PLQ-Sim Donor Calculation', data)
 
+
+    def test_plq_sim_donor_upload_error(self):
+        url = f'{HOST}/plqsim/submit' 
+        with open('samples/broken/broken_input.xlsx', 'rb') as xif: 
+            files = {'xif': xif}
+            data = {'action': 'Calculate Donor Excitation'}
+
+            self.error_validator(url, files, 'PLQ-Sim Donor Calculation', data)
+
     
-    def test_tmm_sim_bhj_upload(self):
+    def test_tmm_sim_bhj_upload_success(self):
         url = f'{HOST}/tmmsim/submit' 
         files = []
         try: 
@@ -102,8 +150,12 @@ class NanoCalcE2ETest(unittest.TestCase):
                 if isinstance(file_tuple, tuple):
                     file_tuple[1].close()
 
+    @unittest.skip
+    def test_tmm_sim_bhj_upload_error(self):
+        pass
 
-    def test_tmm_sim_bilayer_upload(self):
+    
+    def test_tmm_sim_bilayer_upload_success(self):
         url = f'{HOST}/tmmsim/submit' 
         files = []
         try: 
@@ -139,6 +191,10 @@ class NanoCalcE2ETest(unittest.TestCase):
             for _, file_tuple in files:
                 if isinstance(file_tuple, tuple):
                     file_tuple[1].close()
+
+    @unittest.skip
+    def test_tmm_sim_bilayer_upload_error(self):
+        pass
 
 
 
