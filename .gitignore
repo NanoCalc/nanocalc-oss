@@ -5,3 +5,6 @@ tmm_sim.py
 visitors.txt
 *.pem
 env
+app
+*.pyc
+__pycache__
