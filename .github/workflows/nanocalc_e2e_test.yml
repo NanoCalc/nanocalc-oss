@@ -36,17 +36,15 @@ jobs:
     - name: Start Flask server
       run: |
         python flaskapp.py &
-        sleep 5  # Allow some time for the server to start
+        sleep 10  
 
-    - name: List files in test directory
-      run: ls -lR
-
-    - name: pwd
-      run: pwd
+    - name: Check Flask server
+      run: |
+        curl http://localhost:5000
 
     - name: Run tests
       run: |
-        python test/nanocalc_e2e_test.py --HOST=http://localhost:5000
+        python test/nanocalc_e2e_test.py --HOST=http://localhost:8080
 
     - name: Clean up
       run: |
