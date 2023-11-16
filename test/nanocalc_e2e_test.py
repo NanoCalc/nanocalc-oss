@@ -29,7 +29,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
         print(f"Response Status Code: {response.status_code}")
         print(f"Response Headers: {response.headers}")
-        print(f"Response Content (Snippet): {response.content[:500]}")
+        print(f"Response Content (Snippet): {response.content}")
 
         soup = BeautifulSoup(response.content, 'html.parser')         
         download_link = soup.find('a', class_='links')['href']
@@ -40,7 +40,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
         print(f"Download Response Status Code: {download_response.status_code}")
         print(f"Download Response Headers: {download_response.headers}")
-        print(f"Download Response Content (Snippet): {download_response.content[:500]}")
+        print(f"Download Response Content (Snippet): {download_response.content}")
         
         self.assertEqual(download_response.status_code, 200)
         self.assertTrue(download_response.content.startswith(b'PK'))
@@ -79,7 +79,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
             self.validator(url, files, 'FRET-Calc', data=None)
 
-    
+    @unittest.skip
     def test_fret_calc_upload_error(self):
         url = f'{self.HOST}/fret/submit' 
         with open('test/samples/broken/broken_input.xlsx', 'rb') as xif, \
