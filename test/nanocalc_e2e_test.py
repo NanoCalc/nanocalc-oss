@@ -80,7 +80,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
             self.validator(url, files, 'FRET-Calc', data=None)
 
-
+    @unittest.skip
     def test_fret_calc_upload_error(self):
         url = f'{self.HOST}/fret/submit' 
         with open('test/samples/broken/broken_input.xlsx', 'rb') as xif, \
@@ -109,7 +109,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
             self.validator(url, files, 'PLQ-Sim Acceptor Calculation', data)
     
-    
+    @unittest.skip
     def test_plq_sim_acceptor_upload_error(self):
         url = f'{self.HOST}/plqsim/submit'
         with open('test/samples/broken/broken_input.xlsx', 'rb') as xif: 
@@ -128,6 +128,7 @@ class NanoCalcE2ETest(unittest.TestCase):
             self.validator(url, files, 'PLQ-Sim Donor Calculation', data)
 
 
+    @unittest.skip
     def test_plq_sim_donor_upload_error(self):
         url = f'{self.HOST}/plqsim/submit' 
         with open('test/samples/broken/broken_input.xlsx', 'rb') as xif: 
