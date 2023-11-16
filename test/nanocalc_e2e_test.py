@@ -58,10 +58,10 @@ class NanoCalcE2ETest(unittest.TestCase):
 
     def test_fret_calc_upload_success(self):
         url = f'{self.HOST}/fret/submit' 
-        with open('samples/fret/input.xlsx', 'rb') as xif, \
-             open('samples/fret/emission.dat', 'rb') as ef, \
-             open('samples/fret/refractive.dat', 'rb') as rfi, \
-             open('samples/fret/extinction.dat', 'rb') as ecf:
+        with open('test/samples/fret/input.xlsx', 'rb') as xif, \
+             open('test/samples/fret/emission.dat', 'rb') as ef, \
+             open('test/samples/fret/refractive.dat', 'rb') as rfi, \
+             open('test/samples/fret/extinction.dat', 'rb') as ecf:
 
             files = {'xif': xif, 'ef': ef, 'rfi': rfi, 'ecf': ecf}
 
@@ -70,10 +70,10 @@ class NanoCalcE2ETest(unittest.TestCase):
 
     def test_fret_calc_upload_error(self):
         url = f'{self.HOST}/fret/submit' 
-        with open('samples/broken/broken_input.xlsx', 'rb') as xif, \
-             open('samples/broken/broken_data.dat', 'rb') as ef, \
-             open('samples/broken/broken_data.dat', 'rb') as rfi, \
-             open('samples/broken/broken_data.dat', 'rb') as ecf:
+        with open('test/samples/broken/broken_input.xlsx', 'rb') as xif, \
+             open('test/samples/broken/broken_data.dat', 'rb') as ef, \
+             open('test/samples/broken/broken_data.dat', 'rb') as rfi, \
+             open('test/samples/broken/broken_data.dat', 'rb') as ecf:
 
             files = {'xif': xif, 'ef': ef, 'rfi': rfi, 'ecf': ecf}
 
@@ -90,7 +90,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
     def test_plq_sim_acceptor_upload_success(self):
         url = f'{self.HOST}/plqsim/submit'
-        with open('samples/plqsim/input.xlsx', 'rb') as xif: 
+        with open('test/samples/plqsim/input.xlsx', 'rb') as xif: 
             files = {'xif': xif}
             data = {'action': 'Calculate Acceptor Excitation'}
 
@@ -99,7 +99,7 @@ class NanoCalcE2ETest(unittest.TestCase):
     
     def test_plq_sim_acceptor_upload_error(self):
         url = f'{self.HOST}/plqsim/submit'
-        with open('samples/broken/broken_input.xlsx', 'rb') as xif: 
+        with open('test/samples/broken/broken_input.xlsx', 'rb') as xif: 
             files = {'xif': xif}
             data = {'action': 'Calculate Acceptor Excitation'}
 
@@ -108,7 +108,7 @@ class NanoCalcE2ETest(unittest.TestCase):
     
     def test_plq_sim_donor_upload_success(self):
         url = f'{self.HOST}/plqsim/submit' 
-        with open('samples/plqsim/input.xlsx', 'rb') as xif: 
+        with open('test/samples/plqsim/input.xlsx', 'rb') as xif: 
             files = {'xif': xif}
             data = {'action': 'Calculate Donor Excitation'}
 
@@ -117,7 +117,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
     def test_plq_sim_donor_upload_error(self):
         url = f'{self.HOST}/plqsim/submit' 
-        with open('samples/broken/broken_input.xlsx', 'rb') as xif: 
+        with open('test/samples/broken/broken_input.xlsx', 'rb') as xif: 
             files = {'xif': xif}
             data = {'action': 'Calculate Donor Excitation'}
 
@@ -128,30 +128,30 @@ class NanoCalcE2ETest(unittest.TestCase):
         url = f'{self.HOST}/tmmsim/submit' 
         files = []
         try: 
-            with open('samples/tmm/input_bhj.xlsx', 'rb') as xif, \
-                 open('samples/tmm/AM15G.csv', 'rb') as am15g, \
-                 open('samples/tmm/nk_Air.csv', 'rb') as air, \
-                 open('samples/tmm/nk_Al.csv', 'rb') as al, \
-                 open('samples/tmm/nk_Ca.csv', 'rb') as ca, \
-                 open('samples/tmm/nk_ITO.csv', 'rb') as ito, \
-                 open('samples/tmm/nk_P3HT.csv', 'rb') as p3ht, \
-                 open('samples/tmm/nk_P3HTPCBM.csv', 'rb') as p3htpcbm, \
-                 open('samples/tmm/nk_PCBM.csv', 'rb') as pcbm, \
-                 open('samples/tmm/nk_PEDOT.csv', 'rb') as pedot, \
-                 open('samples/tmm/nk_SiO2.csv', 'rb') as sio2: 
+            with open('test/samples/tmm/input_bhj.xlsx', 'rb') as xif, \
+                 open('test/samples/tmm/AM15G.csv', 'rb') as am15g, \
+                 open('test/samples/tmm/nk_Air.csv', 'rb') as air, \
+                 open('test/samples/tmm/nk_Al.csv', 'rb') as al, \
+                 open('test/samples/tmm/nk_Ca.csv', 'rb') as ca, \
+                 open('test/samples/tmm/nk_ITO.csv', 'rb') as ito, \
+                 open('test/samples/tmm/nk_P3HT.csv', 'rb') as p3ht, \
+                 open('test/samples/tmm/nk_P3HTPCBM.csv', 'rb') as p3htpcbm, \
+                 open('test/samples/tmm/nk_PCBM.csv', 'rb') as pcbm, \
+                 open('test/samples/tmm/nk_PEDOT.csv', 'rb') as pedot, \
+                 open('test/samples/tmm/nk_SiO2.csv', 'rb') as sio2: 
 
                 files = [
-                    ('xif', ('input_bhj.xlsx', open('samples/tmm/input_bhj.xlsx', 'rb'), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')),
-                    ('layer_files', ('AM15G.csv', open('samples/tmm/AM15G.csv', 'rb'), 'text/csv')),
-                    ('layer_files', ('nk_Air.csv', open('samples/tmm/nk_Air.csv', 'rb'), 'text/csv')),
-                    ('layer_files', ('nk_Al.csv', open('samples/tmm/nk_Al.csv', 'rb'), 'text/csv')),
-                    ('layer_files', ('nk_Ca.csv', open('samples/tmm/nk_Ca.csv', 'rb'), 'text/csv')),
-                    ('layer_files', ('nk_ITO.csv', open('samples/tmm/nk_ITO.csv', 'rb'), 'text/csv')),
-                    ('layer_files', ('nk_P3HT.csv', open('samples/tmm/nk_P3HT.csv', 'rb'), 'text/csv')),
-                    ('layer_files', ('nk_P3HTPCBM.csv', open('samples/tmm/nk_P3HTPCBM.csv', 'rb'), 'text/csv')),
-                    ('layer_files', ('nk_PCBM.csv', open('samples/tmm/nk_PCBM.csv', 'rb'), 'text/csv')),
-                    ('layer_files', ('nk_PEDOT.csv', open('samples/tmm/nk_PEDOT.csv', 'rb'), 'text/csv')),
-                    ('layer_files', ('nk_SiO2.csv', open('samples/tmm/nk_SiO2.csv', 'rb'), 'text/csv')),
+                    ('xif', ('input_bhj.xlsx', open('test/samples/tmm/input_bhj.xlsx', 'rb'), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')),
+                    ('layer_files', ('AM15G.csv', open('test/samples/tmm/AM15G.csv', 'rb'), 'text/csv')),
+                    ('layer_files', ('nk_Air.csv', open('test/samples/tmm/nk_Air.csv', 'rb'), 'text/csv')),
+                    ('layer_files', ('nk_Al.csv', open('test/samples/tmm/nk_Al.csv', 'rb'), 'text/csv')),
+                    ('layer_files', ('nk_Ca.csv', open('test/samples/tmm/nk_Ca.csv', 'rb'), 'text/csv')),
+                    ('layer_files', ('nk_ITO.csv', open('test/samples/tmm/nk_ITO.csv', 'rb'), 'text/csv')),
+                    ('layer_files', ('nk_P3HT.csv', open('test/samples/tmm/nk_P3HT.csv', 'rb'), 'text/csv')),
+                    ('layer_files', ('nk_P3HTPCBM.csv', open('test/samples/tmm/nk_P3HTPCBM.csv', 'rb'), 'text/csv')),
+                    ('layer_files', ('nk_PCBM.csv', open('test/samples/tmm/nk_PCBM.csv', 'rb'), 'text/csv')),
+                    ('layer_files', ('nk_PEDOT.csv', open('test/samples/tmm/nk_PEDOT.csv', 'rb'), 'text/csv')),
+                    ('layer_files', ('nk_SiO2.csv', open('test/samples/tmm/nk_SiO2.csv', 'rb'), 'text/csv')),
                 ]
 
                 self.validator(url, files, 'TMM-Sim BHJ', data=None)
@@ -170,30 +170,30 @@ class NanoCalcE2ETest(unittest.TestCase):
         url = f'{self.HOST}/tmmsim/submit' 
         files = []
         try: 
-            with open('samples/tmm/input_bilayer.xlsx', 'rb') as xif, \
-                 open('samples/tmm/AM15G.csv', 'rb') as am15g, \
-                 open('samples/tmm/nk_Air.csv', 'rb') as air, \
-                 open('samples/tmm/nk_Al.csv', 'rb') as al, \
-                 open('samples/tmm/nk_Ca.csv', 'rb') as ca, \
-                 open('samples/tmm/nk_ITO.csv', 'rb') as ito, \
-                 open('samples/tmm/nk_P3HT.csv', 'rb') as p3ht, \
-                 open('samples/tmm/nk_P3HTPCBM.csv', 'rb') as p3htpcbm, \
-                 open('samples/tmm/nk_PCBM.csv', 'rb') as pcbm, \
-                 open('samples/tmm/nk_PEDOT.csv', 'rb') as pedot, \
-                 open('samples/tmm/nk_SiO2.csv', 'rb') as sio2: 
+            with open('test/samples/tmm/input_bilayer.xlsx', 'rb') as xif, \
+                 open('test/samples/tmm/AM15G.csv', 'rb') as am15g, \
+                 open('test/samples/tmm/nk_Air.csv', 'rb') as air, \
+                 open('test/samples/tmm/nk_Al.csv', 'rb') as al, \
+                 open('test/samples/tmm/nk_Ca.csv', 'rb') as ca, \
+                 open('test/samples/tmm/nk_ITO.csv', 'rb') as ito, \
+                 open('test/samples/tmm/nk_P3HT.csv', 'rb') as p3ht, \
+                 open('test/samples/tmm/nk_P3HTPCBM.csv', 'rb') as p3htpcbm, \
+                 open('test/samples/tmm/nk_PCBM.csv', 'rb') as pcbm, \
+                 open('test/samples/tmm/nk_PEDOT.csv', 'rb') as pedot, \
+                 open('test/samples/tmm/nk_SiO2.csv', 'rb') as sio2: 
 
                 files = [
-                    ('xif', ('input_bilayer.xlsx', open('samples/tmm/input_bilayer.xlsx', 'rb'), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')),
-                    ('layer_files', ('AM15G.csv', open('samples/tmm/AM15G.csv', 'rb'), 'text/csv')),
-                    ('layer_files', ('nk_Air.csv', open('samples/tmm/nk_Air.csv', 'rb'), 'text/csv')),
-                    ('layer_files', ('nk_Al.csv', open('samples/tmm/nk_Al.csv', 'rb'), 'text/csv')),
-                    ('layer_files', ('nk_Ca.csv', open('samples/tmm/nk_Ca.csv', 'rb'), 'text/csv')),
-                    ('layer_files', ('nk_ITO.csv', open('samples/tmm/nk_ITO.csv', 'rb'), 'text/csv')),
-                    ('layer_files', ('nk_P3HT.csv', open('samples/tmm/nk_P3HT.csv', 'rb'), 'text/csv')),
-                    ('layer_files', ('nk_P3HTPCBM.csv', open('samples/tmm/nk_P3HTPCBM.csv', 'rb'), 'text/csv')),
-                    ('layer_files', ('nk_PCBM.csv', open('samples/tmm/nk_PCBM.csv', 'rb'), 'text/csv')),
-                    ('layer_files', ('nk_PEDOT.csv', open('samples/tmm/nk_PEDOT.csv', 'rb'), 'text/csv')),
-                    ('layer_files', ('nk_SiO2.csv', open('samples/tmm/nk_SiO2.csv', 'rb'), 'text/csv')),
+                    ('xif', ('input_bilayer.xlsx', open('test/samples/tmm/input_bilayer.xlsx', 'rb'), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')),
+                    ('layer_files', ('AM15G.csv', open('test/samples/tmm/AM15G.csv', 'rb'), 'text/csv')),
+                    ('layer_files', ('nk_Air.csv', open('test/samples/tmm/nk_Air.csv', 'rb'), 'text/csv')),
+                    ('layer_files', ('nk_Al.csv', open('test/samples/tmm/nk_Al.csv', 'rb'), 'text/csv')),
+                    ('layer_files', ('nk_Ca.csv', open('test/samples/tmm/nk_Ca.csv', 'rb'), 'text/csv')),
+                    ('layer_files', ('nk_ITO.csv', open('test/samples/tmm/nk_ITO.csv', 'rb'), 'text/csv')),
+                    ('layer_files', ('nk_P3HT.csv', open('test/samples/tmm/nk_P3HT.csv', 'rb'), 'text/csv')),
+                    ('layer_files', ('nk_P3HTPCBM.csv', open('test/samples/tmm/nk_P3HTPCBM.csv', 'rb'), 'text/csv')),
+                    ('layer_files', ('nk_PCBM.csv', open('test/samples/tmm/nk_PCBM.csv', 'rb'), 'text/csv')),
+                    ('layer_files', ('nk_PEDOT.csv', open('test/samples/tmm/nk_PEDOT.csv', 'rb'), 'text/csv')),
+                    ('layer_files', ('nk_SiO2.csv', open('test/samples/tmm/nk_SiO2.csv', 'rb'), 'text/csv')),
                 ]
 
                 self.validator(url, files, 'TMM-Sim Bilayer', data=None)
