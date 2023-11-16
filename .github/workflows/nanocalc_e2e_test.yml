@@ -33,23 +33,23 @@ jobs:
 
     - name: Create necessary directories
       run: |
-        mkdir -p ./upload/fret/emission_files \
-                 ./upload/fret/extinction_coefficient_files \
-                 ./upload/fret/index_files \
-                 ./upload/fret/refractive_index_files \
-                 ./upload/fret/result \
-                 ./upload/ri/index_files \
-                 ./upload/ri/abs_coefficient_files \
-                 ./upload/ri/k_files \
-                 ./upload/ri/result \
-                 ./upload/plqsim/input_files \
-                 ./upload/plqsim/result \
-                 ./upload/tmmsim/input_files \
-                 ./upload/tmmsim/result
+        mkdir -p ./app/upload/fret/emission_files \
+                 ./app/upload/fret/extinction_coefficient_files \
+                 ./app/upload/fret/index_files \
+                 ./app/upload/fret/refractive_index_files \
+                 ./app/upload/fret/result \
+                 ./app/upload/ri/index_files \
+                 ./app/upload/ri/abs_coefficient_files \
+                 ./app/upload/ri/k_files \
+                 ./app/upload/ri/result \
+                 ./app/upload/plqsim/input_files \
+                 ./app/upload/plqsim/result \
+                 ./app/upload/tmmsim/input_files \
+                 ./app/upload/tmmsim/result
 
     - name: Start Flask server in debug mode
       run: |
-        export UPLOAD_FOLDER='./upload'
+        export UPLOAD_FOLDER='./app/upload'
         export DEBUG=True
         export PORT=8080
         python flaskapp.py &
