@@ -38,10 +38,6 @@ jobs:
         python flaskapp.py &
         sleep 10  
 
-    - name: Check Flask server
-      run: |
-        curl http://localhost:5000
-
     - name: Run tests
       run: |
         python test/nanocalc_e2e_test.py --HOST=http://localhost:8080
