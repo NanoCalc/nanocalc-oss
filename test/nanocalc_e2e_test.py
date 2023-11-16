@@ -27,12 +27,20 @@ class NanoCalcE2ETest(unittest.TestCase):
         response = requests.post(url, files=files, data=data)
         self.assertEqual(response.status_code, 200)
 
+        print(f"Response Status Code: {response.status_code}")
+        print(f"Response Headers: {response.headers}")
+        print(f"Response Content (Snippet): {response.content[:500]}")
+
         soup = BeautifulSoup(response.content, 'html.parser')         
         download_link = soup.find('a', class_='links')['href']
 
         download_url = f"{self.HOST}{download_link}" 
         print(f'{webapp} download url: {download_url}') 
         download_response = requests.get(download_url)
+
+        print(f"Download Response Status Code: {download_response.status_code}")
+        print(f"Download Response Headers: {download_response.headers}")
+        print(f"Download Response Content (Snippet): {download_response.content[:500]}")
         
         self.assertEqual(download_response.status_code, 200)
         self.assertTrue(download_response.content.startswith(b'PK'))
@@ -47,6 +55,11 @@ class NanoCalcE2ETest(unittest.TestCase):
 
         response = requests.post(url, files=files, data=data)
         self.assertEqual(response.status_code, 200)
+
+        print(f"Error Response Status Code: {response.status_code}")
+        print(f"Error Response Headers: {response.headers}")
+        print(f"Error Response Content: {response.text}")
+
 
         soup = BeautifulSoup(response.content, 'html.parser')         
         error_header = soup.find('h1')
