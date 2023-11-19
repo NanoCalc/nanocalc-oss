@@ -60,4 +60,4 @@ jobs:
 
     - name: Clean up
       run: |
-        kill $!  # Kills the last background process (Flask server)
+        killall python
