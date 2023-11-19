@@ -6,14 +6,19 @@ from upload_error import UploadError
 import os 
 import zipfile
 import uuid
+import logging
 from flask_caching import Cache
 from waitress import serve
 from flask import Flask, request, url_for, send_from_directory, render_template
 from werkzeug.utils import secure_filename
 from functools import wraps
 
+
 # Creates the web app 
 app = Flask(__name__)
+
+# Setup logger
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # App configuration
 UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', '/app/upload')
@@ -32,6 +37,10 @@ def allowed_file(filename, ext):
 
 def save_file_with_uuid(directory, file, extension):
     """Save a file with a UUID-based name and return its path."""
+    if not os.path.exists(directory):
+        logging.warning(f"Directory {directory} does not exist. Creating it.")
+        os.makedirs(directory)
+
     filename = f"{uuid.uuid4()}.{extension}"
     filepath = os.path.join(directory, filename)
     file.save(filepath)
@@ -143,12 +152,12 @@ def fret_calc_submit():
             else:
                 upload_error = UploadError("file_type", "extinction coefficient file", "dat", "fret")
                 return render_template("input_error.html", data=upload_error.to_dict())
-
         data = overlap_calculation(form_list[0], form_list[3], form_list[1], form_list[2], UPLOAD_FOLDER)
         zip_file_name = generate_zip(data, webapp)
         return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName, webapp=webapp)
 
-    except: 
+    except Exception as e: 
+        print("Error in FRET-Calc: ", e)
         upload_error = UploadError("file_misformat", None, None, "ricalc")
         return render_template("input_error.html", data=upload_error.to_dict())
 
@@ -212,7 +221,8 @@ def ri_calc_submit():
             data_n = n_calculation(form_list[0], form_list[1], UPLOAD_FOLDER)
             zip_file_name = generate_zip(data_n, webapp) 
             return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp) 
-    except:
+    except Exception as e:
+        print("Error in RI-Calc: ", e)
         upload_error = UploadError("file_misformat", None, None, "ricalc")
         return render_template("input_error.html", data=upload_error.to_dict())
 
@@ -250,7 +260,8 @@ def plq_sim_submit():
 
         return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp)
 
-    except:
+    except Exception as e:
+        print("Error in PLQSim: ", e)
         upload_error = UploadError("file_misformat", None, None, "plqsim")
         return render_template("input_error.html", data=upload_error.to_dict())
 
@@ -296,7 +307,8 @@ def tmm_sim_submit():
         zip_file_name = generate_zip(data, webapp)
         return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName, webapp=webapp)
     
-    except:
+    except Exception as e:
+        print("Error in TMMSim: ", e)
         upload_error = UploadError("file_misformat", None, None, "tmmsim")
         return render_template("input_error.html", data=upload_error.to_dict())
 

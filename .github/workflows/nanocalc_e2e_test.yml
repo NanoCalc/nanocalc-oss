@@ -18,8 +18,7 @@ jobs:
 
     - name: Set up mocks 
       run: |
-        for file in fret_calc.py ri_calc.py plq_sim.py tmm_sim.py; do cp mock_apps.py "$file"; done
-        rm mock_apps.py
+        cp mocks/* . 
 
     - name: Install project dependencies
       run: |

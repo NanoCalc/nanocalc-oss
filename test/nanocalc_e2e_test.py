@@ -28,9 +28,9 @@ class NanoCalcE2ETest(unittest.TestCase):
         response = requests.post(url, files=files, data=data)
         self.assertEqual(response.status_code, 200)
 
-        print(f"Response Status Code: {response.status_code}")
-        print(f"Response Headers: {response.headers}")
-        print(f"Response Content (Snippet): {response.content}")
+        #print(f"Response Status Code: {response.status_code}")
+        #print(f"Response Headers: {response.headers}")
+        #print(f"Response Content (Snippet): {response.content}")
 
         soup = BeautifulSoup(response.content, 'html.parser')         
         download_link = soup.find('a', class_='links')['href']
@@ -39,8 +39,8 @@ class NanoCalcE2ETest(unittest.TestCase):
         print(f'{webapp} download url: {download_url}') 
         download_response = requests.get(download_url)
 
-        print(f"Download Response Status Code: {download_response.status_code}")
-        print(f"Download Response Headers: {download_response.headers}")
+        #print(f"Download Response Status Code: {download_response.status_code}")
+        #print(f"Download Response Headers: {download_response.headers}")
         #print(f"Download Response Content (Snippet): {download_response.content}")
         
         self.assertEqual(download_response.status_code, 200)
@@ -57,10 +57,9 @@ class NanoCalcE2ETest(unittest.TestCase):
         response = requests.post(url, files=files, data=data)
         self.assertEqual(response.status_code, 200)
 
-        print(f"Error Response Status Code: {response.status_code}")
-        print(f"Error Response Headers: {response.headers}")
-        print(f"Error Response Content: {response.text}")
-
+        #print(f"Error Response Status Code: {response.status_code}")
+        #print(f"Error Response Headers: {response.headers}")
+        #print(f"Error Response Content: {response.text}")
 
         soup = BeautifulSoup(response.content, 'html.parser')         
         error_header = soup.find('h1')
@@ -80,7 +79,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
             self.validator(url, files, 'FRET-Calc', data=None)
 
-    @unittest.skip
+    
     def test_fret_calc_upload_error(self):
         url = f'{self.HOST}/fret/submit' 
         with open('test/samples/broken/broken_input.xlsx', 'rb') as xif, \
@@ -100,7 +99,7 @@ class NanoCalcE2ETest(unittest.TestCase):
     def test_ri_calc_k_upload_success(self):
         pass 
 
-    @unittest.skip
+    
     def test_plq_sim_acceptor_upload_success(self):
         url = f'{self.HOST}/plqsim/submit'
         with open('test/samples/plqsim/input.xlsx', 'rb') as xif: 
@@ -109,7 +108,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
             self.validator(url, files, 'PLQ-Sim Acceptor Calculation', data)
     
-    @unittest.skip
+    
     def test_plq_sim_acceptor_upload_error(self):
         url = f'{self.HOST}/plqsim/submit'
         with open('test/samples/broken/broken_input.xlsx', 'rb') as xif: 
@@ -118,7 +117,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
             self.error_validator(url, files, 'PLQ-Sim Acceptor Calculation', data)
 
-    @unittest.skip
+    
     def test_plq_sim_donor_upload_success(self):
         url = f'{self.HOST}/plqsim/submit' 
         with open('test/samples/plqsim/input.xlsx', 'rb') as xif: 
@@ -128,7 +127,7 @@ class NanoCalcE2ETest(unittest.TestCase):
             self.validator(url, files, 'PLQ-Sim Donor Calculation', data)
 
 
-    @unittest.skip
+    
     def test_plq_sim_donor_upload_error(self):
         url = f'{self.HOST}/plqsim/submit' 
         with open('test/samples/broken/broken_input.xlsx', 'rb') as xif: 
@@ -138,7 +137,7 @@ class NanoCalcE2ETest(unittest.TestCase):
             self.error_validator(url, files, 'PLQ-Sim Donor Calculation', data)
 
     
-    @unittest.skip
+    
     def test_tmm_sim_bhj_upload_success(self):
         url = f'{self.HOST}/tmmsim/submit' 
         files = []
@@ -180,7 +179,7 @@ class NanoCalcE2ETest(unittest.TestCase):
     def test_tmm_sim_bhj_upload_error(self):
         pass
 
-    @unittest.skip
+    
     def test_tmm_sim_bilayer_upload_success(self):
         url = f'{self.HOST}/tmmsim/submit' 
         files = []
