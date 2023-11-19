@@ -68,7 +68,7 @@ def log_vistor(f):
         return f(*args, **kwargs)
     return wrapper
 
-def get_ip_count():
+def get_unique_sessions():
     ips_path = os.path.join(app.root_path,'visitors.txt') 
     with open(ips_path, 'r') as file:
         ip_addresses = file.read().splitlines()
@@ -93,7 +93,7 @@ def get_data(webapp, name):
 @app.route('/', methods = ['GET'])
 @log_vistor
 def welcome():
-    unique_ip_count = get_ip_count()
+    unique_ip_count = get_unique_sessions()
     return render_template("index.html", visitors=unique_ip_count)
 
 # About us view 
