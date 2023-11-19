@@ -14,5 +14,5 @@ def calculation(xif, appdir, inputDir):
             os.mkdir(new_folder)
         return f"{os.path.abspath(new_folder)}" 
 
-    except Exception as e:
-        print("Error in tmm_sim.py:", e)
+    except Exception:
+        raise

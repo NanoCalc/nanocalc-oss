@@ -15,5 +15,5 @@ def overlap_calculation(xif, ecf, ef, rfi, appdir):
             os.mkdir(new_folder)
         return f"{os.path.abspath(new_folder)}"  
 
-    except Exception as e:
-        print("Error in fret_calc.py:", e)
+    except Exception:
+        raise

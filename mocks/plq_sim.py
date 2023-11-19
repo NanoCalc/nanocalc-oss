@@ -14,9 +14,8 @@ def create_result_folder(xif, appdir):
             os.mkdir(new_folder)
         return os.path.abspath(new_folder)
 
-    except Exception as e:
-        print("Error in creating result folder:", e)
-        return None
+    except Exception :
+        raise
 
 def energy_level(xif, appdir):
     return create_result_folder(xif, appdir)
