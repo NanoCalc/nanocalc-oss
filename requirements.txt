@@ -9,3 +9,4 @@ flask
 werkzeug
 waitress
 Flask-Caching
+Flask-SQLAlchemy

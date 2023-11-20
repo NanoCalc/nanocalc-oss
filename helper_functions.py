@@ -3,6 +3,8 @@ import uuid
 import zipfile
 import logging
 from config import Config
+from visitor import db, Visitor
+from functools import wraps
 
 def allowed_file(filename, ext):
     """
@@ -38,28 +40,30 @@ def generate_zip(path, webapp):
     return zip_file_name
 
 
-# TODO: get number of sessions from database
 def get_unique_sessions():
     """
     Return the number of unique sessions 
     """
-    ips_path = os.path.join(app.root_path,'visitors.txt') 
-    with open(ips_path, 'r') as file:
-        ip_addresses = file.read().splitlines()
-
-    unique_ip_count = len(ip_addresses)
-    return unique_ip_count
+    unique_sessions = db.session.query(Visitor.session_id).distinct().count()
+    return unique_sessions
 
 
-# TODO: implement decorator here - be aware of context issues
-# def log_vistor(f):
-#     """Decorator to log the amount of unique visitors to the website"""
-#     @wraps(f)
-#     def wrapper(*args, **kwargs):
-#         ip = request.remote_addr
-#         ips_path = os.path.join(app.root_path,'visitors.txt')
-#         with open(ips_path, 'a+') as file:
-#             if ip not in file.read():
-#                 file.write(ip + '\n')
-#         return f(*args, **kwargs)
-#     return wrapper
+def log_vistor(f):
+    """
+    Decorator to log the amount of unique visitors to the website
+    """
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        ip = request.remote_addr
+        user_agent = request.headers.get('User-Agent', 'Unknown')
+        #operating_system = parse_os_from_user_agent(user_agent) 
+        #country = get_country_from_ip(ip) 
+
+        # Create a new visitor entry
+        visitor = Visitor(ip, user_agent)
+        db.session.add(visitor)
+        db.session.commit()
+
+        return f(*args, **kwargs)
+
+    return wrapper

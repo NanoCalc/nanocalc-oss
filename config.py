@@ -12,3 +12,7 @@ class Config:
 
     # Cache configuration
     CACHE_TYPE = 'simple'
+
+    # Database configuration
+    SQLALCHEMY_DATABASE_URI  = 'sqlite:///visitors.db'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False

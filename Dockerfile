@@ -15,7 +15,6 @@ COPY flaskapp.py \
     fret_calc.py \
     ri_calc.py \
     tmm_sim.py \
-    visitors.txt \
     /app/
 
 COPY static /app/static
