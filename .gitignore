@@ -5,6 +5,7 @@
 visitors.txt
 *.pem
 env
-app
+app/
+instance/
 *.pyc
 __pycache__
