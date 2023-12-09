@@ -33,14 +33,14 @@ nanocalc-image
 
 ### First, create a virtual environment and activate it:
 ```shell
-python3 -m venv venv
+python3 -m venv env
 source venv/bin/activate
 ```
 
 ### Install project and test dependencies:
 ```shell
 pip install -r requirements.txt
-pip install -r test/requirements.txt
+pip install -r test_requirements.txt
 ```
 
 ### Setup mocks and local environment:
