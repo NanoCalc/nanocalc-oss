@@ -46,6 +46,8 @@ class TestHelperFunctions(unittest.TestCase):
         pass 
     def test_get_ip_count(self):
         pass
+    def test_get_unique_sessions(self):
+        pass
     
 
 class TestDatabase(unittest.TestCase):
