@@ -6,6 +6,9 @@ from config import Config
 from visitor import db, Visitor
 from functools import wraps
 from flask import request
+from user_agents import parse
+import pygeoip
+
 
 def allowed_file(filename, ext):
     """
@@ -50,6 +53,13 @@ def get_unique_sessions():
     return unique_sessions
 
 
+def get_country_from_ip(address):
+    try:
+        geoip = pygeoip.GeoIP('GeoIP.dat') # static
+        return geoip.country_name_by_addr(address)
+    except: return None
+
+
 def log_vistor(f):
     """
     Decorator to log the amount of unique visitors to the website
@@ -58,12 +68,13 @@ def log_vistor(f):
     def wrapper(*args, **kwargs):
         ip = request.remote_addr
         raw_user_agent = request.headers.get('User-Agent', 'Unknown')
-        user_agent = ParsedUserAgent(raw_user_agent)
-        # operating_system = 
-        # country = 
+        
+        user_agent = parse(raw_user_agent)
+        operating_system = user_agent.os.family
+        country = get_country_from_ip(ip)
 
         # Create a new visitor entry
-        visitor = Visitor(ip, raw_user_agent, operating_system, country)
+        visitor = Visitor(ip, raw_user_agent, operating_system=None, country=None)
         db.session.add(visitor)
         db.session.commit()
 
