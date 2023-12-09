@@ -3,79 +3,29 @@ from ri_calc import n_calculation, n_k_calculation
 from plq_sim import energy_level, donor_excitation, acceptor_excitation
 from tmm_sim import calculation
 from upload_error import UploadError
+from config import Config
+from helper_functions import allowed_file, save_file_with_uuid, generate_zip, get_unique_sessions, log_vistor
+from visitor import db, Visitor
 import os 
-import zipfile
-import uuid
 import logging
 from flask_caching import Cache
 from waitress import serve
 from flask import Flask, request, url_for, send_from_directory, render_template
 from werkzeug.utils import secure_filename
-from functools import wraps
 
 
-# Creates the web app 
+# Creating and configuring the Flask app
 app = Flask(__name__)
-
-# Setup logger
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-
-# App configuration
-UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', '/app/upload')
-MAX_CONTENT_LENGTH = 1 * 1024 * 1024    # 1 MB file size limit
-app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER 
-
-# Cache configuration
-app.config['CACHE_TYPE'] = 'simple'  
+app.config.from_object(Config)
+logging.basicConfig(level=Config.LOGGING_LEVEL, format=Config.LOGGING_FORMAT)
 cache = Cache(app)
+with app.app_context():
+    db.init_app(app)
+    db.create_all()
+UPLOAD_FOLDER = app.config['UPLOAD_FOLDER']
 
 
-def allowed_file(filename, ext):
-    """Returns True if the file extension is in the list of allowed extensions"""
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ext
-
-def save_file_with_uuid(directory, file, extension):
-    """Save a file with a UUID-based name and return its path."""
-    if not os.path.exists(directory):
-        logging.warning(f"Directory {directory} does not exist. Creating it.")
-        os.makedirs(directory)
-
-    filename = f"{uuid.uuid4()}.{extension}"
-    filepath = os.path.join(directory, filename)
-    file.save(filepath)
-    return filepath
-
-def generate_zip(path, webapp):
-    """Generate a zip file from a directory and return its name"""
-    zip_file_name = f"{uuid.uuid4()}-generated-data.zip"
-    zip_file_path = os.path.join(UPLOAD_FOLDER, webapp, zip_file_name)
-    with zipfile.ZipFile(zip_file_path, mode="w") as z:
-        for filename in os.listdir(path): 
-            file_path = os.path.join(path, filename)
-            z.write(file_path, arcname=filename)
-    return zip_file_name
-
-def log_vistor(f):
-    """Decorator to log the amount of unique visitors to the website"""
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        ip = request.remote_addr
-        ips_path = os.path.join(app.root_path,'visitors.txt')
-        with open(ips_path, 'a+') as file:
-            if ip not in file.read():
-                file.write(ip + '\n')
-        return f(*args, **kwargs)
-    return wrapper
-
-def get_ip_count():
-    ips_path = os.path.join(app.root_path,'visitors.txt') 
-    with open(ips_path, 'r') as file:
-        ip_addresses = file.read().splitlines()
-
-    unique_ip_count = len(ip_addresses)
-    return unique_ip_count
-
+# Client side caching
 @app.after_request
 def set_cache_headers(response):
     response.headers['Cache-Control'] = 'public, max-age=86400' 
@@ -93,7 +43,7 @@ def get_data(webapp, name):
 @app.route('/', methods = ['GET'])
 @log_vistor
 def welcome():
-    unique_ip_count = get_ip_count()
+    unique_ip_count = get_unique_sessions()
     return render_template("index.html", visitors=unique_ip_count)
 
 # About us view 
@@ -157,7 +107,7 @@ def fret_calc_submit():
         return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName, webapp=webapp)
 
     except Exception as e: 
-        print("Error in FRET-Calc: ", e)
+        logging.warning(f"Error in FRET-Calc: {e}")
         upload_error = UploadError("file_misformat", None, None, "ricalc")
         return render_template("input_error.html", data=upload_error.to_dict())
 
@@ -222,7 +172,7 @@ def ri_calc_submit():
             zip_file_name = generate_zip(data_n, webapp) 
             return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp) 
     except Exception as e:
-        print("Error in RI-Calc: ", e)
+        logging.warning(f"Error in RI-Calc: {e}")
         upload_error = UploadError("file_misformat", None, None, "ricalc")
         return render_template("input_error.html", data=upload_error.to_dict())
 
@@ -261,7 +211,7 @@ def plq_sim_submit():
         return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp)
 
     except Exception as e:
-        print("Error in PLQSim: ", e)
+        logging.warning(f"Error in PLQSim: {e}")
         upload_error = UploadError("file_misformat", None, None, "plqsim")
         return render_template("input_error.html", data=upload_error.to_dict())
 
@@ -308,7 +258,7 @@ def tmm_sim_submit():
         return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName, webapp=webapp)
     
     except Exception as e:
-        print("Error in TMMSim: ", e)
+        logging.warning(f"Error in TMMSim: {e}")
         upload_error = UploadError("file_misformat", None, None, "tmmsim")
         return render_template("input_error.html", data=upload_error.to_dict())
 

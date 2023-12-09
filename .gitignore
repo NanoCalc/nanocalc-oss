@@ -5,6 +5,9 @@
 visitors.txt
 *.pem
 env
-app
+app/
+instance/
 *.pyc
 __pycache__
+GeoIP*.dat
+*.db
