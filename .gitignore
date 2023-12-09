@@ -10,3 +10,4 @@ instance/
 __pycache__
 GeoIP*.dat
 *.db
+.coverage
