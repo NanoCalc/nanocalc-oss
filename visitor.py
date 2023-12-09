@@ -12,9 +12,9 @@ class Visitor(db.Model):
     country = db.Column(db.String(100))
     visit_timestamp = db.Column(db.DateTime, default=db.func.current_timestamp())
 
-    def __init__(self, ip_address, user_agent):
+    def __init__(self, ip_address, user_agent, operating_system, country):
         self.ip_address = hashlib.sha256(ip_address.encode()).hexdigest() if ip_address else None
         self.user_agent = user_agent
-        # self.operating_system = operating_system
-        # self.country = country
+        self.operating_system = operating_system
+        self.country = country
         self.session_id = hashlib.sha256((ip_address + user_agent).encode()).hexdigest() if ip_address and user_agent else None

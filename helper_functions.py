@@ -57,12 +57,13 @@ def log_vistor(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         ip = request.remote_addr
-        user_agent = request.headers.get('User-Agent', 'Unknown')
-        #operating_system = parse_os_from_user_agent(user_agent) 
-        #country = get_country_from_ip(ip) 
+        raw_user_agent = request.headers.get('User-Agent', 'Unknown')
+        user_agent = ParsedUserAgent(raw_user_agent)
+        # operating_system = 
+        # country = 
 
         # Create a new visitor entry
-        visitor = Visitor(ip, user_agent)
+        visitor = Visitor(ip, raw_user_agent, operating_system, country)
         db.session.add(visitor)
         db.session.commit()
 
