@@ -9,3 +9,4 @@ app/
 instance/
 *.pyc
 __pycache__
+GeoIP*.dat
