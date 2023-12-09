@@ -1,8 +1,7 @@
-/fret_calc.py  
-/plq_sim.py  
-/ri_calc.py
-/tmm_sim.py
-visitors.txt
+fret_calc.py  
+plq_sim.py  
+ri_calc.py
+tmm_sim.py
 *.pem
 env
 app/
