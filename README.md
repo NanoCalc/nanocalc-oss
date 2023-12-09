@@ -10,13 +10,21 @@ docker build -t nanocalc-image . --network=host
 ---
 ### Running in debug (local development) mode:
 ```shell
-docker run --rm --name nanocalc-container -e DEBUG=True -p 8080:8080 nanocalc-image
+docker run --rm --name nanocalc-container \
+-e DEBUG=True -p 8080:8080 \
+-v GeoIP.dat:/app/GeoIP.dat \
+-v visitors.db:/app/visitors.db \
+nanocalc-image
 ```
 ---
 ### Running in production:
 
 ```shell
-docker run --rm -d --name nanocalc-container -e DEBUG=False -p 8080:8080 nanocalc-image
+docker run --rm --name nanocalc-container \
+-e DEBUG=False -p 8080:8080 \
+-v GeoIP.dat:/app/GeoIP.dat \
+-v visitors.db:/app/visitors.db \
+nanocalc-image
 ```
 
 --- 
