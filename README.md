@@ -20,7 +20,7 @@ nanocalc-image
 ### Running in production:
 
 ```shell
-docker run --rm --name nanocalc-container \
+docker run --rm -d --name nanocalc-container \
 -e DEBUG=False -p 8080:8080 \
 -v GeoIP.dat:/app/GeoIP.dat \
 -v visitors.db:/app/visitors.db \
