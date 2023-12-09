@@ -5,6 +5,7 @@ import logging
 from config import Config
 from visitor import db, Visitor
 from functools import wraps
+from flask import request
 
 def allowed_file(filename, ext):
     """
@@ -44,7 +45,8 @@ def get_unique_sessions():
     """
     Return the number of unique sessions 
     """
-    unique_sessions = db.session.query(Visitor.session_id).distinct().count()
+    PREVIOUS_VISITORS = 3558
+    unique_sessions = PREVIOUS_VISITORS + db.session.query(Visitor.session_id).distinct().count()
     return unique_sessions
 
 
