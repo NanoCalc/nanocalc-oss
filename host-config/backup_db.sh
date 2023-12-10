@@ -2,7 +2,7 @@
 
 
 SRC_FILE=~/src/nanocalc-oss/visitors.db
-DEST_FILE=~/backup/visitors.db
+DEST_FILE=/mnt/backup/visitors.db
 
 
 if [ -f "$SRC_FILE" ]; then
