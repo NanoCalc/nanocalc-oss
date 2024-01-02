@@ -48,7 +48,7 @@ def get_unique_sessions():
     """
     Return the number of unique sessions 
     """
-    PREVIOUS_VISITORS = 3558
+    PREVIOUS_VISITORS = 4728
     unique_sessions = PREVIOUS_VISITORS + db.session.query(Visitor.session_id).distinct().count()
     return unique_sessions
 

@@ -22,8 +22,8 @@ nanocalc-image
 ```shell
 docker run --rm -d --name nanocalc-container \
 -e DEBUG=False -p 8080:8080 \
--v GeoIP.dat:/app/GeoIP.dat \
--v visitors.db:/app/visitors.db \
+-v $(pwd)/GeoIP.dat:/app/GeoIP.dat \
+-v $(pwd)/visitors.db:/app/visitors.db \
 nanocalc-image
 ```
 
@@ -46,11 +46,10 @@ pip install -r requirements.txt
 pip install -r test_requirements.txt
 ```
 
-### Setup mocks and local environment:
+### Setup local environment:
 
 ```shell
 ./setup_local_env.sh
-./setup_mocks.sh
 ```
 
 ### Start the server:
