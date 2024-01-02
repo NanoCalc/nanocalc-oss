@@ -74,7 +74,7 @@ def log_vistor(f):
         country = get_country_from_ip(ip)
 
         # Create a new visitor entry
-        visitor = Visitor(ip, raw_user_agent, operating_system=None, country=None)
+        visitor = Visitor(ip, raw_user_agent, operating_system, country)
         db.session.add(visitor)
         db.session.commit()
 
