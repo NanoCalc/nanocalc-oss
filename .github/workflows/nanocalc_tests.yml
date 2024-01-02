@@ -1,0 +1,76 @@
+name: Nano Calc test suite
+
+on:
+  push:
+    branches: 
+      - main
+      - develop
+  pull_request:
+    branches: 
+      - main
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Set up mocks 
+      run: |
+        cp mocks/fret_calc_mock.py fret_calc.py
+        cp mocks/plq_sim_mock.py plq_sim.py
+        cp mocks/ri_calc_mock.py ri_calc.py
+        cp mocks/tmm_sim_mock.py tmm_sim.py 
+
+    - name: Install project dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Install test dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r test_requirements.txt
+
+    - name: Create necessary directories
+      run: |
+        mkdir -p ./app/upload/fret/emission_files \
+                 ./app/upload/fret/extinction_coefficient_files \
+                 ./app/upload/fret/index_files \
+                 ./app/upload/fret/refractive_index_files \
+                 ./app/upload/fret/result \
+                 ./app/upload/ri/index_files \
+                 ./app/upload/ri/abs_coefficient_files \
+                 ./app/upload/ri/k_files \
+                 ./app/upload/ri/result \
+                 ./app/upload/plqsim/input_files \
+                 ./app/upload/plqsim/result \
+                 ./app/upload/tmmsim/input_files \
+                 ./app/upload/tmmsim/result
+
+    - name: Start Flask server in debug mode
+      run: |
+        export UPLOAD_FOLDER='./app/upload'
+        export DEBUG=True
+        export PORT=8080
+        python flaskapp.py &
+        sleep 5
+
+    - name: Run unit tests
+      run: |
+        python test_unit_nanocalc.py
+
+    - name: Run end to end tests 
+      run: | 
+        python test_nanocalc_e2e.py
+
+    - name: Clean up
+      run: |
+        killall python

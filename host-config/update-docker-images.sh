@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Define color variables
+
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'  # No Color
@@ -21,7 +21,6 @@ if [[ "$current_id" != "$latest_id" ]]; then
     read answer
     if [[ "$answer" == "y" ]]; then
         # Prepare for upgrade 
-        ./update-visitors.sh
         docker stop nanocalc-container
         sleep 5
         docker rmi nanocalc-image
@@ -33,9 +32,6 @@ if [[ "$current_id" != "$latest_id" ]]; then
 
         # Cleanup old images
         docker image prune -f
-
-        # Restart the service
-        docker run --rm -d --name nanocalc-container -e DEBUG=False -p 443:443 -v nanocalc_ssl:/app/ssl nanocalc-image
     fi
 else
     # No new version found
