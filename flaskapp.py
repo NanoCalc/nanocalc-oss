@@ -103,7 +103,7 @@ def fret_calc_submit():
                 upload_error = UploadError("file_type", "extinction coefficient file", "dat", "fret")
                 return render_template("input_error.html", data=upload_error.to_dict())
         data = overlap_calculation(form_list[0], form_list[3], form_list[1], form_list[2], UPLOAD_FOLDER)
-        zip_file_name = generate_zip(data, webapp)
+        zip_file_name = generate_zip(data, webapp, Config.UPLOAD_FOLDER)
         return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName, webapp=webapp)
 
     except Exception as e: 
@@ -146,7 +146,7 @@ def ri_calc_submit():
                     return render_template("input_error.html", data=upload_error.to_dict())
 
             data_n_k = n_k_calculation(form_list[0], form_list[1], UPLOAD_FOLDER)
-            zip_file_name = generate_zip(data_n_k, webapp)
+            zip_file_name = generate_zip(data_n_k, webapp, Config.UPLOAD_FOLDER)
             return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp)    
 
         elif not request.files.getlist("dacf"):
@@ -169,7 +169,7 @@ def ri_calc_submit():
                     return render_template("input_error.html", data=upload_error.to_dict())
 
             data_n = n_calculation(form_list[0], form_list[1], UPLOAD_FOLDER)
-            zip_file_name = generate_zip(data_n, webapp) 
+            zip_file_name = generate_zip(data_n, webapp, Config.UPLOAD_FOLDER) 
             return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp) 
     except Exception as e:
         logging.warning(f"Error in RI-Calc: {e}")
@@ -202,11 +202,11 @@ def plq_sim_submit():
 
         if action == 'Calculate Acceptor Excitation':
             data = acceptor_excitation(xif, UPLOAD_FOLDER)
-            zip_file_name = generate_zip(data, webapp)
+            zip_file_name = generate_zip(data, webapp, Config.UPLOAD_FOLDER)
 
         elif action == 'Calculate Donor Excitation':
             data = donor_excitation(xif,UPLOAD_FOLDER)
-            zip_file_name = generate_zip(data,webapp)
+            zip_file_name = generate_zip(data,webapp, Config.UPLOAD_FOLDER)
 
         return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp)
 
@@ -254,7 +254,7 @@ def tmm_sim_submit():
 
         input_dir = os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim' ,'input_files')
         data = calculation(xif, UPLOAD_FOLDER, input_dir)
-        zip_file_name = generate_zip(data, webapp)
+        zip_file_name = generate_zip(data, webapp, Config.UPLOAD_FOLDER)
         return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName, webapp=webapp)
     
     except Exception as e:

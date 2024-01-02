@@ -7,7 +7,7 @@
 ```shell 
 docker build -t nanocalc-image . --network=host
 ```
----
+
 ### Running in debug (local development) mode:
 ```shell
 docker run --rm --name nanocalc-container \
@@ -16,7 +16,7 @@ docker run --rm --name nanocalc-container \
 -v visitors.db:/app/visitors.db \
 nanocalc-image
 ```
----
+
 ### Running in production:
 
 ```shell
@@ -27,20 +27,23 @@ docker run --rm -d --name nanocalc-container \
 nanocalc-image
 ```
 
---- 
+### Run tests:
+```shell
+coverage run -m unittest discover
+```
 
 ## Direct usage (with Python virtual environment):
 
 ### First, create a virtual environment and activate it:
 ```shell
-python3 -m venv venv
+python3 -m venv env
 source venv/bin/activate
 ```
 
 ### Install project and test dependencies:
 ```shell
 pip install -r requirements.txt
-pip install -r test/requirements.txt
+pip install -r test_requirements.txt
 ```
 
 ### Setup mocks and local environment:
@@ -57,7 +60,7 @@ DEBUG=True PORT=8080 UPLOAD_FOLDER="app/upload" python flaskapp.py
 
 ### Run tests:
 ```shell
-python test/nanocalc_e2e_test.py
+coverage run -m unittest discover
 ```
 
 

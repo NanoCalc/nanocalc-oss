@@ -24,7 +24,10 @@ jobs:
 
     - name: Set up mocks 
       run: |
-        cp mocks/* . 
+        cp mocks/fret_calc_mock.py fret_calc.py
+        cp mocks/plq_sim_mock.py plq_sim.py
+        cp mocks/ri_calc_mock.py ri_calc.py
+        cp mocks/tmm_sim_mock.py tmm_sim.py 
 
     - name: Install project dependencies
       run: |
@@ -34,7 +37,7 @@ jobs:
     - name: Install test dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r test/requirements.txt
+        pip install -r test_requirements.txt
 
     - name: Create necessary directories
       run: |
@@ -60,9 +63,13 @@ jobs:
         python flaskapp.py &
         sleep 5
 
-    - name: Run tests
+    - name: Run unit tests
       run: |
-        python test/nanocalc_e2e_test.py 
+        python test_unit_nanocalc.py
+
+    - name: Run end to end tests 
+      run: | 
+        python test_nanocalc_e2e.py
 
     - name: Clean up
       run: |

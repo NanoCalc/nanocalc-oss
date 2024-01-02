@@ -31,12 +31,12 @@ def save_file_with_uuid(directory, file, extension):
     return filepath
     
 
-def generate_zip(path, webapp):
+def generate_zip(path, webapp, upload_folder):
     """
     Generate a zip file from a directory and return its name
     """
     zip_file_name = f"{uuid.uuid4()}-generated-data.zip"
-    zip_file_path = os.path.join(Config.UPLOAD_FOLDER, webapp, zip_file_name)
+    zip_file_path = os.path.join(upload_folder, webapp, zip_file_name)
     with zipfile.ZipFile(zip_file_path, mode="w") as z:
         for filename in os.listdir(path): 
             file_path = os.path.join(path, filename)
