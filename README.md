@@ -12,12 +12,12 @@ docker build -t nanocalc-image . --network=host
 ```shell
 docker run --rm --name nanocalc-container \
 -e DEBUG=True -p 8080:8080 \
--v GeoIP.dat:/app/GeoIP.dat \
--v visitors.db:/app/visitors.db \
+-v $(pwd)/GeoIP.dat:/app/GeoIP.dat \
+-v $(pwd)/visitors.db:/app/visitors.db \
 nanocalc-image
 ```
 
-### Running in production:
+### Running in production mode:
 
 ```shell
 docker run --rm -d --name nanocalc-container \
@@ -25,11 +25,6 @@ docker run --rm -d --name nanocalc-container \
 -v $(pwd)/GeoIP.dat:/app/GeoIP.dat \
 -v $(pwd)/visitors.db:/app/visitors.db \
 nanocalc-image
-```
-
-### Run tests:
-```shell
-coverage run -m unittest discover
 ```
 
 ## Direct usage (with Python virtual environment):
@@ -52,16 +47,25 @@ pip install -r test_requirements.txt
 ./setup_local_env.sh
 ```
 
-### Start the server:
+### Start the server in debug mode:
 ```shell
 DEBUG=True PORT=8080 UPLOAD_FOLDER="app/upload" python flaskapp.py
 ```
 
-### Run tests:
+## Running tests:
+
+### If non existent, create a Python virtual environment and activate it: 
+```shell
+python3 -m venv env
+source venv/bin/activate
+```
+
+### Install test dependencies:
+```shell
+pip install -r test_requirements.txt
+```
+
+### Run the test suite:
 ```shell
 coverage run -m unittest discover
 ```
-
-
-## References:
-[How to Create Efficient Python Docker Image](https://www.makeuseof.com/python-docker-image-create-efficient/)
