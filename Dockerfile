@@ -1,13 +1,13 @@
 FROM python:3-alpine
 EXPOSE 8080
 ENV PATH="/home/nanocalc/.local/bin:${PATH}"
+
+RUN adduser -D nanocalc
+USER nanocalc
 WORKDIR /app
 
 COPY requirements.txt /app/
-RUN adduser -D nanocalc
-USER nanocalc
 RUN pip install --no-cache-dir -r requirements.txt
-USER root
 
 COPY flaskapp.py \
     upload_error.py \
@@ -38,7 +38,4 @@ RUN mkdir -p /app/upload/fret/emission_files \
     /app/upload/tmmsim/result
 
 
-RUN chown -R nanocalc:nanocalc /app
-
-USER nanocalc
 CMD ["python", "flaskapp.py"]
