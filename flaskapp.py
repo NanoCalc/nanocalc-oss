@@ -61,17 +61,16 @@ def fret_calc():
 # FRET Calculator - data upload
 @app.route('/fret/submit', methods=['POST'])
 def fret_calc_submit():
+    appName = "FRET-Calc"
+    webApp = "fret"
+    filesList = []
+
     try:
-        appName = "FRET-Calc"
-        webapp = "fret"
-
-        form_list = []
-
         files = request.files.getlist("xif") 
         for file in files:
             if allowed_file(file.filename,['xlsx']):
                 xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'index_files'), file, 'xlsx')
-                form_list.append(xif)
+                filesList.append(xif)
             else:
                 upload_error = UploadError("file_type", "index file", "xlsx", "fret")
                 return render_template("input_error.html", data=upload_error.to_dict())
@@ -80,7 +79,7 @@ def fret_calc_submit():
         for file in files:
             if allowed_file(file.filename,['dat']):
                 ef = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'emission_files'), file, 'dat')
-                form_list.append(ef)
+                filesList.append(ef)
             else:
                 upload_error = UploadError("file_type", "emission file", "dat", "fret")
                 return render_template("input_error.html", data=upload_error.to_dict())
@@ -89,7 +88,7 @@ def fret_calc_submit():
         for file in files: 
             if allowed_file(file.filename,['dat']):
                 rfi = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'refractive_index_files'), file, 'dat')
-                form_list.append(rfi)
+                filesList.append(rfi)
             else:
                 upload_error = UploadError("file_type", "refractive index file", "dat", "fret")
                 return render_template("input_error.html", data=upload_error.to_dict())
@@ -98,13 +97,13 @@ def fret_calc_submit():
         for file in files: 
             if allowed_file(file.filename,['dat']):
                 ecf = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'extinction_coefficient_files'), file, 'dat')
-                form_list.append(ecf)
+                filesList.append(ecf)
             else:
                 upload_error = UploadError("file_type", "extinction coefficient file", "dat", "fret")
                 return render_template("input_error.html", data=upload_error.to_dict())
-        data = overlap_calculation(form_list[0], form_list[3], form_list[1], form_list[2], UPLOAD_FOLDER)
-        zip_file_name = generate_zip(data, webapp, Config.UPLOAD_FOLDER)
-        return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName, webapp=webapp)
+        data = overlap_calculation(filesList[0], filesList[3], filesList[1], filesList[2], UPLOAD_FOLDER)
+        zip_file_name = generate_zip(data, webApp, Config.UPLOAD_FOLDER)
+        return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName, webapp=webApp)
 
     except Exception as e: 
         logging.warning(f"Error in FRET-Calc: {e}")
@@ -120,18 +119,17 @@ def ri_calc():
 # RI Calculator - data upload
 @app.route('/ricalc/submit', methods=['POST'])
 def ri_calc_submit():
+    appName = "RI-Calc"
+    webApp = "ri"
+    filesList = []
+
     try:
-        appName = "RI-Calc"
-        webapp = "ri"
-
-        form_list = []
-
         if not request.files.getlist("kf"):
             files = request.files.getlist("xif")
             for file in files:
                 if allowed_file(file.filename,['xlsx']):
                     xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'index_files'), file, 'xlsx')
-                    form_list.append(xif)
+                    filesList.append(xif)
                 else:
                     upload_error = UploadError("file_type", "index file", "xlsx", "ricalc")
                     return render_template("input_error.html", data=upload_error.to_dict())
@@ -140,21 +138,21 @@ def ri_calc_submit():
             for file in files:
                 if allowed_file(file.filename,['dat']):
                     dacf = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'abs_coefficient_files'), file, 'dat')
-                    form_list.append(dacf)
+                    filesList.append(dacf)
                 else:
                     upload_error = UploadError("file_type", "absorption coefficient file", "dat", "ricalc")
                     return render_template("input_error.html", data=upload_error.to_dict())
 
-            data_n_k = n_k_calculation(form_list[0], form_list[1], UPLOAD_FOLDER)
-            zip_file_name = generate_zip(data_n_k, webapp, Config.UPLOAD_FOLDER)
-            return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp)    
+            data_n_k = n_k_calculation(filesList[0], filesList[1], UPLOAD_FOLDER)
+            zip_file_name = generate_zip(data_n_k, webApp, Config.UPLOAD_FOLDER)
+            return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webApp)    
 
         elif not request.files.getlist("dacf"):
             files = request.files.getlist("xif")
             for file in files:
                 if allowed_file(file.filename,['xlsx']):
                     xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'index_files'), file, 'xlsx')
-                    form_list.append(xif)
+                    filesList.append(xif)
                 else:
                     upload_error = UploadError("file_type", "index file", "xlsx", "ricalc")
                     return render_template("input_error.html", data=upload_error.to_dict())
@@ -163,14 +161,14 @@ def ri_calc_submit():
             for file in files:
                 if allowed_file(file.filename,['dat']):
                     kf = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'k_files'), file, 'dat')
-                    form_list.append(kf)
+                    filesList.append(kf)
                 else:
                     upload_error = UploadError("file_type", "K file", "dat", "ricalc")
                     return render_template("input_error.html", data=upload_error.to_dict())
 
-            data_n = n_calculation(form_list[0], form_list[1], UPLOAD_FOLDER)
-            zip_file_name = generate_zip(data_n, webapp, Config.UPLOAD_FOLDER) 
-            return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp) 
+            data_n = n_calculation(filesList[0], filesList[1], UPLOAD_FOLDER)
+            zip_file_name = generate_zip(data_n, webApp, Config.UPLOAD_FOLDER) 
+            return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webApp) 
     except Exception as e:
         logging.warning(f"Error in RI-Calc: {e}")
         upload_error = UploadError("file_misformat", None, None, "ricalc")
@@ -185,10 +183,9 @@ def plq_sim():
 # PLQSim view - data upload
 @app.route('/plqsim/submit', methods=['POST'])
 def plq_sim_submit():
+    appName = "PLQSim"
+    webApp = "plqsim"
     try:
-        appName = "PLQSim"
-        webapp = "plqsim"
-
         index_file = request.files.getlist("xif")
         for file in index_file:
             if allowed_file(file.filename,['xlsx']):
@@ -202,13 +199,13 @@ def plq_sim_submit():
 
         if action == 'Calculate Acceptor Excitation':
             data = acceptor_excitation(xif, UPLOAD_FOLDER)
-            zip_file_name = generate_zip(data, webapp, Config.UPLOAD_FOLDER)
+            zip_file_name = generate_zip(data, webApp, Config.UPLOAD_FOLDER)
 
         elif action == 'Calculate Donor Excitation':
             data = donor_excitation(xif,UPLOAD_FOLDER)
-            zip_file_name = generate_zip(data,webapp, Config.UPLOAD_FOLDER)
+            zip_file_name = generate_zip(data,webApp, Config.UPLOAD_FOLDER)
 
-        return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webapp)
+        return render_template("upload_success.html", zip_name=zip_file_name,  app_name=appName, webapp=webApp)
 
     except Exception as e:
         logging.warning(f"Error in PLQSim: {e}")
@@ -225,10 +222,10 @@ def tmm_sim():
 # TMMSim view - data upload
 @app.route('/tmmsim/submit', methods=['POST'])
 def tmm_sim_submit():
+    appName = "TMMSim"
+    webApp = "tmmsim"
+    
     try:
-        appName = "TMMSim"
-        webapp = "tmmsim"
-
         xif = request.files["xif"]
 
         if xif and allowed_file(xif.filename, ['xlsx']):
@@ -254,8 +251,8 @@ def tmm_sim_submit():
 
         input_dir = os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim' ,'input_files')
         data = calculation(xif, UPLOAD_FOLDER, input_dir)
-        zip_file_name = generate_zip(data, webapp, Config.UPLOAD_FOLDER)
-        return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName, webapp=webapp)
+        zip_file_name = generate_zip(data, webApp, Config.UPLOAD_FOLDER)
+        return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName, webapp=webApp)
     
     except Exception as e:
         logging.warning(f"Error in TMMSim: {e}")
