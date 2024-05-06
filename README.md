@@ -32,7 +32,7 @@ nanocalc-image
 ### First, create a virtual environment and activate it:
 ```shell
 python3 -m venv env
-source venv/bin/activate
+source env/bin/activate
 ```
 
 ### Install project and test dependencies:
@@ -57,7 +57,7 @@ DEBUG=True PORT=8080 UPLOAD_FOLDER="app/upload" python flaskapp.py
 ### If non existent, create a Python virtual environment and activate it: 
 ```shell
 python3 -m venv env
-source venv/bin/activate
+source env/bin/activate
 ```
 
 ### Install test dependencies:
