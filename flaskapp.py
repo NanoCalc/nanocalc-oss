@@ -278,4 +278,4 @@ if __name__ == "__main__":
             debug=True,
         )
     else:
-        serve(app)
+        serve(app, threads=100)
