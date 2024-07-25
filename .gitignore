@@ -4,7 +4,6 @@ ri_calc.py
 tmm_sim.py
 *.pem
 env
-app/
 instance/
 *.pyc
 __pycache__
