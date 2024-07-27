@@ -1,6 +1,6 @@
 export default function About() {
 return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-screen flex-col items-center justify-between">
          <section className="bg-blue-500 w-full h-screen flex items-center justify-center">
           <h2>Graziâni</h2>
         </section>
