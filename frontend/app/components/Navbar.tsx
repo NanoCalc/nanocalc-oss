@@ -36,8 +36,7 @@ export default function Navbar() {
                     </button>
                 </div>
             </div>
-            
-            <ul className={`md:flex md:space-x-4 ${isOpen ? 'flex' : 'hidden'} flex-col md:flex-row`}>
+	      <ul className={`collapsible ${isOpen ? 'open' : ''} md:flex md:space-x-4 flex-col md:flex-row`}>            
                 <li onClick={handleLinkClick}>
                     <Link href="/">
                         Home
