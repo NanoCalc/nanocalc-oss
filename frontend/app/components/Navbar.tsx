@@ -27,7 +27,7 @@ export default function Navbar() {
     }
 
     return (
-        <nav ref={navbarRef} className="navbar bg-gray-800 text-white p-4">
+        <nav ref={navbarRef} className="navbar bg-nanocalc-blue text-white p-4">
             <div className="flex justify-between items-center">
                 {/*<div className="text-xl">NanoCalc</div>*/}
                 <div className="md:hidden toggle-button" onClick={handleToggle}>
