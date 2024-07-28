@@ -7,6 +7,10 @@ const nanocalcApps = {
         appLogoPath: "/nanocalc_apps_logos/ricalc_logo.svg",
         appName: "RI-Calc"
     },
+    "PLQ-Sim": {
+        appLogoPath: "/nanocalc_apps_logos/plqsim_logo.svg",
+        appName: "PLQ-Sim"
+    }
 }
 
 export default nanocalcApps;
