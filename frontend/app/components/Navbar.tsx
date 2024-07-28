@@ -43,7 +43,7 @@ export default function Navbar() {
                     </Link>
                 </li>
                 <li onClick={handleLinkClick}>
-                    <Link href="/fret">
+                    <Link href="/fretcalc">
                         FRET-Calc
                     </Link>
                 </li>
