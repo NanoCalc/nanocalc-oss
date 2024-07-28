@@ -10,6 +10,10 @@ const nanocalcApps = {
     "PLQ-Sim": {
         appLogoPath: "/nanocalc_apps_logos/plqsim_logo.svg",
         appName: "PLQ-Sim"
+    },
+    "TMM-Sim": {
+        appLogoPath: "/nanocalc_apps_logos/tmmsim_logo.svg",
+        appName: "TMM-Sim"
     }
 }
 
