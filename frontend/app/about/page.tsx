@@ -16,7 +16,7 @@ const contributors = [
     {
         imagePath: "/omar.jpg",
         name: "Omar Mesquita",
-        text: "is the developer and administrator of the Nanocalc project website. He currently studies Computer Science at PUC-RIO. You can contact him at his my email address or social networks :)"
+        text: "is the developer and administrator of the Nanocalc project website. He currently studies Computer Science at PUC-RIO. You can contact him at his email address or social networks :)"
     },
     {
         imagePath: "/jose.jpeg",
