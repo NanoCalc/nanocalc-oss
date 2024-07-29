@@ -12,6 +12,6 @@ const tmmsimConfig = nanocalcApps["TMM-Sim"]
 
 export default function Tmmsim() {
   return (
-   <NanocalcApp appLogoPath={tmmsimConfig.appLogoPath} appName={tmmsimConfig.appName}/>
+    <NanocalcApp appLogoPath={tmmsimConfig.appLogoPath} appName={tmmsimConfig.appName} />
   );
 }

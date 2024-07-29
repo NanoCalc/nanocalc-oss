@@ -12,6 +12,6 @@ const ricalcConfig = nanocalcApps["RI-Calc"]
 
 export default function Ricalc() {
   return (
-   <NanocalcApp appLogoPath={ricalcConfig.appLogoPath} appName={ricalcConfig.appName}/>
+    <NanocalcApp appLogoPath={ricalcConfig.appLogoPath} appName={ricalcConfig.appName} />
   );
 }

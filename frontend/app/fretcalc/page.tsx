@@ -11,6 +11,6 @@ const fretcalcConfig = nanocalcApps["FRET-Calc"]
 
 export default function Fretcalc() {
   return (
-   <NanocalcApp appLogoPath={fretcalcConfig.appLogoPath} appName={fretcalcConfig.appName}/>
+    <NanocalcApp appLogoPath={fretcalcConfig.appLogoPath} appName={fretcalcConfig.appName} />
   );
 }

@@ -12,6 +12,6 @@ const plqsimConfig = nanocalcApps["PLQ-Sim"]
 
 export default function Plqsim() {
   return (
-   <NanocalcApp appLogoPath={plqsimConfig.appLogoPath} appName={plqsimConfig.appName}/>
+    <NanocalcApp appLogoPath={plqsimConfig.appLogoPath} appName={plqsimConfig.appName} />
   );
 }

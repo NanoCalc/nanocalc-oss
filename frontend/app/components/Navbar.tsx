@@ -15,7 +15,7 @@ export default function Navbar() {
     };
 
     const handleClickOutsideNavbar = (event) => {
-	// touch/clicks that are not in the navbar cause it to collapse 
+        // touch/clicks that are not in the navbar cause it to collapse 
         if (navbarRef.current && !navbarRef.current.contains(event.target)) {
             setIsOpen(false);
         }
@@ -36,7 +36,7 @@ export default function Navbar() {
                     </button>
                 </div>
             </div>
-	      <ul className={`collapsible ${isOpen ? 'open' : ''} md:flex md:space-x-4 flex-col md:flex-row`}>            
+            <ul className={`collapsible ${isOpen ? 'open' : ''} md:flex md:space-x-4 flex-col md:flex-row`}>
                 <li onClick={handleLinkClick}>
                     <Link href="/">
                         Home
