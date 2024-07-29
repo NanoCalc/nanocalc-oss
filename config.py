@@ -17,7 +17,7 @@ class Config:
     SQLALCHEMY_DATABASE_URI  = 'sqlite:///visitors.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-
+#TODO: check this config
 class TestConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
     UPLOAD_FOLDER = 'app/upload'
