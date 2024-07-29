@@ -8,7 +8,7 @@ from functools import wraps
 from flask import request
 from user_agents import parse
 import pygeoip
-
+from werkzeug.utils import secure_filename
 
 def allowed_file(filename, ext):
     """
@@ -17,7 +17,7 @@ def allowed_file(filename, ext):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ext
 
 
-def save_file_with_uuid(directory, file, extension):
+def save_file_with_uuid(directory, file):
     """
     Save a file with a UUID-based name and return its path
     """
@@ -25,7 +25,8 @@ def save_file_with_uuid(directory, file, extension):
         logging.warning(f"Directory {directory} does not exist. Creating it.")
         os.makedirs(directory)
 
-    filename = f"{uuid.uuid4()}.{extension}"
+    sanitized_filename = secure_filename(file.filename)
+    filename = f"{uuid.uuid4()}_{sanitized_filename}"
     filepath = os.path.join(directory, filename)
     file.save(filepath)
     return filepath
@@ -35,6 +36,9 @@ def generate_zip(path, webapp, upload_folder):
     """
     Generate a zip file from a directory and return its name
     """
+    zip_dir = os.path.join(upload_folder, webapp)
+    os.makedirs(zip_dir, exist_ok=True)
+    
     zip_file_name = f"{uuid.uuid4()}-generated-data.zip"
     zip_file_path = os.path.join(upload_folder, webapp, zip_file_name)
     with zipfile.ZipFile(zip_file_path, mode="w") as z:
