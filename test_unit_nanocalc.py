@@ -15,14 +15,18 @@ class TestHelperFunctions(unittest.TestCase):
 
 
     @mock.patch('uuid.uuid4')
-    def test_save_file_with_uuid(self, mock_uuid4):
-        mock_uuid4.return_value = uuid.UUID('d'*32)  
+    @mock.patch('werkzeug.utils.secure_filename')
+    def test_save_file_with_uuid(self, mock_secure_filename, mock_uuid4):
+        mock_uuid4.return_value = uuid.UUID('d'*32)
+        legitFilename = 'testfile.txt'
+        mock_secure_filename.return_value = legitFilename
 
         with tempfile.TemporaryDirectory() as tmpdirname:
             file_mock = mock.MagicMock()
-            filepath = save_file_with_uuid(tmpdirname, file_mock, 'txt')
+            file_mock.filename = legitFilename
+            filepath = save_file_with_uuid(tmpdirname, file_mock)
 
-            expected_path = os.path.join(tmpdirname, "dddddddd-dddd-dddd-dddd-dddddddddddd.txt")
+            expected_path = os.path.join(tmpdirname, f"dddddddd-dddd-dddd-dddd-dddddddddddd_{legitFilename}")
             self.assertEqual(filepath, expected_path)
 
             file_mock.save.assert_called_once_with(expected_path)
@@ -30,7 +34,10 @@ class TestHelperFunctions(unittest.TestCase):
 
     @mock.patch('uuid.uuid4')
     def test_generate_zip(self, mock_uuid4):
-        with tempfile.TemporaryDirectory() as tmpdirname:
+        mock_uuid4.return_value = uuid.UUID('d'*32)
+
+        with tempfile.TemporaryDirectory() as tmpdirname, tempfile.TemporaryDirectory() as upload_tmpdirname:
+            TestConfig.UPLOAD_FOLDER = upload_tmpdirname
             with open(os.path.join(tmpdirname, "dummy.txt"), 'w') as f:
                 f.write("Hello World")
 
