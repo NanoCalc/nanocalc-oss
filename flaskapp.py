@@ -69,7 +69,7 @@ def fret_calc_submit():
         files = request.files.getlist("xif") 
         for file in files:
             if allowed_file(file.filename,['xlsx']):
-                xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'index_files'), file, 'xlsx')
+                xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'index_files'), file)
                 filesList.append(xif)
             else:
                 upload_error = UploadError("file_type", "index file", "xlsx", "fret")
@@ -78,7 +78,7 @@ def fret_calc_submit():
         files = request.files.getlist("ef")
         for file in files:
             if allowed_file(file.filename,['dat']):
-                ef = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'emission_files'), file, 'dat')
+                ef = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'emission_files'), file)
                 filesList.append(ef)
             else:
                 upload_error = UploadError("file_type", "emission file", "dat", "fret")
@@ -87,7 +87,7 @@ def fret_calc_submit():
         files = request.files.getlist("rfi")
         for file in files: 
             if allowed_file(file.filename,['dat']):
-                rfi = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'refractive_index_files'), file, 'dat')
+                rfi = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'refractive_index_files'), file)
                 filesList.append(rfi)
             else:
                 upload_error = UploadError("file_type", "refractive index file", "dat", "fret")
@@ -96,7 +96,7 @@ def fret_calc_submit():
         files = request.files.getlist("ecf")
         for file in files: 
             if allowed_file(file.filename,['dat']):
-                ecf = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'extinction_coefficient_files'), file, 'dat')
+                ecf = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'extinction_coefficient_files'), file)
                 filesList.append(ecf)
             else:
                 upload_error = UploadError("file_type", "extinction coefficient file", "dat", "fret")
@@ -128,7 +128,7 @@ def ri_calc_submit():
             files = request.files.getlist("xif")
             for file in files:
                 if allowed_file(file.filename,['xlsx']):
-                    xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'index_files'), file, 'xlsx')
+                    xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'index_files'), file)
                     filesList.append(xif)
                 else:
                     upload_error = UploadError("file_type", "index file", "xlsx", "ricalc")
@@ -137,7 +137,7 @@ def ri_calc_submit():
             files = request.files.getlist("dacf")
             for file in files:
                 if allowed_file(file.filename,['dat']):
-                    dacf = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'abs_coefficient_files'), file, 'dat')
+                    dacf = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'abs_coefficient_files'), file)
                     filesList.append(dacf)
                 else:
                     upload_error = UploadError("file_type", "absorption coefficient file", "dat", "ricalc")
@@ -151,7 +151,7 @@ def ri_calc_submit():
             files = request.files.getlist("xif")
             for file in files:
                 if allowed_file(file.filename,['xlsx']):
-                    xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'index_files'), file, 'xlsx')
+                    xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'index_files'), file)
                     filesList.append(xif)
                 else:
                     upload_error = UploadError("file_type", "index file", "xlsx", "ricalc")
@@ -160,7 +160,7 @@ def ri_calc_submit():
             files = request.files.getlist("kf")
             for file in files:
                 if allowed_file(file.filename,['dat']):
-                    kf = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'k_files'), file, 'dat')
+                    kf = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'ri', 'k_files'), file)
                     filesList.append(kf)
                 else:
                     upload_error = UploadError("file_type", "K file", "dat", "ricalc")
@@ -189,7 +189,7 @@ def plq_sim_submit():
         index_file = request.files.getlist("xif")
         for file in index_file:
             if allowed_file(file.filename,['xlsx']):
-                xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'plqsim', 'input_files'), file, 'xlsx')
+                xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'plqsim', 'input_files'), file)
             else:
                 upload_error = UploadError("file_type", "index file", "xlsx", "plqsim")
                 return render_template("input_error.html", data=upload_error.to_dict())
@@ -229,7 +229,7 @@ def tmm_sim_submit():
         xif = request.files["xif"]
 
         if xif and allowed_file(xif.filename, ['xlsx']):
-            xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim' ,'input_files'), xif, 'xlsx')
+            xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim' ,'input_files'), xif)
         else:
             upload_error = UploadError("file_type", "index file", "xlsx", "tmmsim")
             return render_template("input_error.html", data=upload_error.to_dict())
