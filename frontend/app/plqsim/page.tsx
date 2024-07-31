@@ -2,10 +2,10 @@ import { Metadata } from 'next';
 import NanocalcApp from '../components/NanocalcApp'
 import nanocalcApps from '../lib/nanocalc_apps';
 
-//TODO: add metadata description
+
 export const metadata: Metadata = {
   title: "PLQ-Sim | Nanocalc",
-  description: "",
+  description: "Photoluminescence Quenching Simulator",
 };
 
 const plqsimConfig = nanocalcApps["PLQ-Sim"]

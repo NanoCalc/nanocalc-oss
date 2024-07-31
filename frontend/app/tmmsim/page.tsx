@@ -2,10 +2,10 @@ import { Metadata } from 'next';
 import NanocalcApp from '../components/NanocalcApp'
 import nanocalcApps from '../lib/nanocalc_apps';
 
-//TODO: add metadata description
+
 export const metadata: Metadata = {
   title: "TMM-Sim | Nanocalc",
-  description: "",
+  description: "Transfer Matrix Method Simulator",
 };
 
 const tmmsimConfig = nanocalcApps["TMM-Sim"]
