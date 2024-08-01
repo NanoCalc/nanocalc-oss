@@ -1,6 +1,8 @@
+import { ContributorConfig } from '../lib/model/ContributorConfig';
+
 export const contributorsPath = "/contributors/"
 
-const contributors = [
+const contributors: ContributorConfig[] = [
     {
         imagePath: `${contributorsPath}graziani.jpg`,
         name: "Graziani Candiotto",

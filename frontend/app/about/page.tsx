@@ -10,14 +10,7 @@ export const metadata: Metadata = {
 export default function About() {
     return (
         <main className="flex min-h-screen flex-col items-center justify-between">
-            {contributors.map((contributor, index) => (
-                <Contributor
-                    key={index}
-                    imagePath={contributor.imagePath}
-                    name={contributor.name}
-                    text={contributor.text}
-                />
-            ))}
+            {Contributor(contributors)}
         </main>
     );
 }
