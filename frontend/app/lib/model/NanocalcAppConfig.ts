@@ -1,4 +1,4 @@
-interface BaseAppConfig {
+export interface BaseAppConfig {
     appLogoPath: string,
     appName: string,
     buttons: AppButton[],

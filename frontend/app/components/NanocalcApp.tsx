@@ -1,10 +1,10 @@
 import Image from 'next/image'
-import { NanocalcAppConfig } from '../lib/model/NanocalcAppConfig';
+import { BaseAppConfig } from '../lib/model/NanocalcAppConfig';
 import CommonLogos from './CommonLogos';
 import commonLogos from '../lib/common_logos';
 
 interface NanocalcAppProps {
-  config: NanocalcAppConfig;
+  config: BaseAppConfig;
 }
 
 export default function NanocalcApp({ config }: NanocalcAppProps) {
