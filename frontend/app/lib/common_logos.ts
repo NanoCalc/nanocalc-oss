@@ -1,8 +1,9 @@
+import { CommonLogoConfig } from "./model/CommonLogoConfig"
+
 const logosPath = "/common_logos/"
 
 // Array - O(n) lookup
-// conforms to CommonLogoConfig
-const commonLogos = [
+const commonLogos: CommonLogoConfig[] = [
     {
         appLogoPath: `${logosPath}dine.png`,
         width: 195,

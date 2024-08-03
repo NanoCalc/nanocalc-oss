@@ -2,6 +2,7 @@ import { NanocalcAppConfig } from "./model/NanocalcAppConfig";
 
 const logosPath = "/nanocalc_apps_logos/";
 
+// Hash table - O(1) lookup
 const nanocalcApps: NanocalcAppConfig = {
     "FRET-Calc": {
         appLogoPath: `${logosPath}fretcalc_logo.svg`,
