@@ -9,7 +9,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-	      "nanocalc-blue": "#403E90"
+	      "nanocalc-blue": "#403E90",
+        "nanocalc-apps": "#A7CDA6",
+        "nanocalc-apps-button": "#3D7148"
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

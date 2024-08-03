@@ -25,7 +25,7 @@ const nanocalcApps: NanocalcAppConfig = {
                 expectedExtension: "dat",
             },
             {
-                text: "Click to calculate",
+                text: "Calculate",
                 isCalculate: true
             }
         ]
@@ -47,11 +47,11 @@ const nanocalcApps: NanocalcAppConfig = {
                 expectedExtension: "dat"
             },
             {
-                text: "Click to calculate optical constants",
+                text: "Calculate optical constants",
                 isCalculate: true
             },
             {
-                text: "Click to calculate n",
+                text: "Calculate n",
                 isCalculate: true
             }
         ]
@@ -65,11 +65,11 @@ const nanocalcApps: NanocalcAppConfig = {
                 expectedExtension: "xlsx"
             },
             {
-                text: "Click to calculate Donor Excitation",
+                text: "Calculate Donor Excitation",
                 isCalculate: true
             },
             {
-                text: "Click to calculate Acceptor Excitation",
+                text: "Calculate Acceptor Excitation",
                 isCalculate: true
             }
         ]
