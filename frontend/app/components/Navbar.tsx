@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
-    const navbarRef = useRef(null);
+    const navbarRef = useRef<HTMLElement>(null);
 
     const handleToggle = () => {
         setIsOpen(!isOpen);
@@ -14,9 +14,9 @@ export default function Navbar() {
         setIsOpen(false);
     };
 
-    const handleClickOutsideNavbar = (event) => {
-        // touch/clicks that are not in the navbar cause it to collapse 
-        if (navbarRef.current && !navbarRef.current.contains(event.target)) {
+    const handleClickOutsideNavbar = (event: MouseEvent | TouchEvent) => {
+        // touch/clicks that are not in the navbar cause it to collapse
+        if (navbarRef.current && event.target instanceof Node && !navbarRef.current.contains(event.target)) {
             setIsOpen(false);
         }
     };
