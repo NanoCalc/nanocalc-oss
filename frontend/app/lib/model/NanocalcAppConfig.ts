@@ -15,7 +15,7 @@ interface CalculateButton extends BaseButton {
     expectedExtension?: string;
 }
 
-interface RegularButton extends BaseButton {
+export interface RegularButton extends BaseButton {
     isCalculate?: false;
     expectedExtension: string;
 }
