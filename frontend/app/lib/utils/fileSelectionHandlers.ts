@@ -1,4 +1,4 @@
-import { RegularButton } from "./model/NanocalcAppConfig";
+import { RegularButton } from "../model/NanocalcAppConfig";
 
 const VPS_API_ENDPOINT = ""
 

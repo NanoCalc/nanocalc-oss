@@ -5,8 +5,8 @@ import { BaseAppConfig } from '../lib/model/NanocalcAppConfig';
 import CommonLogos from './CommonLogos';
 import commonLogos from '../lib/common_logos';
 import { RegularButton } from "../lib/model/NanocalcAppConfig";
-import { handleRegularButtonClick } from '../lib/fileSelectionHandlers';
-import { handleCalculateButtonClick } from '../lib/fileSelectionHandlers';
+import { handleRegularButtonClick } from '../lib/utils/fileSelectionHandlers';
+import { handleCalculateButtonClick } from '../lib/utils/fileSelectionHandlers';
 
 interface NanocalcAppProps {
 	config: BaseAppConfig;
