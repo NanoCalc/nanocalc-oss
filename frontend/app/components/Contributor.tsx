@@ -2,7 +2,11 @@ import Image from 'next/image'
 import { ContributorConfig } from '../lib/model/ContributorConfig';
 import { Fragment } from 'react';
 
-export default function Contributor(contributors: ContributorConfig[]) {
+interface ContributorProps {
+    contributors: ContributorConfig[]
+}
+
+export default function Contributor({ contributors }: ContributorProps) {
     return (
         <section className="w-full h-screen flex flex-col items-center">
             {contributors.map((contributor, index) => (
