@@ -3,7 +3,11 @@ import { CommonLogoConfig } from '../lib/model/CommonLogoConfig'
 
 const groupFigureAriaLabel = "Logos of associated universities with the project"
 
-export default function CommonLogos({ logos }: { logos: CommonLogoConfig[] }) {
+interface CommonLogosProps {
+    logos: CommonLogoConfig[]
+}
+
+export default function CommonLogos({ logos }: CommonLogosProps) {
     const groupedLogos = logos.filter(logo => logo.shouldGroup);
     const ungroupedLogos = logos.filter(logo => !logo.shouldGroup);
 
