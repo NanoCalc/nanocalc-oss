@@ -77,7 +77,21 @@ const nanocalcApps: NanocalcAppConfig = {
     "TMM-Sim": {
         appLogoPath: `${logosPath}tmmsim_logo.svg`,
         appName: "TMM-Sim",
-        buttons: []
+        buttons: [
+            {
+                text: "Input file (.xlsx)",
+                expectedExtension: "xlsx",
+            },
+            {
+                text: "up to 10 layer files (.csv)",
+                expectedExtension: "csv",
+                allowMultiple: true
+            },
+            {
+                text: "Calculate",
+                isCalculate: true
+            }
+        ]
     }
 };
 
