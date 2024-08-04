@@ -2,8 +2,6 @@ import { ContributorConfig } from '../lib/model/ContributorConfig';
 
 const contributorsPath = "/contributors/"
 
-//TODO: my lattes
-
 // Array - O(n) lookup
 const contributors: ContributorConfig[] = [
     {
@@ -26,6 +24,7 @@ const contributors: ContributorConfig[] = [
         imagePath: `${contributorsPath}omar.jpg`,
         name: "Omar Mesquita",
         text: "is the developer and administrator of the Nanocalc project website. He currently studies Computer Science at PUC-RIO. You can contact him at his email address or social networks :)",
+        lattes: "https://lattes.cnpq.br/4555122711141650",
         github: "https://github.com/OmarMesqq",
         orcid: "https://orcid.org/0000-0002-6656-5683",
         linkedin: "https://www.linkedin.com/in/omar-mesquita/"
