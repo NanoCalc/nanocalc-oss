@@ -33,7 +33,7 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 							>
 								Choose {button.text}
 							</button>
-							<input type="file" id={`regularButtonInput${index}`} style={{ display: 'none' }} />
+							<input type="file" id={`regularButtonInput${index}`} multiple={button.allowMultiple} style={{ display: 'none' }} />
 						</div>
 					))}
 
