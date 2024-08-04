@@ -30,6 +30,7 @@ const nanocalcApps: NanocalcAppConfig = {
             }
         ],
         articleBanner: {
+            title: "FRET-Calc: A free software and web server for Förster Resonance Energy Transfer Calculation",
             doi: "https://doi.org/10.1016/j.cpc.2023.108715",
             sampleData: "https://github.com/NanoCalc/FRETCalc/releases/download/FRETCalc-1.0-alpha/data-sample.zip",
             spectralData: "https://github.com/NanoCalc/FRETCalc/releases/download/FRETCalc-1.0-alpha/spectral-data.zip",
@@ -62,6 +63,7 @@ const nanocalcApps: NanocalcAppConfig = {
             }
         ],
         articleBanner: {
+            title: "RI-Calc: A user friendly software and web server for refractive index calculation",
             doi: "https://doi.org/10.1016/j.cpc.2024.109100",
             sampleData: "https://github.com/NanoCalc/RICalc/releases/download/3.0-beta/data_sample.zip",
             spectralData: "https://github.com/NanoCalc/RICalc/releases/download/3.0-beta/spectral-data.zip",
@@ -86,6 +88,7 @@ const nanocalcApps: NanocalcAppConfig = {
             }
         ],
         articleBanner: {
+            title: "PLQ-sim: A computational tool for simulating photoluminescence quenching dynamics in organic donor/acceptor blends",
             doi: "https://doi.org/10.1016/j.cpc.2023.109015",
             sampleData: "https://github.com/NanoCalc/PLQ-Sim/releases/download/1.0-beta/data-sample.zip",
             binaries: "https://github.com/NanoCalc/PLQ-Sim/releases"
@@ -110,6 +113,7 @@ const nanocalcApps: NanocalcAppConfig = {
             }
         ],
         articleBanner: {
+            title: "TMM-Sim: A versatile tool for optical simulation of thin-film solar cells",
             doi: "https://doi.org/10.1016/j.cpc.2024.109206",
             sampleData: "https://github.com/NanoCalc/TMM-Sim/releases/download/v1.0/spectral-data.zip",
             binaries: "https://github.com/NanoCalc/TMM-Sim/releases"

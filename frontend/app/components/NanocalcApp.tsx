@@ -7,41 +7,43 @@ import commonLogos from '../lib/common_logos';
 import { RegularButton } from "../lib/model/NanocalcAppConfig";
 import { handleRegularButtonClick } from '../lib/utils/fileSelectionHandlers';
 import { handleCalculateButtonClick } from '../lib/utils/fileSelectionHandlers';
+import ArticleBanner from './ArticleBanner';
 
 interface NanocalcAppProps {
 	config: BaseAppConfig;
 }
 
 export default function NanocalcApp({ config }: NanocalcAppProps) {
-	const regularButtons: RegularButton[]= config.buttons.filter(button => button.isCalculate !== true);
+	const regularButtons: RegularButton[] = config.buttons.filter(button => button.isCalculate !== true);
 	const calculateButtons = config.buttons.filter(button => button.isCalculate === true);
+	const articleBanner = config.articleBanner;
 
 	return (
 		<main className="flex min-h-screen flex-col justify-between items-center">
-			<section className="w-full h-screen flex items-center justify-center bg-nanocalc-apps">
-				<div className="flex-1 flex flex-col items-center justify-center">
+			<section className="w-full h-screen flex flex-col items-center justify-center bg-nanocalc-apps">
+				<div className="flex flex-col items-center justify-center space-y-4">
 					{regularButtons.map((button, index) => (
 						<div
 							key={index}
-							className="m-1 rounded-md bg-nanocalc-apps-button flex justify-between items-center space-x-4"
+							className="m-1 rounded-md bg-nanocalc-apps-button flex justify-between items-center space-x-4 w-full max-w-md"
 						>
 							<button
-								className="text-white font-bold py-2 px-4 rounded"
+								className="text-white font-bold py-2 px-4 rounded w-full"
 								onClick={() => handleRegularButtonClick(index)}
 							>
 								Choose {button.text}
 							</button>
-							<input type="file" id={`regularButtonInput${index}`} style={{ display: 'none' }}/>
+							<input type="file" id={`regularButtonInput${index}`} style={{ display: 'none' }} />
 						</div>
 					))}
 
 					{calculateButtons.map((button, index) => (
 						<div
 							key={index}
-							className="m-1 rounded-md bg-nanocalc-apps-button flex justify-between items-center space-x-4"
+							className="m-1 rounded-md bg-nanocalc-apps-button flex justify-between items-center space-x-4 w-full max-w-md"
 						>
 							<button
-								className="text-white font-bold py-2 px-4 rounded"
+								className="text-white font-bold py-2 px-4 rounded w-full"
 								onClick={() => handleCalculateButtonClick(regularButtons)}
 							>
 								{button.text}
@@ -50,7 +52,12 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 						</div>
 					))}
 				</div>
+
+				<div className="flex flex-col items-center justify-center mt-8 w-full max-w-md px-4">
+					<ArticleBanner config={articleBanner} />
+				</div>
 			</section>
+
 
 
 			<section className="w-full h-screen flex flex-col items-center">

@@ -5,7 +5,8 @@ export interface BaseAppConfig {
     articleBanner: ArticleBannerConfig
 }
 
-interface ArticleBannerConfig {
+export interface ArticleBannerConfig {
+    title: string,
     doi: string,
     sampleData: string,
     spectralData?: string,
