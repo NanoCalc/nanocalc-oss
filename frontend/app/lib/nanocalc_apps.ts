@@ -28,7 +28,13 @@ const nanocalcApps: NanocalcAppConfig = {
                 text: "Calculate",
                 isCalculate: true
             }
-        ]
+        ],
+        articleBanner: {
+            doi: "https://doi.org/10.1016/j.cpc.2023.108715",
+            sampleData: "https://github.com/NanoCalc/FRETCalc/releases/download/FRETCalc-1.0-alpha/data-sample.zip",
+            spectralData: "https://github.com/NanoCalc/FRETCalc/releases/download/FRETCalc-1.0-alpha/spectral-data.zip",
+            binaries: "https://github.com/NanoCalc/FRETCalc/releases"
+        }
     },
     "RI-Calc": {
         appLogoPath: `${logosPath}ricalc_logo.svg`,
@@ -54,7 +60,13 @@ const nanocalcApps: NanocalcAppConfig = {
                 text: "Calculate n",
                 isCalculate: true
             }
-        ]
+        ],
+        articleBanner: {
+            doi: "https://doi.org/10.1016/j.cpc.2024.109100",
+            sampleData: "https://github.com/NanoCalc/RICalc/releases/download/3.0-beta/data_sample.zip",
+            spectralData: "https://github.com/NanoCalc/RICalc/releases/download/3.0-beta/spectral-data.zip",
+            binaries: "https://github.com/NanoCalc/RICalc/releases"
+        }
     },
     "PLQ-Sim": {
         appLogoPath: `${logosPath}plqsim_logo.svg`,
@@ -72,7 +84,12 @@ const nanocalcApps: NanocalcAppConfig = {
                 text: "Calculate Acceptor Excitation",
                 isCalculate: true
             }
-        ]
+        ],
+        articleBanner: {
+            doi: "https://doi.org/10.1016/j.cpc.2023.109015",
+            sampleData: "https://github.com/NanoCalc/PLQ-Sim/releases/download/1.0-beta/data-sample.zip",
+            binaries: "https://github.com/NanoCalc/PLQ-Sim/releases"
+        }
     },
     "TMM-Sim": {
         appLogoPath: `${logosPath}tmmsim_logo.svg`,
@@ -91,7 +108,12 @@ const nanocalcApps: NanocalcAppConfig = {
                 text: "Calculate",
                 isCalculate: true
             }
-        ]
+        ],
+        articleBanner: {
+            doi: "https://doi.org/10.1016/j.cpc.2024.109206",
+            sampleData: "https://github.com/NanoCalc/TMM-Sim/releases/download/v1.0/spectral-data.zip",
+            binaries: "https://github.com/NanoCalc/TMM-Sim/releases"
+        }
     }
 };
 

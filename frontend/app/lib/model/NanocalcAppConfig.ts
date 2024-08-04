@@ -2,6 +2,14 @@ export interface BaseAppConfig {
     appLogoPath: string,
     appName: string,
     buttons: AppButton[],
+    articleBanner: ArticleBannerConfig
+}
+
+interface ArticleBannerConfig {
+    doi: string,
+    sampleData: string,
+    spectralData?: string,
+    binaries: string
 }
 
 interface BaseButton {
