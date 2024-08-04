@@ -21,7 +21,7 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 	return (
 		<main className="flex min-h-screen flex-col justify-between items-center">
 			<section className="w-full h-screen flex flex-col items-center justify-center bg-nanocalc-apps">
-				<div className="flex flex-col items-center justify-center space-y-4">
+				<div className="flex flex-col items-center justify-center space-y-4 ml-2 mr-2">
 					{regularButtons.map((button, index) => (
 						<div
 							key={index}
