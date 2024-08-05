@@ -26,8 +26,8 @@ export default function EuConverter({ units }: EnergyUnitsArrayProps) {
             clearTimeout(debounceTimer);
         }
 
-        // only allow digits, commas and dots to be entered
-        if (!/^[\d,.]*$/.test(value)) {
+        // only allow digits and a single comma/dot
+        if (!/^\d*([.,]\d*)?$/.test(value)) {
             return;
         }
 
