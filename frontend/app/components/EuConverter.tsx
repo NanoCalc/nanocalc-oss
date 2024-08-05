@@ -42,6 +42,15 @@ export default function EuConverter({ units }: EnergyUnitsArrayProps) {
 
             let sourceConversionFactor = conversion_factors_to_eV[activeUnit];
             if (typeof (sourceConversionFactor) === 'function') {
+                if (realInput === 0) {
+                    units.forEach((unit) => {
+                        if (unit !== activeUnit) {
+                            results[unit] = "Wavelength cannot be zero"
+                        }
+                    })
+                    setConversionResults(results);
+                    return
+                }
                 sourceConversionFactor = sourceConversionFactor(realInput);
             }
             const valueInEV = sourceConversionFactor * realInput;
@@ -57,7 +66,7 @@ export default function EuConverter({ units }: EnergyUnitsArrayProps) {
                 }
             });
             setConversionResults(results);
-        }, 300);
+        }, 350);
 
         setDebounceTimer(newTimer);
     }, [debounceTimer]);
