@@ -18,7 +18,8 @@ export default function EuConverter({ units }: EnergyUnitsArrayProps) {
         setActiveUnit(activeUnit);
         console.log(`Current active unit: ${activeUnit}`);
 
-        const realInput = parseFloat(value);
+        const normalizedInput = value.replace(',', '.')
+        const realInput = parseFloat(normalizedInput);
         if (isNaN(realInput)) {
             console.error(`realInput: ${realInput} is NaN!`);
             setConversionResults({});
