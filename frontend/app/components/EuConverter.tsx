@@ -11,6 +11,16 @@ export default function EuConverter({ units }: EnergyUnitsArrayProps) {
     const [conversionResults, setConversionResults] = useState<Record<string, string>>({});
     const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null);
 
+    // displays a warning message in all input fields except the current active one when user input is invalid
+    const warnInvalidInput = (units: EnergyUnits[], activeUnit: EnergyUnits, results: Record<string, string> ,message: string) => {
+        units.forEach((unit) => {
+            if (unit !== activeUnit) {
+                results[unit] = message
+            }
+        })
+        setConversionResults(results);
+    }
+
     const handleInputChange = useCallback((value: string, activeUnit: EnergyUnits) => {
         if (debounceTimer) {
             clearTimeout(debounceTimer);
@@ -43,12 +53,7 @@ export default function EuConverter({ units }: EnergyUnitsArrayProps) {
             let sourceConversionFactor = conversion_factors_to_eV[activeUnit];
             if (typeof (sourceConversionFactor) === 'function') {
                 if (realInput === 0) {
-                    units.forEach((unit) => {
-                        if (unit !== activeUnit) {
-                            results[unit] = "Wavelength cannot be zero"
-                        }
-                    })
-                    setConversionResults(results);
+                    warnInvalidInput(units, activeUnit, results, "Wavelength cannot be zero")
                     return
                 }
                 sourceConversionFactor = sourceConversionFactor(realInput);
