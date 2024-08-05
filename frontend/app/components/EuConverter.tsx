@@ -26,8 +26,8 @@ export default function EuConverter({ units }: EnergyUnitsArrayProps) {
             clearTimeout(debounceTimer);
         }
 
-        if (!value.trim()) {
-            setConversionResults({});
+        // only allow digits, commas and dots to be entered
+        if (!/^[\d,.]*$/.test(value)) {
             return;
         }
 
@@ -35,6 +35,8 @@ export default function EuConverter({ units }: EnergyUnitsArrayProps) {
         const realInput = parseFloat(normalizedInput);
 
         let immediateResults: Record<string, string> = {};
+        
+        // checks numerical entry does indeed form a number
         if (!isNaN(realInput)) {
             immediateResults[activeUnit] = value;
         }
