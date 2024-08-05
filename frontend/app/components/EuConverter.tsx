@@ -1,30 +1,31 @@
 'use client'
-import { EnergyUnits } from "../lib/utils/euConverter";
 import { useState } from "react";
-import { conversion_factors_from_eV, conversion_factors_to_eV } from "../lib/utils/euConverter";
+import { EnergyUnits, conversion_factors_from_eV, conversion_factors_to_eV } from "../lib/utils/euConverter";
 
 interface EnergyUnitsArrayProps {
-    units: EnergyUnits[]
+    units: EnergyUnits[];
 }
-
 
 export default function EuConverter({ units }: EnergyUnitsArrayProps) {
     const [activeUnit, setActiveUnit] = useState('');
+    const [conversionResults, setConversionResults] = useState<Record<string, string>>({});
 
     const handleInputChange = (value: string, activeUnit: EnergyUnits) => {
         if (!value.trim()) {
+            setConversionResults({});
             return;
         }
         setActiveUnit(activeUnit);
         console.log(`Current active unit: ${activeUnit}`);
 
-        const realInput = parseFloat(value)
+        const realInput = parseFloat(value);
         if (isNaN(realInput)) {
             console.error(`realInput: ${realInput} is NaN!`);
+            setConversionResults({});
             return;
         }
 
-        // Convert the input value to eV - intermediary value - using the active unit's to eV conversion factor
+        const results: Record<string, string> = {};
         let sourceConversionFactor = conversion_factors_to_eV[activeUnit];
         if (typeof (sourceConversionFactor) === 'function') {
             sourceConversionFactor = sourceConversionFactor(realInput);
@@ -38,9 +39,13 @@ export default function EuConverter({ units }: EnergyUnitsArrayProps) {
                     targetConversionFactor = targetConversionFactor(valueInEV);
                 }
                 const finalValue = targetConversionFactor * valueInEV;
-                console.log(`Original value ${realInput} in ${activeUnit} is equal to ${finalValue} in ${unit}`);
+                results[unit] = finalValue.toFixed(10);
+            }
+            else {
+                results[unit] = value
             }
         });
+        setConversionResults(results);
     };
 
     return (
@@ -48,8 +53,7 @@ export default function EuConverter({ units }: EnergyUnitsArrayProps) {
             {units.map((unit, index) => (
                 <div
                     key={index}
-                    className={`p-2 m-2 border rounded-lg shadow flex justify-between items-center ${activeUnit === unit ? 'active' : 'inactive'
-                        }`}
+                    className={`p-2 m-2 border rounded-lg shadow flex justify-between items-center ${activeUnit === unit ? 'active' : 'inactive'}`}
                     style={{
                         opacity: activeUnit && activeUnit !== unit ? 0.5 : 1,
                     }}
@@ -58,6 +62,7 @@ export default function EuConverter({ units }: EnergyUnitsArrayProps) {
                     <input
                         type="text"
                         className="border p-1 rounded text-black"
+                        value={conversionResults[unit] || ''}
                         onChange={(e) => handleInputChange(e.target.value, unit)}
                         placeholder={`Enter value in ${unit}`}
                     />
