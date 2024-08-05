@@ -1,5 +1,5 @@
 'use client'
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { EnergyUnits, conversion_factors_from_eV, conversion_factors_to_eV } from "../lib/utils/euConverter";
 
 interface EnergyUnitsArrayProps {
@@ -9,45 +9,60 @@ interface EnergyUnitsArrayProps {
 export default function EuConverter({ units }: EnergyUnitsArrayProps) {
     const [activeUnit, setActiveUnit] = useState('');
     const [conversionResults, setConversionResults] = useState<Record<string, string>>({});
+    const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null);
 
-    const handleInputChange = (value: string, activeUnit: EnergyUnits) => {
+    const handleInputChange = useCallback((value: string, activeUnit: EnergyUnits) => {
+        if (debounceTimer) {
+            clearTimeout(debounceTimer);
+        }
+
         if (!value.trim()) {
             setConversionResults({});
             return;
         }
-        setActiveUnit(activeUnit);
-        console.log(`Current active unit: ${activeUnit}`);
 
-        const normalizedInput = value.replace(',', '.')
+        const normalizedInput = value.replace(',', '.');
         const realInput = parseFloat(normalizedInput);
-        if (isNaN(realInput)) {
-            console.error(`realInput: ${realInput} is NaN!`);
-            setConversionResults({});
-            return;
-        }
 
-        const results: Record<string, string> = {};
-        let sourceConversionFactor = conversion_factors_to_eV[activeUnit];
-        if (typeof (sourceConversionFactor) === 'function') {
-            sourceConversionFactor = sourceConversionFactor(realInput);
+        let immediateResults: Record<string, string> = {};
+        if (!isNaN(realInput)) {
+            immediateResults[activeUnit] = value;
         }
-        const valueInEV = sourceConversionFactor * realInput;
+        setConversionResults(immediateResults);
 
-        units.forEach((unit) => {
-            if (unit !== activeUnit) {
-                let targetConversionFactor = conversion_factors_from_eV[unit];
-                if (typeof (targetConversionFactor) === 'function') {
-                    targetConversionFactor = targetConversionFactor(valueInEV);
+        const newTimer = setTimeout(() => {
+            let results: Record<string, string> = { ...immediateResults };
+
+            if (isNaN(realInput)) {
+                setConversionResults({});
+                return;
+            }
+
+            setActiveUnit(activeUnit);
+
+            let sourceConversionFactor = conversion_factors_to_eV[activeUnit];
+            if (typeof (sourceConversionFactor) === 'function') {
+                sourceConversionFactor = sourceConversionFactor(realInput);
+            }
+            const valueInEV = sourceConversionFactor * realInput;
+
+            units.forEach((unit) => {
+                if (unit !== activeUnit) {
+                    let targetConversionFactor = conversion_factors_from_eV[unit];
+                    if (typeof (targetConversionFactor) === 'function') {
+                        targetConversionFactor = targetConversionFactor(valueInEV);
+                    }
+                    const finalValue = targetConversionFactor * valueInEV;
+                    results[unit] = finalValue.toFixed(10);
                 }
-                const finalValue = targetConversionFactor * valueInEV;
-                results[unit] = finalValue.toFixed(10);
-            }
-            else {
-                results[unit] = value
-            }
-        });
-        setConversionResults(results);
-    };
+            });
+            setConversionResults(results);
+        }, 300);
+
+        setDebounceTimer(newTimer);
+    }, [debounceTimer]);
+
+
 
     const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>, unit: EnergyUnits) => {
         e.target.select()
