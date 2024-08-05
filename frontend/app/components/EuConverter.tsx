@@ -48,6 +48,11 @@ export default function EuConverter({ units }: EnergyUnitsArrayProps) {
         setConversionResults(results);
     };
 
+    const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>, unit: EnergyUnits) => {
+        e.target.select()
+        setActiveUnit(unit)
+    }
+
     return (
         <section className="w-full h-screen flex flex-col items-center p-5">
             {units.map((unit, index) => (
@@ -64,7 +69,7 @@ export default function EuConverter({ units }: EnergyUnitsArrayProps) {
                         className="border p-1 rounded text-black"
                         value={conversionResults[unit] || ''}
                         onChange={(e) => handleInputChange(e.target.value, unit)}
-                        onFocus={(e) => e.target.select()}
+                        onFocus={(e) => handleInputFocus(e, unit)}
                         placeholder={`Enter value in ${unit}`}
                     />
                 </div>
