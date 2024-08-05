@@ -9,7 +9,7 @@ interface ContributorProps {
 }
 
 const NetworksLinks = ({ contributor }: ContributorProps) => (
-    <div className="flex justify-center mt-2">
+    <div className="flex justify-center mt-2 p-3">
         {contributor.github && (
             <a href={contributor.github} target="_blank" rel="noopener noreferrer">
                 <Image src={`${networksLogosPath}github.svg`} alt="GitHub logo" width={24} height={24} className="mx-2" />
@@ -39,7 +39,7 @@ interface ContributorsProps {
 
 export default function Contributor({ contributors }: ContributorsProps) {
     return (
-        <section className="w-full h-screen flex flex-col items-center pb-8"> {/* Added pb-8 for padding-bottom */}
+        <section className="w-full h-screen flex flex-col items-center pb-8">
             {contributors.map((contributor, index) => (
                 <Fragment key={index}>
                     <Image
