@@ -27,7 +27,7 @@ const NetworksLinks = ({ contributor }: ContributorProps) => (
         )}
         {contributor.lattes && (
             <a href={contributor.lattes} target="_blank" rel="noopener noreferrer">
-                <Image src={`${networksLogosPath}lattes.svg`} alt="Lattes logo" width={24} height={24} className="mx-2" />
+                <Image src={`${networksLogosPath}lattes.svg`} alt="Lattes logo" width={24} height={24} className="mx-2 dark:bg-white dark:rounded-lg" />
             </a>
         )}
     </div>
