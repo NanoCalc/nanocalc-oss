@@ -64,6 +64,7 @@ export default function EuConverter({ units }: EnergyUnitsArrayProps) {
                         className="border p-1 rounded text-black"
                         value={conversionResults[unit] || ''}
                         onChange={(e) => handleInputChange(e.target.value, unit)}
+                        onFocus={(e) => e.target.select()}
                         placeholder={`Enter value in ${unit}`}
                     />
                 </div>
