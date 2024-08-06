@@ -86,7 +86,7 @@ export default function EuConverter({ units }: EnergyUnitsArrayProps) {
     }
 
     return (
-        <section className="w-full h-screen flex flex-col items-center p-5">
+        <section className="w-full h-screen flex flex-col items-center p-5 md:justify-center">
             {units.map((unit, index) => (
                 <div
                     key={index}
