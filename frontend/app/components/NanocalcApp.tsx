@@ -19,8 +19,8 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 	const articleBanner = config.articleBanner;
 
 	return (
-		<main className="flex min-h-screen flex-col justify-between items-center">
-			<section className="w-full h-screen flex flex-col items-center justify-center bg-nanocalc-apps">
+		<main className="flex min-h-screen flex-col md:flex-row justify-between items-center">
+			<section className="w-full h-screen flex flex-col md:w-1/2 items-center justify-center bg-nanocalc-apps">
 				<div className="flex flex-col items-center justify-center space-y-4 ml-2 mr-2">
 					{regularButtons.map((button, index) => (
 						<div
@@ -58,16 +58,14 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 				</div>
 			</section>
 
-
-
-			<section className="w-full h-screen flex flex-col items-center">
+			<section className="w-full h-screen flex flex-col md:w-1/2 items-center">
 				<Image
 					src={config.appLogoPath}
 					width={200}
 					height={200}
 					alt={`${config.appName} logo`}
 					priority={true}
-					className="mt-4 rounded-lg w-auto h-auto"
+					className="mt-4 md:mt-52 rounded-lg w-auto h-auto"
 				/>
 				<CommonLogos logos={commonLogos} />
 			</section>
