@@ -1,7 +1,6 @@
 # NanoCalc Open Source Repository
-![NanoCalc Logo](https://github.com/NanoCalc/nanocalc-oss/assets/34662089/ccfab544-a9ab-4043-bf98-251da4179e90)
 
-## Standard usage (Docker container):
+## Getting started:
 
 ### Build the image:
 ```shell 
@@ -25,31 +24,6 @@ docker run --rm -d --name nanocalc-container \
 -v $(pwd)/GeoIP.dat:/app/GeoIP.dat \
 -v $(pwd)/visitors.db:/app/visitors.db \
 nanocalc-image
-```
-
-## Direct usage (with Python virtual environment):
-
-### First, create a virtual environment and activate it:
-```shell
-python3 -m venv env
-source env/bin/activate
-```
-
-### Install project and test dependencies:
-```shell
-pip install -r requirements.txt
-pip install -r test_requirements.txt
-```
-
-### Setup local environment:
-
-```shell
-./setup_local_env.sh
-```
-
-### Start the server in debug mode:
-```shell
-DEBUG=True PORT=8080 UPLOAD_FOLDER="app/upload" python flaskapp.py
 ```
 
 ## Running tests:
