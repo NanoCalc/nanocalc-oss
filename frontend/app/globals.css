@@ -44,3 +44,10 @@ body {
 .collapsible.open {
   max-height: 500px;
 }
+
+@media (min-width: 768px) {
+  .collapsible {
+    max-height: none;
+    overflow: visible;
+  }
+}
