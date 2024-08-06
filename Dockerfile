@@ -3,7 +3,7 @@ FROM python:3-alpine
 LABEL maintainer="OmarMesqq" 
 LABEL contact="omarmsqt@gmail.com" 
 LABEL description="nanocalc.org Flask application"
-LABEL version = "1.0"
+LABEL version="1.0"
 
 EXPOSE 8080
 ENV PATH="/home/nanocalc/.local/bin:${PATH}"
@@ -45,5 +45,3 @@ RUN mkdir -p /app/upload/fret/emission_files \
 
 
 CMD ["python", "flaskapp.py"]
-
-
