@@ -10,7 +10,7 @@ import os
 import logging
 from flask_caching import Cache
 from waitress import serve
-from flask import Flask, request, url_for, send_from_directory, render_template
+from flask import Flask, request, url_for, send_from_directory, render_template, jsonify
 from werkzeug.utils import secure_filename
 
 
@@ -24,6 +24,13 @@ with app.app_context():
     db.create_all()
 UPLOAD_FOLDER = app.config['UPLOAD_FOLDER']
 
+
+formField = 'NANOCALC_USER_UPLOADED_FILES'
+
+def respond_client(message, code):
+    return jsonify({
+        'message': message
+    }), code
 
 # Client side caching
 @app.after_request
@@ -223,6 +230,17 @@ def tmm_sim_submit():
         logging.warning(f"Error in TMMSim: {e}")
         upload_error = UploadError("file_misformat", None, None, "tmmsim")
         return render_template("input_error.html", data=upload_error.to_dict())
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    requestFiles = request.files
+
+    if formField not in requestFiles:
+        return respond_client('emptyRequest', 400)
+    
+    files = [file for file in requestFiles.getlist(formField) if file.filename]
+    logging.info(f">>> uploaded files: {[file.filename for file in files]}")
+    return respond_client('Success!', 200)
 
 
 # Run the web app
