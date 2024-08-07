@@ -26,9 +26,7 @@ COPY flaskapp.py \
     helper_functions.py \
     /app/
 
-COPY static /app/static
-COPY templates /app/templates
-
+    
 RUN mkdir -p /app/upload/fret/emission_files \
     /app/upload/fret/extinction_coefficient_files \
     /app/upload/fret/index_files \
