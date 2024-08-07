@@ -39,25 +39,6 @@ def get_data(webapp, name):
     return send_from_directory(directory=uploads, path=name)
 
 
-# Main/Home view
-@app.route('/', methods = ['GET'])
-@log_vistor
-def welcome():
-    unique_ip_count = get_unique_sessions()
-    return render_template("index.html", visitors=unique_ip_count)
-
-# About us view 
-@app.route('/about', methods = ['GET'])
-@cache.cached(timeout=86400)
-def about_us():
-    return render_template("about.html")
-
-
-# FRET Calculator - initial view
-@app.route('/fret', methods=['GET'])
-def fret_calc():           
-    return render_template("fret.html")
-
 # FRET Calculator - data upload
 @app.route('/fret/submit', methods=['POST'])
 def fret_calc_submit():
@@ -109,11 +90,6 @@ def fret_calc_submit():
         logging.warning(f"Error in FRET-Calc: {e}")
         upload_error = UploadError("file_misformat", None, None, "ricalc")
         return render_template("input_error.html", data=upload_error.to_dict())
-
-# RI Calculator - initial view
-@app.route('/ricalc', methods=['GET'])
-def ri_calc():
-    return render_template("ricalc.html")
 
 
 # RI Calculator - data upload
@@ -175,11 +151,6 @@ def ri_calc_submit():
         return render_template("input_error.html", data=upload_error.to_dict())
 
 
-# PLQSim view - initial view
-@app.route('/plqsim', methods=['GET'])
-def plq_sim():
-    return render_template("plqsim.html")
-
 # PLQSim view - data upload
 @app.route('/plqsim/submit', methods=['POST'])
 def plq_sim_submit():
@@ -211,12 +182,6 @@ def plq_sim_submit():
         logging.warning(f"Error in PLQSim: {e}")
         upload_error = UploadError("file_misformat", None, None, "plqsim")
         return render_template("input_error.html", data=upload_error.to_dict())
-
-
-# TMMSim view - initial view
-@app.route('/tmmsim', methods=['GET'])
-def tmm_sim():
-    return render_template("tmmsim.html")
 
 
 # TMMSim view - data upload
@@ -258,12 +223,6 @@ def tmm_sim_submit():
         logging.warning(f"Error in TMMSim: {e}")
         upload_error = UploadError("file_misformat", None, None, "tmmsim")
         return render_template("input_error.html", data=upload_error.to_dict())
-
-# Energy Unit Converter view 
-@app.route('/euconverter', methods=['GET'])
-@cache.cached(timeout=86400)
-def eu_converter():
-    return render_template("euconverter.html")
 
 
 # Run the web app
