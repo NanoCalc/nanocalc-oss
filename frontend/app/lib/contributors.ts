@@ -2,7 +2,6 @@ import { ContributorConfig } from '../lib/model/ContributorConfig';
 
 const contributorsPath = "/contributors/"
 
-// Array - O(n) lookup
 const contributors: ContributorConfig[] = [
     {
         imagePath: `${contributorsPath}graziani.jpg`,
