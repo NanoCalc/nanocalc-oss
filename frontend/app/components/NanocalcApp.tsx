@@ -20,7 +20,7 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 
 	return (
 		<main className="flex min-h-screen flex-col md:flex-row justify-between items-center">
-			<section className="w-full h-screen flex flex-col md:w-1/2 items-center justify-center bg-nanocalc-apps">
+			<section className="w-full h-screen flex flex-col md:w-1/2 items-center justify-center bg-gradient-theme-nanocalc-apps md:bg-gradient-theme-nanocalc-apps-md">
 				<div className="flex flex-col items-center justify-center space-y-4 ml-2 mr-2">
 					{regularButtons.map((button, index) => (
 						<div
@@ -58,7 +58,7 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 				</div>
 			</section>
 
-			<section className="w-full h-screen flex flex-col md:w-1/2 items-center">
+			<section className="w-full h-screen flex flex-col md:w-1/2 items-center bg-gradient-theme-common-logos md:bg-gradient-theme-common-logos-md">
 				<Image
 					src={config.appLogoPath}
 					width={200}

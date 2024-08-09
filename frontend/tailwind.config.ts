@@ -17,6 +17,10 @@ const config: Config = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        'gradient-theme-nanocalc-apps': `linear-gradient(to bottom, theme('colors.nanocalc-apps'), rgb(var(--background-end-rgb)))`,
+        'gradient-theme-common-logos': `linear-gradient(to top, theme('colors.nanocalc-apps'), rgb(var(--background-end-rgb)))`,
+        'gradient-theme-nanocalc-apps-md': `linear-gradient(to left, theme('colors.nanocalc-apps'), rgb(var(--background-end-rgb)))`,
+        'gradient-theme-common-logos-md': `linear-gradient(to right, theme('colors.nanocalc-apps'), rgb(var(--background-end-rgb)))`,
       },
       animation: {
         fadeIn: 'fadeIn 1s ease-in-out',
