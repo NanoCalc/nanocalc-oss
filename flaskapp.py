@@ -11,7 +11,7 @@ from flask_caching import Cache
 from waitress import serve
 from flask import Flask, request, url_for, send_from_directory, render_template, jsonify
 from werkzeug.utils import secure_filename
-
+from werkzeug.exceptions import RequestEntityTooLarge
 
 # Creating and configuring the Flask app
 app = Flask(__name__)
@@ -229,14 +229,22 @@ def tmm_sim_submit():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    requestFiles = request.files
+    try:
+        requestFiles = request.files
 
-    if formField not in requestFiles:
-        return respond_client('emptyRequest', 400)
-    
-    files = [file for file in requestFiles.getlist(formField) if file.filename]
-    logging.info(f">>> uploaded files: {[file.filename for file in files]}")
-    return respond_client('Success!', 200)
+        if formField not in requestFiles:
+            return respond_client('emptyRequest', 400)
+
+        files = [file for file in requestFiles.getlist(formField) if file.filename]
+        logging.info(f">>> uploaded files: {[file.filename for file in files]}")
+
+        return respond_client('Success!', 200)
+
+    except RequestEntityTooLarge as e:
+        return respond_client('tooLargeRequest', 413)
+    except Exception as e:
+        logging.error(f"uploadFileError: {e}")
+        return respond_client('internalServerError', 500)
 
 
 # Run the web app
