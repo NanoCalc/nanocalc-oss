@@ -43,3 +43,20 @@ pip install -r test_requirements.txt
 ```shell
 coverage run -m unittest discover
 ```
+
+
+## Running with Python `venv` (for debugging):
+
+Create a virtual environment, activate it and install dependencies:
+```
+python3 -m venv env
+source env/bin/activate
+pip install -r requirements.txt
+```
+
+Create local folders and run the main script:
+```
+./setup_local_env.sh
+
+DEBUG=True PORT=8080 UPLOAD_FOLDER="nanocalc_uploads" python flaskapp.py
+```

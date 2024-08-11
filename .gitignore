@@ -10,3 +10,4 @@ __pycache__
 GeoIP*.dat
 *.db
 .coverage
+nanocalc_uploads
