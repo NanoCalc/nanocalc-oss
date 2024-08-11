@@ -12,6 +12,7 @@ from waitress import serve
 from flask import Flask, request, url_for, send_from_directory, render_template, jsonify
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import RequestEntityTooLarge
+from apps_definitions import allowed_extensions, get_max_files
 
 # Creating and configuring the Flask app
 app = Flask(__name__)
@@ -227,8 +228,8 @@ def tmm_sim_submit():
         upload_error = UploadError("file_misformat", None, None, "tmmsim")
         return render_template("input_error.html", data=upload_error.to_dict())
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
+@app.route('/upload/<app_name>', methods=['POST'])
+def upload_file(app_name):
     try:
         requestFiles = request.files
 
@@ -236,6 +237,12 @@ def upload_file():
             return respond_client('emptyRequest', 400)
 
         files = [file for file in requestFiles.getlist(formField) if file.filename]
+        logging.info(f">>> handling the {app_name} webapp")
+        logging.info(f">>> max files for the {app_name} webapp: {get_max_files(app_name)}")
+        if len(files) > get_max_files(app_name):
+            return respond_client('tooManyFiles', 413)
+
+        logging.info(f">>> uploaded {len(files)} files")
         logging.info(f">>> uploaded files: {[file.filename for file in files]}")
 
         return respond_client('Success!', 200)

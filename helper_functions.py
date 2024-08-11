@@ -10,9 +10,8 @@ from flask import request
 """
 Returns True if the file extension is in the list of allowed extensions
 """
-def allowed_file(filename, ext):
-    
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ext
+def allowed_file(filename, allowed_exts):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_exts
 
 
 """

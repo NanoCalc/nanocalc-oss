@@ -24,6 +24,7 @@ COPY flaskapp.py \
     config.py \
     visitor.py \
     helper_functions.py \
+    apps_definitions.py \
     /app/
 
     
