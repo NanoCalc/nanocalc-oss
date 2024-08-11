@@ -11,3 +11,10 @@ def get_max_files(app_name):
         count = sum(extensions.values())
         return count
     return 0 
+
+
+def get_allowed_extensions(app_name):
+    extensions = allowed_extensions.get(app_name)
+    if extensions is not None:
+        return list(extensions.keys())
+    return []

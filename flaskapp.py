@@ -12,7 +12,7 @@ from waitress import serve
 from flask import Flask, request, url_for, send_from_directory, render_template, jsonify
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import RequestEntityTooLarge
-from apps_definitions import allowed_extensions, get_max_files
+from apps_definitions import allowed_extensions, get_max_files, get_allowed_extensions
 
 # Creating and configuring the Flask app
 app = Flask(__name__)
@@ -237,20 +237,36 @@ def upload_file(app_name):
             return respond_client('emptyRequest', 400)
 
         files = [file for file in requestFiles.getlist(formField) if file.filename]
+        
+        amountUploadedFiles = len(files)
+        maxAllowedUploadedFiles = get_max_files(app_name)
+
         logging.info(f">>> handling the {app_name} webapp")
-        logging.info(f">>> max files for the {app_name} webapp: {get_max_files(app_name)}")
-        if len(files) > get_max_files(app_name):
+        logging.info(f">>> max files for the {app_name} webapp: {maxAllowedUploadedFiles}")
+        
+        
+        if amountUploadedFiles > maxAllowedUploadedFiles:
+            logging.error(f"uploadFileError.tooManyFiles: client uploaded {amountUploadedFiles}. Max allowed is: {maxAllowedUploadedFiles}")
             return respond_client('tooManyFiles', 413)
 
-        logging.info(f">>> uploaded {len(files)} files")
+        logging.info(f">>> uploaded {amountUploadedFiles} files")
         logging.info(f">>> uploaded files: {[file.filename for file in files]}")
+
+        allowed_extensions = get_allowed_extensions(app_name)
+        logging.info(f">>> allowed extensions for this webapp: {allowed_extensions}")
+
+        for file in files:
+            if file.filename.split(".").pop() not in allowed_extensions:
+                logging.error(f"uploadFileError.badExtension: client uploaded {file.filename}. Extension not allowed.")
+                return respond_client('badExtension', 400)
+
 
         return respond_client('Success!', 200)
 
     except RequestEntityTooLarge as e:
         return respond_client('tooLargeRequest', 413)
     except Exception as e:
-        logging.error(f"uploadFileError: {e}")
+        logging.error(f"uploadFileError.genericError: {e}")
         return respond_client('internalServerError', 500)
 
 
