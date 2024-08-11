@@ -13,11 +13,6 @@ class Config:
     # Cache configuration
     CACHE_TYPE = 'simple'
 
-    # Database configuration
-    SQLALCHEMY_DATABASE_URI  = 'sqlite:///visitors.db'
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-
 
 class TestConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
     UPLOAD_FOLDER = 'app/upload'

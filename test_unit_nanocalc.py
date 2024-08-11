@@ -1,9 +1,7 @@
 from helper_functions import *
 from flask import Flask
-from visitor import db, Visitor
 from config import TestConfig
 import unittest
-import hashlib
 import unittest.mock as mock
 import tempfile 
 
@@ -40,44 +38,6 @@ class TestHelperFunctions(unittest.TestCase):
             
             with zipfile.ZipFile(zip_path, 'r') as zip_ref:
                 self.assertIn("dummy.txt", zip_ref.namelist()) 
-
-
-    def test_log_vistor(self):
-        pass 
-    def test_get_ip_count(self):
-        pass
-    def test_get_unique_sessions(self):
-        pass
-    
-
-class TestDatabase(unittest.TestCase):
-    def setUp(self):
-        self.app = Flask(__name__)
-        self.app.config.from_object(TestConfig)
-        self.app_context = self.app.app_context()
-        self.app_context.push()
-        db.init_app(self.app)
-        db.create_all()
-
-
-    def tearDown(self):
-        db.session.remove()
-        db.drop_all()
-        self.app_context.pop()
-
-    
-    def test_visitor_creation(self):
-        visitor = Visitor(ip_address='192.168.1.1', user_agent='Mozilla/5.0', operating_system='Linux', country='USA')
-        db.session.add(visitor)
-        db.session.commit()
-
-        saved_visitor = Visitor.query.filter_by(ip_address=visitor.ip_address).first()
-        self.assertIsNotNone(saved_visitor)
-        self.assertNotEqual(saved_visitor.ip_address, '192.168.1.1')
-        self.assertEqual(saved_visitor.ip_address, hashlib.sha256('192.168.1.1'.encode()).hexdigest())
-        self.assertEqual(saved_visitor.user_agent, 'Mozilla/5.0')
-        self.assertEqual(saved_visitor.operating_system, 'Linux')
-        self.assertEqual(saved_visitor.country, 'USA')
 
 
 

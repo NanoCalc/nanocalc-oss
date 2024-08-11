@@ -4,8 +4,7 @@ from plq_sim import energy_level, donor_excitation, acceptor_excitation
 from tmm_sim import calculation
 from upload_error import UploadError
 from config import Config
-from helper_functions import allowed_file, save_file_with_uuid, generate_zip, get_unique_sessions, log_vistor
-from visitor import db, Visitor
+from helper_functions import allowed_file, save_file_with_uuid, generate_zip
 import os 
 import logging
 from flask_caching import Cache
@@ -19,9 +18,6 @@ app = Flask(__name__)
 app.config.from_object(Config)
 logging.basicConfig(level=Config.LOGGING_LEVEL, format=Config.LOGGING_FORMAT)
 cache = Cache(app)
-with app.app_context():
-    db.init_app(app)
-    db.create_all()
 UPLOAD_FOLDER = app.config['UPLOAD_FOLDER']
 
 

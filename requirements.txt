@@ -9,6 +9,3 @@ flask
 werkzeug
 waitress
 Flask-Caching
-flask_sqlalchemy
-user_agents
-pygeoip
