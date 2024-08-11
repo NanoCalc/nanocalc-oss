@@ -1,12 +1,12 @@
 import { RegularButton } from "../model/NanocalcAppConfig";
 
-const VPS_API_ENDPOINT = "http://127.0.0.1:8080/upload"
 
 export const handleRegularButtonClick = function (index: number) {
     document.getElementById(`regularButtonInput${index}`)?.click()
 }
 
-export const handleCalculateButtonClick = async (regularButtons: RegularButton[]) => {
+export const handleCalculateButtonClick = async (regularButtons: RegularButton[], appId: string) => {
+    const API_ENDPOINT = `http://127.0.0.1:8080/upload/${appId}`
     const formField = 'NANOCALC_USER_UPLOADED_FILES'
     const formData = new FormData();
 
@@ -26,7 +26,7 @@ export const handleCalculateButtonClick = async (regularButtons: RegularButton[]
     // console.groupEnd();
 
     try {
-        const response = await fetch(VPS_API_ENDPOINT, {
+        const response = await fetch(API_ENDPOINT, {
             method: 'POST',
             body: formData,
         });

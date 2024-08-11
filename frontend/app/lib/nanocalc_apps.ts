@@ -6,6 +6,7 @@ const nanocalcApps: NanocalcAppConfig = {
     "FRET-Calc": {
         appLogoPath: `${logosPath}fretcalc_logo.svg`,
         appName: "FRET-Calc",
+        appId: "fretcalc",
         buttons: [
             {
                 text: "Input file (.xlsx)",
@@ -39,6 +40,7 @@ const nanocalcApps: NanocalcAppConfig = {
     "RI-Calc": {
         appLogoPath: `${logosPath}ricalc_logo.svg`,
         appName: "RI-Calc",
+        appId: "ricalc",
         buttons: [
             {
                 text: "Input file (.xlsx)",
@@ -49,7 +51,7 @@ const nanocalcApps: NanocalcAppConfig = {
                 expectedExtension: "dat"
             },
             {
-                text: " K file (.dat)",
+                text: "K file (.dat)",
                 expectedExtension: "dat"
             },
             {
@@ -72,6 +74,7 @@ const nanocalcApps: NanocalcAppConfig = {
     "PLQ-Sim": {
         appLogoPath: `${logosPath}plqsim_logo.svg`,
         appName: "PLQ-Sim",
+        appId: "plqsim",
         buttons: [
             {
                 text: "Input file (.xlsx)",
@@ -96,6 +99,7 @@ const nanocalcApps: NanocalcAppConfig = {
     "TMM-Sim": {
         appLogoPath: `${logosPath}tmmsim_logo.svg`,
         appName: "TMM-Sim",
+        appId: "tmmsim",
         buttons: [
             {
                 text: "Input file (.xlsx)",

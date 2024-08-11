@@ -44,7 +44,7 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 						>
 							<button
 								className="text-white font-bold py-2 px-4 rounded w-full"
-								onClick={() => handleCalculateButtonClick(regularButtons)}
+								onClick={() => handleCalculateButtonClick(regularButtons, config.appId)}
 							>
 								{button.text}
 							</button>

@@ -1,6 +1,7 @@
 export interface BaseAppConfig {
     appLogoPath: string,
     appName: string,
+    appId: string,
     buttons: AppButton[],
     articleBanner: ArticleBannerConfig
 }
