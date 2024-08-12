@@ -2,19 +2,32 @@ import { RegularButton } from "../model/NanocalcAppConfig";
 
 
 export const handleRegularButtonClick = function (index: number) {
-    document.getElementById(`regularButtonInput${index}`)?.click()
+    const fileInput = document.getElementById(`regularButtonInput${index}`) as HTMLInputElement;
+    const fileNameDisplay = document.getElementById(`fileNameDisplay${index}`);
+    if (!fileInput || !fileNameDisplay) {
+        return;
+    }; 
+
+    fileInput.click();
+
+    fileInput.onchange = () => {
+        if (fileInput?.files && fileInput.files.length > 0) {
+            const fileName = fileInput.files[0].name;
+            fileNameDisplay.textContent = fileName;
+        }
+    };
 }
 
 export const handleCalculateButtonClick = async (regularButtons: RegularButton[], appId: string) => {
     const API_ENDPOINT = `http://127.0.0.1:8080/upload/${appId}`
-    const formField = 'NANOCALC_USER_UPLOADED_FILES'
+    const FORM_FIELD = 'NANOCALC_USER_UPLOADED_FILES'
     const formData = new FormData();
 
     regularButtons.forEach((_, index: number) => {
         const fileInput = document.getElementById(`regularButtonInput${index}`) as HTMLInputElement;
 
         Array.from(fileInput?.files ?? []).forEach(file => {
-            formData.append(formField, file, file.name);
+            formData.append(FORM_FIELD, file, file.name);
         });
 
     });

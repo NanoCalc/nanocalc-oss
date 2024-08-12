@@ -34,6 +34,7 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 								Choose {button.text}
 							</button>
 							<input type="file" id={`regularButtonInput${index}`} multiple={button.allowMultiple} style={{ display: 'none' }} />
+							<span id={`fileNameDisplay${index}`} className="text-white" onClick={() => handleRegularButtonClick(index)}>No file chosen</span>
 						</div>
 					))}
 
