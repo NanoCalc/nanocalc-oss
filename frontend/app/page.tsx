@@ -26,7 +26,7 @@ export default function Home() {
         </h2>
         <h2 className="p-4 animate-slideIn text-justify">
           Otherwise, regarding <b>technical errors and improvements</b>, send an e-mail to the domain's administrator, Omar,
-          at <b><Link href="mailto:omarmesquita@eq.ufrj.br">omarmesquita@eq.ufrj.br</Link></b>
+          at <b><Link href="mailto:omarmsqt@gmail.com">omarmsqt@gmail.com</Link></b>
         </h2>
       </section>
     </main>
