@@ -11,18 +11,22 @@ const nanocalcApps: NanocalcAppConfig = {
             {
                 text: "Input file (.xlsx)",
                 expectedExtension: "xlsx",
+                identifier: "inputExcel"
             },
             {
                 text: "Extinction coefficient file (.dat)",
                 expectedExtension: "dat",
+                identifier: "extinctionCoefficient"
             },
             {
                 text: "Emission file (.dat)",
                 expectedExtension: "dat",
+                identifier: "emissionCoefficient"
             },
             {
                 text: "Refractive Index file (.dat)",
                 expectedExtension: "dat",
+                identifier: "refractiveIndex"
             },
             {
                 text: "Calculate",
@@ -44,15 +48,18 @@ const nanocalcApps: NanocalcAppConfig = {
         buttons: [
             {
                 text: "Input file (.xlsx)",
-                expectedExtension: "xlsx"
+                expectedExtension: "xlsx",
+                identifier: "inputExcel"
             },
             {
                 text: "Decadic Abs. Coefficient file (.dat)",
-                expectedExtension: "dat"
+                expectedExtension: "dat",
+                identifier: "decadicCoefficient"
             },
             {
                 text: "K file (.dat)",
-                expectedExtension: "dat"
+                expectedExtension: "dat",
+                identifier: "constantK"
             },
             {
                 text: "Calculate optical constants",
@@ -78,7 +85,8 @@ const nanocalcApps: NanocalcAppConfig = {
         buttons: [
             {
                 text: "Input file (.xlsx)",
-                expectedExtension: "xlsx"
+                expectedExtension: "xlsx",
+                identifier: "inputExcel"
             },
             {
                 text: "Calculate Donor Excitation",
@@ -104,11 +112,13 @@ const nanocalcApps: NanocalcAppConfig = {
             {
                 text: "Input file (.xlsx)",
                 expectedExtension: "xlsx",
+                identifier: "inputExcel"
             },
             {
                 text: "up to 10 layer files (.csv)",
                 expectedExtension: "csv",
-                allowMultiple: true
+                allowMultiple: true,
+                identifier: "layerFiles"
             },
             {
                 text: "Calculate",

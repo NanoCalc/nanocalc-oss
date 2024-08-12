@@ -23,11 +23,12 @@ export const handleCalculateButtonClick = async (regularButtons: RegularButton[]
     const FORM_FIELD = 'NANOCALC_USER_UPLOADED_FILES'
     const formData = new FormData();
 
-    regularButtons.forEach((_, index: number) => {
+    regularButtons.forEach((button, index: number) => {
         const fileInput = document.getElementById(`regularButtonInput${index}`) as HTMLInputElement;
 
         Array.from(fileInput?.files ?? []).forEach(file => {
             formData.append(FORM_FIELD, file, file.name);
+            formData.append(`${FORM_FIELD}_buttonId`, button.identifier);
         });
 
     });

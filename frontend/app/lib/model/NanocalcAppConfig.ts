@@ -14,6 +14,7 @@ export interface ArticleBannerConfig {
     binaries: string
 }
 
+//TODO: only essential props in base button
 interface BaseButton {
     text: string;
     allowMultiple?: boolean;
@@ -28,6 +29,7 @@ interface CalculateButton extends BaseButton {
 export interface RegularButton extends BaseButton {
     isCalculate?: false;
     expectedExtension: string;
+    identifier: string;
 }
 
 type AppButton = CalculateButton | RegularButton;
