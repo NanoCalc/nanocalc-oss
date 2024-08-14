@@ -10,7 +10,7 @@ from flask import Flask, request, url_for, send_from_directory, render_template,
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import RequestEntityTooLarge
 from apps_definitions import allowed_extensions, get_max_files, get_allowed_extensions
-from helper_functions import allowed_file, save_file_with_uuid, generate_zip
+from helper_functions import save_file_with_uuid, generate_zip
 from config import Config
 
 # Creating and configuring the Flask app
@@ -19,9 +19,8 @@ app.config.from_object(Config)
 logging.basicConfig(level=Config.LOGGING_LEVEL, format=Config.LOGGING_FORMAT)
 cache = Cache(app)
 UPLOAD_FOLDER = app.config['UPLOAD_FOLDER']
+FORM_FIELD = 'NANOCALC_USER_UPLOADED_FILES'
 
-
-formField = 'NANOCALC_USER_UPLOADED_FILES'
 
 def respond_client(message, code):
     return jsonify({
@@ -42,52 +41,19 @@ def get_data(webapp, name):
     return send_from_directory(directory=uploads, path=name)
 
 
-# FRET Calculator - data upload
-@app.route('/fret/submit', methods=['POST'])
-def fret_calc_submit():
-    appName = "FRET-Calc"
-    webApp = "fret"
-    filesList = []
 
+def handle_fretcalc(files_bundle):
+    fretcalc_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'fretcalc')
+    
     try:
-        files = request.files.getlist("xif") 
-        for file in files:
-            if allowed_file(file.filename,['xlsx']):
-                xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'index_files'), file, 'xlsx')
-                filesList.append(xif)
-            else:
-                upload_error = UploadError("file_type", "index file", "xlsx", "fret")
-                return render_template("input_error.html", data=upload_error.to_dict())
+        input_excel_path = save_file_with_uuid(fretcalc_folder, files_bundle['inputExcel'])
+        extinction_coefficient_path = save_file_with_uuid(fretcalc_folder, files_bundle['extinctionCoefficient'])
+        emission_coefficient_path = save_file_with_uuid(fretcalc_folder, files_bundle['emissionCoefficient'])
+        refractive_index_path = save_file_with_uuid(fretcalc_folder, files_bundle['refractiveIndex'])
 
-        files = request.files.getlist("ef")
-        for file in files:
-            if allowed_file(file.filename,['dat']):
-                ef = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'emission_files'), file, 'dat')
-                filesList.append(ef)
-            else:
-                upload_error = UploadError("file_type", "emission file", "dat", "fret")
-                return render_template("input_error.html", data=upload_error.to_dict())
-
-        files = request.files.getlist("rfi")
-        for file in files: 
-            if allowed_file(file.filename,['dat']):
-                rfi = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'refractive_index_files'), file, 'dat')
-                filesList.append(rfi)
-            else:
-                upload_error = UploadError("file_type", "refractive index file", "dat", "fret")
-                return render_template("input_error.html", data=upload_error.to_dict())
-
-        files = request.files.getlist("ecf")
-        for file in files: 
-            if allowed_file(file.filename,['dat']):
-                ecf = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'fret', 'extinction_coefficient_files'), file, 'dat')
-                filesList.append(ecf)
-            else:
-                upload_error = UploadError("file_type", "extinction coefficient file", "dat", "fret")
-                return render_template("input_error.html", data=upload_error.to_dict())
-        data = overlap_calculation(filesList[0], filesList[3], filesList[1], filesList[2], UPLOAD_FOLDER)
-        zip_file_name = generate_zip(data, webApp, Config.UPLOAD_FOLDER)
-        return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName, webapp=webApp)
+        data = overlap_calculation(input_excel_path, extinction_coefficient_path, emission_coefficient_path, refractive_index_path, UPLOAD_FOLDER)
+        zip_file_name = generate_zip(data, 'fretcalc', app.config['UPLOAD_FOLDER'])
+        return zip_file_name
 
     except Exception as e: 
         logging.warning(f"Error in FRET-Calc: {e}")
@@ -99,7 +65,7 @@ def fret_calc_submit():
 @app.route('/ricalc/submit', methods=['POST'])
 def ri_calc_submit():
     appName = "RI-Calc"
-    webApp = "ri"
+    webApp = "ricalc"
     filesList = []
 
     try:
@@ -231,28 +197,30 @@ def tmm_sim_submit():
 def upload_file(app_name):
     try:
         requestFiles = request.files
+        identifiers = request.form.getlist(f"{FORM_FIELD}_buttonId")
 
-        if formField not in requestFiles:
-            return respond_client('emptyRequest', 400)
+        if FORM_FIELD not in requestFiles or not identifiers:
+            return respond_client('emptyOrUnidentifiedRequest', 400)
 
-        files = [file for file in requestFiles.getlist(formField) if file.filename]
+        files = [file for file in requestFiles.getlist(FORM_FIELD) if file.filename]
         
         amountUploadedFiles = len(files)
         maxAllowedUploadedFiles = get_max_files(app_name)
 
-        logging.info(f">>> handling the {app_name} webapp")
-        logging.info(f">>> max files for the {app_name} webapp: {maxAllowedUploadedFiles}")
+        # logging.info(f">>> handling the {app_name} webapp")
+        # logging.info(f">>> max files for the {app_name} webapp: {maxAllowedUploadedFiles}")
+        # logging.info(f">>> received the following identifiers: {identifiers}")
         
         
         if amountUploadedFiles > maxAllowedUploadedFiles:
             logging.error(f"uploadFileError.tooManyFiles: client uploaded {amountUploadedFiles}. Max allowed is: {maxAllowedUploadedFiles}")
             return respond_client('tooManyFiles', 413)
 
-        logging.info(f">>> uploaded {amountUploadedFiles} files")
-        logging.info(f">>> uploaded files: {[file.filename for file in files]}")
+        # logging.info(f">>> uploaded {amountUploadedFiles} files")
+        # logging.info(f">>> uploaded files: {[file.filename for file in files]}")
 
         allowed_extensions = get_allowed_extensions(app_name)
-        logging.info(f">>> allowed extensions for this webapp: {allowed_extensions}")
+        # logging.info(f">>> allowed extensions for this webapp: {allowed_extensions}")
 
         for file in files:
             if file.filename.split(".").pop() not in allowed_extensions:
@@ -260,7 +228,24 @@ def upload_file(app_name):
                 return respond_client('badExtension', 400)
 
 
-        return respond_client('Success!', 200)
+        files_bundle = {ident: file for file, ident in zip(files, identifiers)}
+        # logging.info(f">>> files bundle: {files_bundle}")
+        
+        zip_file_path = handle_fretcalc(files_bundle)
+        
+        if zip_file_path:
+            try:
+                directory = os.path.dirname(zip_file_path)
+                filename = os.path.basename(zip_file_path)
+
+                return send_from_directory(directory=directory, path=filename, as_attachment=True)
+            except Exception as e:
+                logging.error(f"Error in sending file: {e}")
+                return respond_client('Failed to send zip file', 500)
+        else:
+            return respond_client('Failed to process files', 500)
+        
+        #return respond_client(f'Processed the following files: {files}', 200)
 
     except RequestEntityTooLarge as e:
         return respond_client('tooLargeRequest', 413)
