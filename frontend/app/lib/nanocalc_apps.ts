@@ -54,20 +54,24 @@ const nanocalcApps: NanocalcAppConfig = {
             {
                 text: "Decadic Abs. Coefficient file (.dat)",
                 expectedExtension: "dat",
-                identifier: "decadicCoefficient"
+                identifier: "decadicCoefficient",
+                operatingMode: "Optical Constants"
             },
             {
                 text: "K file (.dat)",
                 expectedExtension: "dat",
-                identifier: "constantK"
+                identifier: "constantK",
+                operatingMode: "Refractive Index"
             },
             {
                 text: "Calculate optical constants",
-                isCalculate: true
+                isCalculate: true,
+                operatingMode: "Optical Constants"
             },
             {
                 text: "Calculate n",
-                isCalculate: true
+                isCalculate: true,
+                operatingMode: "Refractive Index"
             }
         ],
         articleBanner: {
@@ -76,7 +80,11 @@ const nanocalcApps: NanocalcAppConfig = {
             sampleData: "https://github.com/NanoCalc/RICalc/releases/download/3.0-beta/data_sample.zip",
             spectralData: "https://github.com/NanoCalc/RICalc/releases/download/3.0-beta/spectral-data.zip",
             binaries: "https://github.com/NanoCalc/RICalc/releases"
-        }
+        },
+        multipleModes: [
+            "Optical Constants",
+            "Refractive Index"
+        ]
     },
     "PLQ-Sim": {
         appLogoPath: `${logosPath}plqsim_logo.svg`,

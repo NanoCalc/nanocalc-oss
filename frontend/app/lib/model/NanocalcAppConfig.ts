@@ -3,7 +3,8 @@ export interface BaseAppConfig {
     appName: string,
     appId: string,
     buttons: AppButton[],
-    articleBanner: ArticleBannerConfig
+    articleBanner: ArticleBannerConfig,
+    multipleModes?: string[]
 }
 
 export interface ArticleBannerConfig {
@@ -14,22 +15,20 @@ export interface ArticleBannerConfig {
     binaries: string
 }
 
-//TODO: only essential props in base button
 interface BaseButton {
     text: string;
-    allowMultiple?: boolean;
-    isCalculate?: boolean;
+    operatingMode?: string
 }
 
-interface CalculateButton extends BaseButton {
+export interface CalculateButton extends BaseButton {
     isCalculate: true;
-    expectedExtension?: string;
 }
 
 export interface RegularButton extends BaseButton {
     isCalculate?: false;
     expectedExtension: string;
     identifier: string;
+    allowMultiple?: boolean;
 }
 
 type AppButton = CalculateButton | RegularButton;

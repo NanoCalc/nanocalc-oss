@@ -1,9 +1,10 @@
 import { RegularButton } from "../model/NanocalcAppConfig";
 
 
-export const handleRegularButtonClick = function (index: number) {
-    const fileInput = document.getElementById(`regularButtonInput${index}`) as HTMLInputElement;
-    const fileNameDisplay = document.getElementById(`fileNameDisplay${index}`);
+export const handleRegularButtonClick = function (identifier: string) {
+    
+    const fileInput = document.getElementById(`regularButtonInput${identifier}`) as HTMLInputElement;
+    const fileNameDisplay = document.getElementById(`fileNameDisplay${identifier}`);
     if (!fileInput || !fileNameDisplay) {
         return;
     }; 
@@ -23,8 +24,9 @@ export const handleCalculateButtonClick = async (regularButtons: RegularButton[]
     const FORM_FIELD = 'NANOCALC_USER_UPLOADED_FILES'
     const formData = new FormData();
 
-    regularButtons.forEach((button, index: number) => {
-        const fileInput = document.getElementById(`regularButtonInput${index}`) as HTMLInputElement;
+    regularButtons.forEach((button) => {
+        const fileInput = document.getElementById(`regularButtonInput${button.identifier}`) as HTMLInputElement;
+        console.log(`Button clicked at index: ${button.identifier}`);
 
         Array.from(fileInput?.files ?? []).forEach(file => {
             formData.append(FORM_FIELD, file, file.name);
@@ -46,14 +48,25 @@ export const handleCalculateButtonClick = async (regularButtons: RegularButton[]
         });
         
         
-        const responseData = await response.json()
+        // const responseData = await response.json()
         if (response.ok) {
             
-            console.log('Server response:', responseData);
+            // console.log('Server response:', responseData);
             console.log('Files successfully uploaded!');
+
+            const blob = await response.blob();
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = `${appId}_generated_data.zip`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(downloadUrl);
+            console.log('Files successfully downloaded!');
         } else {
-            console.error('file.upload.error status code:', response.statusText);
-            console.error('file.upload.error message:', responseData.message);
+            // console.error('file.upload.error status code:', response.statusText);
+            // console.error('file.upload.error message:', responseData.message);
         }
     } catch (error) {
         console.error('generic.network.error:', error);
