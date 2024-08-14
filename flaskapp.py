@@ -13,7 +13,8 @@ from apps_definitions import allowed_extensions, get_max_files, get_allowed_exte
 from helper_functions import save_file_with_uuid, generate_zip
 from config import Config
 
-# Creating and configuring the Flask app
+
+# App configuration
 app = Flask(__name__)
 app.config.from_object(Config)
 logging.basicConfig(level=Config.LOGGING_LEVEL, format=Config.LOGGING_FORMAT)
@@ -27,19 +28,12 @@ def respond_client(message, code):
         'message': message
     }), code
 
+
 # Client side caching
 @app.after_request
 def set_cache_headers(response):
     response.headers['Cache-Control'] = 'public, max-age=86400' 
     return response
-
-
-# Route to allow download of generated data
-@app.route('/download/<webapp>/<path:name>', methods=['GET'])
-def get_data(webapp, name):
-    uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], webapp) 
-    return send_from_directory(directory=uploads, path=name)
-
 
 
 def handle_fretcalc(files_bundle):
@@ -56,10 +50,24 @@ def handle_fretcalc(files_bundle):
         return zip_file_name
 
     except Exception as e: 
-        logging.warning(f"Error in FRET-Calc: {e}")
-        upload_error = UploadError("file_misformat", None, None, "ricalc")
-        return render_template("input_error.html", data=upload_error.to_dict())
+        logging.error(f"handle_fretcalc.error: {e}")
+        raise e
 
+
+def handle_ricalc(files_bundle):
+    pass
+def handle_plqsim(files_bundle):
+    pass
+def handle_tmmsim(files_bundle):
+    pass
+
+
+app_handlers = {
+    'fretcalc': handle_fretcalc,
+    'ricalc': handle_ricalc,
+    'plqsim': handle_plqsim,
+    'tmmsim': handle_tmmsim,
+}
 
 # RI Calculator - data upload
 @app.route('/ricalc/submit', methods=['POST'])
@@ -210,7 +218,7 @@ def upload_file(app_name):
         # logging.info(f">>> handling the {app_name} webapp")
         # logging.info(f">>> max files for the {app_name} webapp: {maxAllowedUploadedFiles}")
         # logging.info(f">>> received the following identifiers: {identifiers}")
-        
+        # logging.info(f"app_handlers[app_name]: {app_handlers[app_name]}")
         
         if amountUploadedFiles > maxAllowedUploadedFiles:
             logging.error(f"uploadFileError.tooManyFiles: client uploaded {amountUploadedFiles}. Max allowed is: {maxAllowedUploadedFiles}")
@@ -231,7 +239,7 @@ def upload_file(app_name):
         files_bundle = {ident: file for file, ident in zip(files, identifiers)}
         # logging.info(f">>> files bundle: {files_bundle}")
         
-        zip_file_path = handle_fretcalc(files_bundle)
+        zip_file_path = app_handlers[app_name](files_bundle)
         
         if zip_file_path:
             try:
