@@ -29,8 +29,8 @@ export const handleCalculateButtonClick = async (regularButtons: RegularButton[]
         console.log(`Button clicked at index: ${button.identifier}`);
 
         Array.from(fileInput?.files ?? []).forEach(file => {
-            formData.append(FORM_FIELD, file, file.name);
-            formData.append(`${FORM_FIELD}_buttonId`, button.identifier);
+            formData.append(FORM_FIELD, file, `${button.identifier}_${file.name}`);
+            
         });
 
     });

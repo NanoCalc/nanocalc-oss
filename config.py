@@ -3,7 +3,7 @@ import logging
 
 class Config:
     # Logger setup
-    LOGGING_LEVEL = logging.DEBUG
+    LOGGING_LEVEL = logging.INFO
     LOGGING_FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
 
     # App configuration

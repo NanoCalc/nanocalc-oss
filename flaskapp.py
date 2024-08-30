@@ -55,11 +55,48 @@ def handle_fretcalc(files_bundle):
 
 
 def handle_ricalc(files_bundle):
-    pass
+    ricalc_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'ricalc')
+
+    try:
+        input_excel_path = save_file_with_uuid(ricalc_folder, files_bundle['inputExcel'])
+        
+        if 'decadicCoefficient' in files_bundle:
+            # calculate nk
+            logging.info(f">>>> nk_calculation")
+            coefficient_path = save_file_with_uuid(ricalc_folder, files_bundle['decadicCoefficient'])
+            dataFolderPath = n_k_calculation(input_excel_path, coefficient_path, UPLOAD_FOLDER)
+        elif 'constantK' in files_bundle:
+            # calculate n
+            logging.info(f">>>> n_calculation")
+            coefficient_path = save_file_with_uuid(ricalc_folder, files_bundle['constantK'])
+            dataFolderPath = n_calculation(input_excel_path, coefficient_path, UPLOAD_FOLDER)
+        
+        zip_file_name = generate_zip(dataFolderPath, 'ricalc', app.config['UPLOAD_FOLDER'])
+        return zip_file_name
+    except Exception as e: 
+        logging.error(f"handle_ricalc.error: {e}")
+        raise e
+
 def handle_plqsim(files_bundle):
-    pass
+    plqsim_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'plqsim')
+
+    try:
+        input_excel_path = save_file_with_uuid(ricalc_folder, files_bundle['inputExcel'])
+        #TODO
+    except Exception as e:
+        logging.error(f"handle_plqsim.error: {e}")
+        raise e
+
+
 def handle_tmmsim(files_bundle):
-    pass
+    tmmsim_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim')
+
+    try:
+        input_excel_path = save_file_with_uuid(tmmsim_folder, files_bundle['inputExcel'])
+        #TODO
+    except Exception as e:
+        logging.error(f"handle_tmmsim.error: {e}")
+        raise e
 
 
 app_handlers = {
@@ -205,7 +242,7 @@ def tmm_sim_submit():
 def upload_file(app_name):
     try:
         requestFiles = request.files
-        identifiers = request.form.getlist(f"{FORM_FIELD}_buttonId")
+        
 
         if FORM_FIELD not in requestFiles or not identifiers:
             return respond_client('emptyOrUnidentifiedRequest', 400)
@@ -236,7 +273,14 @@ def upload_file(app_name):
                 return respond_client('badExtension', 400)
 
 
-        files_bundle = {ident: file for file, ident in zip(files, identifiers)}
+        files_bundle = {}
+        for file in files:
+            
+            parts = secure_filename(file.filename).split('_', 1)
+            identifier = parts[0]
+            original_filename = parts[1]
+            files_bundle[identifier] = file
+            
         # logging.info(f">>> files bundle: {files_bundle}")
         
         zip_file_path = app_handlers[app_name](files_bundle)
