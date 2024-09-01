@@ -26,6 +26,21 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 	const articleBanner = config.articleBanner;
 	const firstMode = config.multipleModes?.[0] ?? '';
 	const [currentMode, setCurrentMode] = useState(firstMode);
+	const [selectedFiles, setSelectedFiles] = useState<{ [key: string]: string }>({});
+
+	const handleFileChange = (fileIdentifier: string, event: React.ChangeEvent<HTMLInputElement>) => {
+		viewModel.handleFileChange(fileIdentifier, event);
+
+		const newFileList = event.target.files;
+		if (newFileList && newFileList.length > 0) {
+			const fileNames = Array.from(newFileList).map(file => file.name).join(', ');
+
+			setSelectedFiles(prevState => ({
+				...prevState,
+				[fileIdentifier]: fileNames
+			}));
+		}
+	};
 
 	return (
 		<main className="flex min-h-screen flex-col md:flex-row justify-between items-center">
@@ -49,15 +64,13 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 									</span>
 									<input
 										type="file"
-										multiple
+										multiple={button.allowMultiple}
 										style={{ display: 'none' }}
-										onChange={(e) => viewModel.handleFileChange(button.identifier, e)}
+										onChange={(e) => handleFileChange(button.identifier, e)}
 									/>
-									{/* <span className={`ml-auto ${selectedFiles[button.identifier] ? 'order-1' : 'order-2'}`}>
-										{selectedFiles[button.identifier]
-											? `${selectedFiles[button.identifier].length} file(s) selected`
-											: 'No file chosen'}
-									</span> */}
+									<span className="ml-auto text-white">
+										{selectedFiles[button.identifier] || 'No file chosen'}
+									</span>
 								</label>
 							</div>
 						))}
@@ -84,42 +97,40 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 					</>) : (<>
 						{regularButtons.map((button, index) => (
 							<div key={index} className="m-1 rounded-md bg-nanocalc-apps-button flex justify-between items-center space-x-4 w-full max-w-md">
-							<label className="flex justify-between items-center w-full cursor-pointer text-white font-bold py-2 px-4 rounded">
-								<span className="mr-2">
-									Choose {button.text}
-								</span>
-								<input
-									type="file"
-									multiple
-									style={{ display: 'none' }}
-									onChange={(e) => viewModel.handleFileChange(button.identifier, e)}
-								/>
-								{/* <span className={`ml-auto ${selectedFiles[button.identifier] ? 'order-1' : 'order-2'}`}>
-									{selectedFiles[button.identifier]
-										? `${selectedFiles[button.identifier].length} file(s) selected`
-										: 'No file chosen'}
-								</span> */}
-							</label>
-						</div>
+								<label className="flex justify-between items-center w-full cursor-pointer text-white font-bold py-2 px-4 rounded">
+									<span className="mr-2">
+										Choose {button.text}
+									</span>
+									<input
+										type="file"
+										multiple={button.allowMultiple}
+										style={{ display: 'none' }}
+										onChange={(e) => handleFileChange(button.identifier, e)}
+									/>
+									<span className="ml-auto text-white m-0 p-0">
+										{selectedFiles[button.identifier] || 'No file chosen'}
+									</span>
+								</label>
+							</div>
 						))}
 
 						{calculateButtons.map((button, index) => (
 							<div
-							key={index}
-							className="m-1 rounded-md bg-nanocalc-apps-button flex justify-between items-center space-x-4 w-full max-w-md"
-						>
-							<button
-								className="text-white font-bold py-2 px-4 rounded w-full"
-								onClick={() => {
-									viewModel.setMode(currentMode)
-									viewModel.uploadFiles(config.appId)
-								}
-								}
+								key={index}
+								className="m-1 rounded-md bg-nanocalc-apps-button flex justify-between items-center space-x-4 w-full max-w-md"
 							>
-								{button.text}
-							</button>
-							<input type="submit" style={{ display: 'none' }} />
-						</div>
+								<button
+									className="text-white font-bold py-2 px-4 rounded w-full"
+									onClick={() => {
+										viewModel.setMode(currentMode)
+										viewModel.uploadFiles(config.appId)
+									}
+									}
+								>
+									{button.text}
+								</button>
+								<input type="submit" style={{ display: 'none' }} />
+							</div>
 						))}
 					</>)}
 				</div>
