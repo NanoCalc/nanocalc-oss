@@ -55,23 +55,23 @@ const nanocalcApps: NanocalcAppConfig = {
                 text: "Decadic Abs. Coefficient file (.dat)",
                 expectedExtension: "dat",
                 identifier: "decadicCoefficient",
-                operatingMode: "Optical Constants"
+                operatingMode: "opticalConstants"
             },
             {
                 text: "K file (.dat)",
                 expectedExtension: "dat",
                 identifier: "constantK",
-                operatingMode: "Refractive Index"
+                operatingMode: "refractiveIndex"
             },
             {
                 text: "Calculate optical constants",
                 isCalculate: true,
-                operatingMode: "Optical Constants"
+                operatingMode: "opticalConstants"
             },
             {
                 text: "Calculate n",
                 isCalculate: true,
-                operatingMode: "Refractive Index"
+                operatingMode: "refractiveIndex"
             }
         ],
         articleBanner: {
@@ -82,8 +82,8 @@ const nanocalcApps: NanocalcAppConfig = {
             binaries: "https://github.com/NanoCalc/RICalc/releases"
         },
         multipleModes: [
-            "Optical Constants",
-            "Refractive Index"
+            "opticalConstants",
+            "refractiveIndex"
         ]
     },
     "PLQ-Sim": {
@@ -98,11 +98,13 @@ const nanocalcApps: NanocalcAppConfig = {
             },
             {
                 text: "Calculate Donor Excitation",
-                isCalculate: true
+                isCalculate: true,
+                operatingMode: "donorExcitation"
             },
             {
                 text: "Calculate Acceptor Excitation",
-                isCalculate: true
+                isCalculate: true,
+                operatingMode: "acceptorExcitation"
             }
         ],
         articleBanner: {
@@ -110,7 +112,11 @@ const nanocalcApps: NanocalcAppConfig = {
             doi: "https://doi.org/10.1016/j.cpc.2023.109015",
             sampleData: "https://github.com/NanoCalc/PLQ-Sim/releases/download/1.0-beta/data-sample.zip",
             binaries: "https://github.com/NanoCalc/PLQ-Sim/releases"
-        }
+        },
+        multipleModes: [
+            "donorExcitation",
+            "acceptorExcitation"
+        ]
     },
     "TMM-Sim": {
         appLogoPath: `${logosPath}tmmsim_logo.svg`,

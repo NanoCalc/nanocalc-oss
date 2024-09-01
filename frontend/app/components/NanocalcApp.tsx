@@ -18,7 +18,8 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 	const regularButtons: RegularButton[] = config.buttons.filter(button => button.isCalculate !== true);
 	const calculateButtons = config.buttons.filter(button => button.isCalculate === true);
 	const articleBanner = config.articleBanner;
-	const [currentMode, setCurrentMode] = useState('Optical Constants')
+	const firstMode = config.multipleModes?.[0] ?? '';
+	const [currentMode, setCurrentMode] = useState(firstMode);
 
 	return (
 		<main className="flex min-h-screen flex-col md:flex-row justify-between items-center">
