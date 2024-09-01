@@ -20,7 +20,8 @@ app.config.from_object(Config)
 logging.basicConfig(level=Config.LOGGING_LEVEL, format=Config.LOGGING_FORMAT)
 cache = Cache(app)
 UPLOAD_FOLDER = app.config['UPLOAD_FOLDER']
-FORM_FIELD = 'NANOCALC_USER_UPLOADED_FILES'
+FILES_FORM_FIELD = 'NANOCALC_USER_UPLOADED_FILES'
+MODE_FORM_FIELD = 'NANOCALC_USER_MODE'
 
 
 def respond_client(message, code):
@@ -243,29 +244,27 @@ def upload_file(app_name):
     try:
         requestFiles = request.files
         
-
-        if FORM_FIELD not in requestFiles or not identifiers:
+        if FILES_FORM_FIELD not in requestFiles:
             return respond_client('emptyOrUnidentifiedRequest', 400)
 
-        files = [file for file in requestFiles.getlist(FORM_FIELD) if file.filename]
+        files = [file for file in requestFiles.getlist(FILES_FORM_FIELD) if file.filename]
         
         amountUploadedFiles = len(files)
         maxAllowedUploadedFiles = get_max_files(app_name)
 
-        # logging.info(f">>> handling the {app_name} webapp")
-        # logging.info(f">>> max files for the {app_name} webapp: {maxAllowedUploadedFiles}")
-        # logging.info(f">>> received the following identifiers: {identifiers}")
-        # logging.info(f"app_handlers[app_name]: {app_handlers[app_name]}")
+        logging.info(f">>> handling the {app_name} webapp")
+        logging.info(f">>> max files for the {app_name} webapp: {maxAllowedUploadedFiles}")
+        logging.info(f"app_handlers[app_name]: {app_handlers[app_name]}")
         
         if amountUploadedFiles > maxAllowedUploadedFiles:
             logging.error(f"uploadFileError.tooManyFiles: client uploaded {amountUploadedFiles}. Max allowed is: {maxAllowedUploadedFiles}")
             return respond_client('tooManyFiles', 413)
 
-        # logging.info(f">>> uploaded {amountUploadedFiles} files")
-        # logging.info(f">>> uploaded files: {[file.filename for file in files]}")
+        logging.info(f">>> uploaded {amountUploadedFiles} files")
+        logging.info(f">>> uploaded files: {[file.filename for file in files]}")
 
         allowed_extensions = get_allowed_extensions(app_name)
-        # logging.info(f">>> allowed extensions for this webapp: {allowed_extensions}")
+        logging.info(f">>> allowed extensions for this webapp: {allowed_extensions}")
 
         for file in files:
             if file.filename.split(".").pop() not in allowed_extensions:
@@ -274,6 +273,8 @@ def upload_file(app_name):
 
 
         files_bundle = {}
+        mode = request.form.get(MODE_FORM_FIELD)
+        
         for file in files:
             
             parts = secure_filename(file.filename).split('_', 1)
@@ -281,7 +282,7 @@ def upload_file(app_name):
             original_filename = parts[1]
             files_bundle[identifier] = file
             
-        # logging.info(f">>> files bundle: {files_bundle}")
+        logging.info(f">>> files bundle: {files_bundle}")
         
         zip_file_path = app_handlers[app_name](files_bundle)
         
