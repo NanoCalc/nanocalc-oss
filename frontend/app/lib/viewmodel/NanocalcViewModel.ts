@@ -1,30 +1,15 @@
+interface SelectedFiles {
+    [key: string]: File[]
+}
+
 export class NanocalcViewModel {
-    private files: Record<string, File> = {};
     private mode: string = '';
-
-    handleFileChange = (fileIdentifier: string, event: React.ChangeEvent<HTMLInputElement>) => {
-        const newFileList = event.target.files;
-
-        if (newFileList) {
-            for (const file of Array.from(newFileList)) {
-                this.files = {
-                    ...this.files,
-                    [fileIdentifier]: file
-                }
-            }
-        }
-
-        // console.log(`Files added for ${fileIdentifier}:`);
-        // Array.from(newFileList ?? []).forEach((file, index) => {
-        //     console.log(`  File ${index + 1}: ${file.name}`);
-        // });
-    }
 
     setMode(newMode: string) {
         this.mode = newMode;
     }
 
-    async uploadFiles(appId: string) {
+    async uploadFiles(appId: string, selectedFiles: SelectedFiles) {
         const API_ENDPOINT = `http://127.0.0.1:8080/upload/${appId}`;
         const FILES_FORM_FIELD = 'NANOCALC_USER_UPLOADED_FILES';
         const MODE_FORM_FIELD = 'NANOCALC_USER_MODE';
@@ -34,8 +19,14 @@ export class NanocalcViewModel {
             formData.append(MODE_FORM_FIELD, this.mode);
         }
 
-        for (const identifier in this.files) {
-            formData.append(FILES_FORM_FIELD, this.files[identifier], identifier);
+        for (const key in selectedFiles) {
+            if (selectedFiles.hasOwnProperty(key)) {
+                const filesArray = selectedFiles[key];
+        
+                filesArray.forEach(file => {
+                    formData.append(FILES_FORM_FIELD, file);
+                });
+            }
         }
 
         // console.group('FormData Contents');
@@ -44,13 +35,13 @@ export class NanocalcViewModel {
         // }
         // console.groupEnd();
 
-        
 
         const response = await fetch(API_ENDPOINT, {
             method: 'POST',
             body: formData,
         });
 
+        const parsedResponse = await response.json()
         if (response.ok) {
             const blob = await response.blob();
             const downloadUrl = window.URL.createObjectURL(blob);
@@ -63,6 +54,7 @@ export class NanocalcViewModel {
             window.URL.revokeObjectURL(downloadUrl);
         } else {
             console.error('Error uploading files:', response.statusText);
+            console.error('Server message:', parsedResponse.message);
         }
     }
 }

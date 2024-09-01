@@ -26,18 +26,23 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 	const articleBanner = config.articleBanner;
 	const firstMode = config.multipleModes?.[0] ?? '';
 	const [currentMode, setCurrentMode] = useState(firstMode);
-	const [selectedFiles, setSelectedFiles] = useState<{ [key: string]: string }>({});
+	const [selectedFiles, setSelectedFiles] = useState<{[key:string]: File[]}>({});
+	const [selectedFileNames, setSelectedFileNames] = useState<{[key:string]: string}>({});
+
 
 	const handleFileChange = (fileIdentifier: string, event: React.ChangeEvent<HTMLInputElement>) => {
-		viewModel.handleFileChange(fileIdentifier, event);
-
 		const newFileList = event.target.files;
+
 		if (newFileList && newFileList.length > 0) {
 			const fileNames = Array.from(newFileList).map(file => file.name).join(', ');
+			setSelectedFileNames(prevState => ({
+				...prevState,
+				[fileIdentifier]: fileNames,
+			}));
 
 			setSelectedFiles(prevState => ({
 				...prevState,
-				[fileIdentifier]: fileNames
+				[fileIdentifier]: Array.from(newFileList),
 			}));
 		}
 	};
@@ -69,7 +74,7 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 										onChange={(e) => handleFileChange(button.identifier, e)}
 									/>
 									<span className="ml-auto text-white">
-										{selectedFiles[button.identifier] || 'No file chosen'}
+										{selectedFileNames[button.identifier] || 'No file chosen'}
 									</span>
 								</label>
 							</div>
@@ -84,7 +89,7 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 									className="text-white font-bold py-2 px-4 rounded w-full"
 									onClick={() => {
 										viewModel.setMode(currentMode)
-										viewModel.uploadFiles(config.appId)
+										viewModel.uploadFiles(config.appId, selectedFiles)
 									}
 									}
 								>
@@ -108,7 +113,7 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 										onChange={(e) => handleFileChange(button.identifier, e)}
 									/>
 									<span className="ml-auto text-white m-0 p-0">
-										{selectedFiles[button.identifier] || 'No file chosen'}
+										{selectedFileNames[button.identifier] || 'No file chosen'}
 									</span>
 								</label>
 							</div>
@@ -123,7 +128,7 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 									className="text-white font-bold py-2 px-4 rounded w-full"
 									onClick={() => {
 										viewModel.setMode(currentMode)
-										viewModel.uploadFiles(config.appId)
+										viewModel.uploadFiles(config.appId, selectedFiles)
 									}
 									}
 								>
