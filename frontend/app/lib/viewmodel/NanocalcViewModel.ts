@@ -11,8 +11,11 @@ export class NanocalcViewModel {
 
     async uploadFiles(appId: string, selectedFiles: SelectedFiles) {
         const API_ENDPOINT = `http://127.0.0.1:8080/upload/${appId}`;
+        
+        const FILE_ID_FORM_FIELD  = 'NANOCALC_FILE_ID_FORM_FIELD'
         const FILES_FORM_FIELD = 'NANOCALC_USER_UPLOADED_FILES';
         const MODE_FORM_FIELD = 'NANOCALC_USER_MODE';
+
         const formData = new FormData();
 
         if (this.mode) {
@@ -24,6 +27,7 @@ export class NanocalcViewModel {
                 const filesArray = selectedFiles[key];
         
                 filesArray.forEach(file => {
+                    formData.append(FILE_ID_FORM_FIELD , key);
                     formData.append(FILES_FORM_FIELD, file);
                 });
             }
@@ -41,7 +45,7 @@ export class NanocalcViewModel {
             body: formData,
         });
 
-        const parsedResponse = await response.json()
+        // const parsedResponse = await response.json()
         if (response.ok) {
             const blob = await response.blob();
             const downloadUrl = window.URL.createObjectURL(blob);
@@ -54,7 +58,7 @@ export class NanocalcViewModel {
             window.URL.revokeObjectURL(downloadUrl);
         } else {
             console.error('Error uploading files:', response.statusText);
-            console.error('Server message:', parsedResponse.message);
+            // console.error('Server message:', parsedResponse.message);
         }
     }
 }

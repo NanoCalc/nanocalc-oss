@@ -58,6 +58,7 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 								className={`px-4 py-2 rounded-md font-bold ${currentMode === mode ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
 								onClick={() => setCurrentMode(mode)}
 							>
+								{/* TODO: reset previous choices */}
 								{camelCaseToSpaced(mode)}
 							</button>
 						))}

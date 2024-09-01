@@ -20,6 +20,8 @@ app.config.from_object(Config)
 logging.basicConfig(level=Config.LOGGING_LEVEL, format=Config.LOGGING_FORMAT)
 cache = Cache(app)
 UPLOAD_FOLDER = app.config['UPLOAD_FOLDER']
+
+FILE_ID_FORM_FIELD = 'NANOCALC_FILE_ID_FORM_FIELD'
 FILES_FORM_FIELD = 'NANOCALC_USER_UPLOADED_FILES'
 MODE_FORM_FIELD = 'NANOCALC_USER_MODE'
 
@@ -243,11 +245,16 @@ def tmm_sim_submit():
 def upload_file(app_name):
     try:
         requestFiles = request.files
+        requestForm = request.form
         
-        if FILES_FORM_FIELD not in requestFiles:
+        if FILES_FORM_FIELD not in requestFiles or FILE_ID_FORM_FIELD not in requestForm:
             return respond_client('emptyOrUnidentifiedRequest', 400)
 
         files = [file for file in requestFiles.getlist(FILES_FORM_FIELD) if file.filename]
+        file_ids = requestForm.getlist(FILE_ID_FORM_FIELD)
+
+        if len(file_ids) != len(files):
+            return respond_client('mismatchedFileIdsAndFiles', 400)
         
         amountUploadedFiles = len(files)
         maxAllowedUploadedFiles = get_max_files(app_name)
@@ -273,15 +280,15 @@ def upload_file(app_name):
 
 
         files_bundle = {}
-        mode = request.form.get(MODE_FORM_FIELD)
+        mode = requestForm.get(MODE_FORM_FIELD)
+        if mode:
+            files_bundle['mode'] = mode
         
-        for file in files:
-            
-            parts = secure_filename(file.filename).split('_', 1)
-            identifier = parts[0]
-            original_filename = parts[1]
-            files_bundle[identifier] = file
-            
+        for file_id, file in zip(file_ids, files):
+            # filename = secure_filename(file.filename)
+            files_bundle[file_id] = file
+
+
         logging.info(f">>> files bundle: {files_bundle}")
         
         zip_file_path = app_handlers[app_name](files_bundle)
