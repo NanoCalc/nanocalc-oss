@@ -26,8 +26,9 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 	const articleBanner = config.articleBanner;
 	const firstMode = config.multipleModes?.[0] ?? '';
 	const [currentMode, setCurrentMode] = useState(firstMode);
-	const [selectedFiles, setSelectedFiles] = useState<{[key:string]: File[]}>({});
-	const [selectedFileNames, setSelectedFileNames] = useState<{[key:string]: string}>({});
+	const [selectedFiles, setSelectedFiles] = useState<{ [key: string]: File[] }>({});
+	const [selectedFileNames, setSelectedFileNames] = useState<{ [key: string]: string }>({});
+	const [isLoading, setIsLoading] = useState(false);
 
 
 	const handleFileChange = (fileIdentifier: string, event: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,6 +45,18 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 				...prevState,
 				[fileIdentifier]: Array.from(newFileList),
 			}));
+		}
+	};
+
+	const handleCalculateClick = async () => {
+		setIsLoading(true);
+		try {
+			viewModel.setMode(currentMode);
+			await viewModel.uploadFiles(config.appId, selectedFiles);
+		} catch (error) {
+			console.error('Error during file upload:', error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -91,11 +104,7 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 							>
 								<button
 									className="text-white font-bold py-2 px-4 rounded w-full"
-									onClick={() => {
-										viewModel.setMode(currentMode)
-										viewModel.uploadFiles(config.appId, selectedFiles)
-									}
-									}
+									onClick={() => handleCalculateClick()}
 								>
 									{button.text}
 								</button>
@@ -130,11 +139,7 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 							>
 								<button
 									className="text-white font-bold py-2 px-4 rounded w-full"
-									onClick={() => {
-										viewModel.setMode(currentMode)
-										viewModel.uploadFiles(config.appId, selectedFiles)
-									}
-									}
+									onClick={() => handleCalculateClick()}
 								>
 									{button.text}
 								</button>
@@ -158,6 +163,12 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 					priority={true}
 					className="mt-4 md:mt-52 rounded-lg w-auto h-auto"
 				/>
+
+				{isLoading && (
+					<div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+						<div className="throbber ease-linear rounded-full border-8 border-t-8 border-gray-200 h-32 w-32"></div>
+					</div>
+				)}
 				<CommonLogos logos={commonLogos} />
 			</section>
 		</main>
