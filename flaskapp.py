@@ -152,7 +152,6 @@ def upload_file(app_name):
 
         logging.info(f">>> handling the {app_name} webapp")
         logging.info(f">>> max files for the {app_name} webapp: {maxAllowedUploadedFiles}")
-        logging.info(f"app_handlers[app_name]: {app_handlers[app_name]}")
         
         if amountUploadedFiles > maxAllowedUploadedFiles:
             logging.error(f"uploadFileError.tooManyFiles: client uploaded {amountUploadedFiles}. Max allowed is: {maxAllowedUploadedFiles}")
