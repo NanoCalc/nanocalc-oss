@@ -7,7 +7,8 @@ from werkzeug.utils import secure_filename
 
 
 """
-Save a file with a UUID-based name and return its path
+Save a file as a UUID-based name in the specified directory
+and return its path
 """
 def save_file_with_uuid(directory, file):
     secure_name = secure_filename(file.filename)
@@ -23,15 +24,19 @@ def save_file_with_uuid(directory, file):
 
 
 """
-Generate a zip file from a directory and return its name
+Generate a zip file with all the visible content from a source directory,
+receive the targetDir and the webapp's name to construct the final URL.
+Returns the zip file path inside this final URL.
 """
-def generate_zip(path, webapp, upload_folder):
+def generate_zip(sourceDir, webAppName, targetDir):
     zip_file_name = f"{uuid.uuid4()}-generated-data.zip"
-    zip_file_path = os.path.join(upload_folder, webapp, zip_file_name)
+    zip_file_path = os.path.join(targetDir, webAppName, zip_file_name)
+
+    os.makedirs(os.path.join(targetDir, webAppName), exist_ok=True)
 
     with zipfile.ZipFile(zip_file_path, mode="w") as z:
-        for filename in os.listdir(path): 
-            file_path = os.path.join(path, filename)
+        for filename in os.listdir(sourceDir): 
+            file_path = os.path.join(sourceDir, filename)
             z.write(file_path, arcname=filename)
 
     return zip_file_path
