@@ -29,6 +29,7 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 	const [selectedFiles, setSelectedFiles] = useState<{ [key: string]: File[] }>({});
 	const [selectedFileNames, setSelectedFileNames] = useState<{ [key: string]: string }>({});
 	const [isLoading, setIsLoading] = useState(false);
+	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
 
 	const handleFileChange = (fileIdentifier: string, event: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,15 +50,16 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 	};
 
 	const handleCalculateClick = async () => {
+		setErrorMessage(null);
 		setIsLoading(true);
-		try {
-			viewModel.setMode(currentMode);
-			await viewModel.uploadFiles(config.appId, selectedFiles);
-		} catch (error) {
-			console.error('Error during file upload:', error);
-		} finally {
-			setIsLoading(false);
-		}
+		viewModel.setMode(currentMode);
+
+        const error = await viewModel.uploadFiles(config.appId, selectedFiles);
+        if (error) {
+            setErrorMessage(error);
+        }
+
+        setIsLoading(false);
 	};
 
 	return (
@@ -73,6 +75,7 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 									setCurrentMode(mode);
 									setSelectedFiles({});
 									setSelectedFileNames({});
+									setErrorMessage(null);
 								}}
 							>
 								{camelCaseToSpaced(mode)}
@@ -147,6 +150,11 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 							</div>
 						))}
 					</>)}
+					{errorMessage && (
+                        <div className="text-red-500 mt-4">
+                            {errorMessage}
+                        </div>
+                    )}
 				</div>
 
 				<div className="flex flex-col items-center justify-center mt-8 w-full max-w-md px-4">
