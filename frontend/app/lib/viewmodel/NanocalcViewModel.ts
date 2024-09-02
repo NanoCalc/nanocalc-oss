@@ -11,8 +11,8 @@ export class NanocalcViewModel {
 
     async uploadFiles(appId: string, selectedFiles: SelectedFiles) {
         const API_ENDPOINT = `http://127.0.0.1:8080/upload/${appId}`;
-        
-        const FILE_ID_FORM_FIELD  = 'NANOCALC_FILE_ID_FORM_FIELD'
+
+        const FILE_ID_FORM_FIELD = 'NANOCALC_FILE_ID_FORM_FIELD'
         const FILES_FORM_FIELD = 'NANOCALC_USER_UPLOADED_FILES';
         const MODE_FORM_FIELD = 'NANOCALC_USER_MODE';
 
@@ -25,18 +25,39 @@ export class NanocalcViewModel {
         for (const key in selectedFiles) {
             if (selectedFiles.hasOwnProperty(key)) {
                 const filesArray = selectedFiles[key];
-        
+
                 filesArray.forEach(file => {
-                    formData.append(FILE_ID_FORM_FIELD , key);
+                    formData.append(FILE_ID_FORM_FIELD, key);
                     formData.append(FILES_FORM_FIELD, file);
                 });
             }
         }
 
-        // console.group('FormData Contents');
+        // for devtime - prints the detailed upload object
+        // const formDataObject = {};
         // for (let [key, value] of formData.entries()) {
-        //     console.log(`${key}:`, value);
+        //     let displayValue = value;
+
+        //     if (value instanceof File) {
+        //         displayValue = {
+        //             name: value.name,
+        //             size: value.size,
+        //             type: value.type,
+        //         };
+        //     }
+
+        //     if (formDataObject.hasOwnProperty(key)) {
+        //         if (Array.isArray(formDataObject[key])) {
+        //             formDataObject[key].push(displayValue);
+        //         } else {
+        //             formDataObject[key] = [formDataObject[key], displayValue];
+        //         }
+        //     } else {
+        //         formDataObject[key] = displayValue;
+        //     }
         // }
+        // console.group('Structured FormData Contents');
+        // console.log(JSON.stringify(formDataObject, null, 2));
         // console.groupEnd();
 
 
@@ -45,7 +66,7 @@ export class NanocalcViewModel {
             body: formData,
         });
 
-        // const parsedResponse = await response.json()
+
         if (response.ok) {
             const blob = await response.blob();
             const downloadUrl = window.URL.createObjectURL(blob);
@@ -57,8 +78,9 @@ export class NanocalcViewModel {
             a.remove();
             window.URL.revokeObjectURL(downloadUrl);
         } else {
+            const parsedResponse = await response.json()
             console.error('Error uploading files:', response.statusText);
-            // console.error('Server message:', parsedResponse.message);
+            console.error('Server message:', parsedResponse.message);
         }
     }
 }
