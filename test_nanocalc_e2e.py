@@ -81,7 +81,7 @@ class NanoCalcE2ETest(unittest.TestCase):
             }
 
             mode = None 
-            self.validator(url, files, 'fretcalc', data=mode)
+            self.validator(url, files, 'FRET-Calc', data=mode)
 
 
     def test_fret_calc_upload_error(self):
@@ -100,6 +100,62 @@ class NanoCalcE2ETest(unittest.TestCase):
 
             mode = None 
             self.error_validator(url, files, 'FRET-Calc', data=mode)
+
+    def test_ri_calc_optical_constants_upload_success(self):
+        url = f'{self.HOST}/upload/ricalc'
+
+        with open('samples/ri/input.xlsx', 'rb') as inputExcel, \
+             open('samples/ri/decadic.dat', 'rb') as decadicCoefficient:
+
+            files = {
+                'inputExcel': [inputExcel],
+                'decadicCoefficient': [decadicCoefficient],
+            }
+
+            mode = 'opticalConstants' 
+            self.validator(url, files, 'RI-Calc Optical Constants', data=mode)
+
+    def test_ri_calc_optical_constants_upload_error(self):
+        url = f'{self.HOST}/upload/ricalc'
+
+        with open('samples/broken/broken_input.xlsx', 'rb') as inputExcel, \
+             open('samples/broken/broken_data.dat', 'rb') as decadicCoefficient:
+
+            files = {
+                'inputExcel': [inputExcel],
+                'decadicCoefficient': [decadicCoefficient],
+            }
+
+            mode = 'opticalConstants' 
+            self.error_validator(url, files, 'RI-Calc Optical Constants', data=mode)
+
+    def test_ri_calc_refractive_index_upload_success(self):
+        url = f'{self.HOST}/upload/ricalc'
+        
+        with open('samples/ri/input.xlsx', 'rb') as inputExcel, \
+             open('samples/ri/decadic.dat', 'rb') as decadicCoefficient:
+
+            files = {
+                'inputExcel': [inputExcel],
+                'constantK': [decadicCoefficient],
+            }
+
+            mode = 'refractiveIndex' 
+            self.validator(url, files, 'RI-Calc Refractive Index', data=mode)
+
+    def test_ri_calc_refractive_index_upload_error(self):
+        url = f'{self.HOST}/upload/ricalc'
+
+        with open('samples/broken/broken_input.xlsx', 'rb') as inputExcel, \
+             open('samples/broken/broken_data.dat', 'rb') as decadicCoefficient:
+
+            files = {
+                'inputExcel': [inputExcel],
+                'decadicCoefficient': [decadicCoefficient],
+            }
+
+            mode = 'refractiveIndex' 
+            self.error_validator(url, files, 'RI-Calc Refractive Index', data=mode)
 
     def test_plq_sim_acceptor_upload_success(self):
         url = f'{self.HOST}/upload/plqsim'

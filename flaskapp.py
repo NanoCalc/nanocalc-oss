@@ -62,17 +62,19 @@ def handle_ricalc(files_bundle):
 
     try:
         input_excel_path = save_file_with_uuid(ricalc_folder, files_bundle['inputExcel'])
-        
-        if 'decadicCoefficient' in files_bundle:
+        mode = files_bundle['mode']
+
+        if mode == 'opticalConstants':
             # calculate nk
-            logging.info(f">>>> nk_calculation")
             coefficient_path = save_file_with_uuid(ricalc_folder, files_bundle['decadicCoefficient'])
             dataFolderPath = n_k_calculation(input_excel_path, coefficient_path, UPLOAD_FOLDER)
-        elif 'constantK' in files_bundle:
+        elif mode == 'refractiveIndex':
             # calculate n
-            logging.info(f">>>> n_calculation")
             coefficient_path = save_file_with_uuid(ricalc_folder, files_bundle['constantK'])
             dataFolderPath = n_calculation(input_excel_path, coefficient_path, UPLOAD_FOLDER)
+        else:
+            #TODO: throw?
+            pass
         
         zip_file_name = generate_zip(dataFolderPath, 'ricalc', app.config['UPLOAD_FOLDER'])
         return zip_file_name
