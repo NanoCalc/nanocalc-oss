@@ -68,10 +68,10 @@ class NanoCalcE2ETest(unittest.TestCase):
 
     def test_fret_calc_upload_success(self):
         url = f'{self.HOST}/upload/fretcalc' 
-        with open('samples/fret/input.xlsx', 'rb') as xif, \
-             open('samples/fret/emission.dat', 'rb') as ef, \
-             open('samples/fret/refractive.dat', 'rb') as rfi, \
-             open('samples/fret/extinction.dat', 'rb') as ecf:
+        with open('samples/fretcalc/input.xlsx', 'rb') as xif, \
+             open('samples/fretcalc/emission.dat', 'rb') as ef, \
+             open('samples/fretcalc/refractive.dat', 'rb') as rfi, \
+             open('samples/fretcalc/extinction.dat', 'rb') as ecf:
 
             files = {
                 'inputExcel': [xif],
@@ -104,8 +104,8 @@ class NanoCalcE2ETest(unittest.TestCase):
     def test_ri_calc_optical_constants_upload_success(self):
         url = f'{self.HOST}/upload/ricalc'
 
-        with open('samples/ri/input.xlsx', 'rb') as inputExcel, \
-             open('samples/ri/decadic.dat', 'rb') as decadicCoefficient:
+        with open('samples/ricalc/input.xlsx', 'rb') as inputExcel, \
+             open('samples/ricalc/decadic.dat', 'rb') as decadicCoefficient:
 
             files = {
                 'inputExcel': [inputExcel],
@@ -132,8 +132,8 @@ class NanoCalcE2ETest(unittest.TestCase):
     def test_ri_calc_refractive_index_upload_success(self):
         url = f'{self.HOST}/upload/ricalc'
         
-        with open('samples/ri/input.xlsx', 'rb') as inputExcel, \
-             open('samples/ri/decadic.dat', 'rb') as decadicCoefficient:
+        with open('samples/ricalc/input.xlsx', 'rb') as inputExcel, \
+             open('samples/ricalc/decadic.dat', 'rb') as decadicCoefficient:
 
             files = {
                 'inputExcel': [inputExcel],
@@ -196,17 +196,17 @@ class NanoCalcE2ETest(unittest.TestCase):
         url = f'{self.HOST}/upload/tmmsim' 
         files = []
         try: 
-            with open('samples/tmm/input_bhj.xlsx', 'rb') as xif, \
-                 open('samples/tmm/AM15G.csv', 'rb') as am15g, \
-                 open('samples/tmm/nk_Air.csv', 'rb') as air, \
-                 open('samples/tmm/nk_Al.csv', 'rb') as al, \
-                 open('samples/tmm/nk_Ca.csv', 'rb') as ca, \
-                 open('samples/tmm/nk_ITO.csv', 'rb') as ito, \
-                 open('samples/tmm/nk_P3HT.csv', 'rb') as p3ht, \
-                 open('samples/tmm/nk_P3HTPCBM.csv', 'rb') as p3htpcbm, \
-                 open('samples/tmm/nk_PCBM.csv', 'rb') as pcbm, \
-                 open('samples/tmm/nk_PEDOT.csv', 'rb') as pedot, \
-                 open('samples/tmm/nk_SiO2.csv', 'rb') as sio2: 
+            with open('samples/tmmsim/input_bhj.xlsx', 'rb') as xif, \
+                 open('samples/tmmsim/AM15G.csv', 'rb') as am15g, \
+                 open('samples/tmmsim/nk_Air.csv', 'rb') as air, \
+                 open('samples/tmmsim/nk_Al.csv', 'rb') as al, \
+                 open('samples/tmmsim/nk_Ca.csv', 'rb') as ca, \
+                 open('samples/tmmsim/nk_ITO.csv', 'rb') as ito, \
+                 open('samples/tmmsim/nk_P3HT.csv', 'rb') as p3ht, \
+                 open('samples/tmmsim/nk_P3HTPCBM.csv', 'rb') as p3htpcbm, \
+                 open('samples/tmmsim/nk_PCBM.csv', 'rb') as pcbm, \
+                 open('samples/tmmsim/nk_PEDOT.csv', 'rb') as pedot, \
+                 open('samples/tmmsim/nk_SiO2.csv', 'rb') as sio2: 
 
                 files = {
                     'inputExcel': [xif],
@@ -227,17 +227,17 @@ class NanoCalcE2ETest(unittest.TestCase):
             url = f'{self.HOST}/upload/tmmsim' 
             files = []
             try: 
-                with open('samples/tmm/input_bilayer.xlsx', 'rb') as xif, \
-                     open('samples/tmm/AM15G.csv', 'rb') as am15g, \
-                     open('samples/tmm/nk_Air.csv', 'rb') as air, \
-                     open('samples/tmm/nk_Al.csv', 'rb') as al, \
-                     open('samples/tmm/nk_Ca.csv', 'rb') as ca, \
-                     open('samples/tmm/nk_ITO.csv', 'rb') as ito, \
-                     open('samples/tmm/nk_P3HT.csv', 'rb') as p3ht, \
-                     open('samples/tmm/nk_P3HTPCBM.csv', 'rb') as p3htpcbm, \
-                     open('samples/tmm/nk_PCBM.csv', 'rb') as pcbm, \
-                     open('samples/tmm/nk_PEDOT.csv', 'rb') as pedot, \
-                     open('samples/tmm/nk_SiO2.csv', 'rb') as sio2: 
+                with open('samples/tmmsim/input_bilayer.xlsx', 'rb') as xif, \
+                     open('samples/tmmsim/AM15G.csv', 'rb') as am15g, \
+                     open('samples/tmmsim/nk_Air.csv', 'rb') as air, \
+                     open('samples/tmmsim/nk_Al.csv', 'rb') as al, \
+                     open('samples/tmmsim/nk_Ca.csv', 'rb') as ca, \
+                     open('samples/tmmsim/nk_ITO.csv', 'rb') as ito, \
+                     open('samples/tmmsim/nk_P3HT.csv', 'rb') as p3ht, \
+                     open('samples/tmmsim/nk_P3HTPCBM.csv', 'rb') as p3htpcbm, \
+                     open('samples/tmmsim/nk_PCBM.csv', 'rb') as pcbm, \
+                     open('samples/tmmsim/nk_PEDOT.csv', 'rb') as pedot, \
+                     open('samples/tmmsim/nk_SiO2.csv', 'rb') as sio2: 
 
                     files = {
                         'inputExcel': [xif],
