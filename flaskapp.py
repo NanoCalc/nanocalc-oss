@@ -105,11 +105,20 @@ def handle_plqsim(files_bundle):
 
 
 def handle_tmmsim(files_bundle):
-    tmmsim_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim')
+    tmmsim_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim', 'input_files')
 
     try:
         input_excel_path = save_file_with_uuid(tmmsim_folder, files_bundle['inputExcel'])
-        #TODO
+
+        layerFiles = [layerFile for layerFile in files_bundle['layerFiles'] if layerFile]
+        for layerFile in layerFiles:
+            csv_path = os.path.join(tmmsim_folder, secure_filename(layerFile.filename))
+            layerFile.save(csv_path)
+
+        dataFolderPath = calculation(input_excel_path, UPLOAD_FOLDER, tmmsim_folder)
+        zip_file_name = generate_zip(dataFolderPath, 'tmmsim', app.config['UPLOAD_FOLDER'])
+        return zip_file_name
+
     except Exception as e:
         logging.error(f"handle_tmmsim.error: {e}")
         raise e
@@ -122,46 +131,6 @@ app_handlers = {
     'tmmsim': handle_tmmsim,
 }
 
-
-# TMMSim view - data upload
-@app.route('/tmmsim/submit', methods=['POST'])
-def tmm_sim_submit():
-    appName = "TMMSim"
-    webApp = "tmmsim"
-    
-    try:
-        xif = request.files["xif"]
-
-        if xif and allowed_file(xif.filename, ['xlsx']):
-            xif = save_file_with_uuid(os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim' ,'input_files'), xif, 'xlsx')
-        else:
-            upload_error = UploadError("file_type", "index file", "xlsx", "tmmsim")
-            return render_template("input_error.html", data=upload_error.to_dict())
-
-        layer_files = request.files.getlist("layer_files")
-        if len(layer_files) > 10:
-            upload_error = UploadError(error_type="file_count", redirect_url="tmmsim", file_name=None, expected_ext=None)
-            return render_template("input_error.html", data=upload_error.to_dict())
-
-        csv_paths = []
-        for file in layer_files:
-            if allowed_file(file.filename, ['csv']):
-                csv_path = os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim' ,'input_files', secure_filename(file.filename))
-                file.save(csv_path)
-                csv_paths.append(csv_path)
-            else:
-                upload_error = UploadError("file_type", "layer file", "csv", "tmmsim")
-                return render_template("input_error.html", data=upload_error.to_dict())
-
-        input_dir = os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim' ,'input_files')
-        data = calculation(xif, UPLOAD_FOLDER, input_dir)
-        zip_file_name = generate_zip(data, webApp, Config.UPLOAD_FOLDER)
-        return render_template("upload_success.html", zip_name=zip_file_name, app_name=appName, webapp=webApp)
-    
-    except Exception as e:
-        logging.warning(f"Error in TMMSim: {e}")
-        upload_error = UploadError("file_misformat", None, None, "tmmsim")
-        return render_template("input_error.html", data=upload_error.to_dict())
 
 @app.route('/upload/<app_name>', methods=['POST'])
 def upload_file(app_name):
@@ -207,8 +176,12 @@ def upload_file(app_name):
             files_bundle['mode'] = mode
         
         for file_id, file in zip(file_ids, files):
-            # filename = secure_filename(file.filename)
-            files_bundle[file_id] = file
+            if file_id == 'layerFiles':
+                if file_id not in files_bundle:
+                    files_bundle[file_id] = []
+                files_bundle[file_id].append(file)
+            else:
+                files_bundle[file_id] = file
 
 
         logging.info(f">>> files bundle: {files_bundle}")
@@ -232,7 +205,7 @@ def upload_file(app_name):
     except RequestEntityTooLarge as e:
         return respond_client('tooLargeRequest', 413)
     except Exception as e:
-        logging.error(f"uploadFileError.genericError: {e}")
+        logging.exception(f"uploadFileError.genericError")
         return respond_client('internalServerError', 500)
 
 
