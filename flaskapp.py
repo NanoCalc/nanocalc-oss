@@ -151,19 +151,12 @@ def upload_file(app_name):
         
         amountUploadedFiles = len(files)
         maxAllowedUploadedFiles = get_max_files(app_name)
-
-        logging.info(f">>> handling the {app_name} webapp")
-        logging.info(f">>> max files for the {app_name} webapp: {maxAllowedUploadedFiles}")
         
         if amountUploadedFiles > maxAllowedUploadedFiles:
             logging.error(f"uploadFileError.tooManyFiles: client uploaded {amountUploadedFiles}. Max allowed is: {maxAllowedUploadedFiles}")
             return respond_client('tooManyFiles', 413)
 
-        logging.info(f">>> uploaded {amountUploadedFiles} files")
-        logging.info(f">>> uploaded files: {[file.filename for file in files]}")
-
         allowed_extensions = get_allowed_extensions(app_name)
-        logging.info(f">>> allowed extensions for this webapp: {allowed_extensions}")
 
         for file in files:
             if file.filename.split(".").pop() not in allowed_extensions:
@@ -184,8 +177,6 @@ def upload_file(app_name):
             else:
                 files_bundle[file_id] = file
 
-
-        logging.info(f">>> files bundle: {files_bundle}")
         
         zip_file_path = app_handlers[app_name](files_bundle)
         
