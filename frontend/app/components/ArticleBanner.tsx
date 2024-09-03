@@ -5,7 +5,7 @@ interface ArticleBannerProps {
     config: ArticleBannerConfig;
 }
 
-export default function ({ config }: ArticleBannerProps) {
+export default function ArticleBanner({ config }: ArticleBannerProps) {
     return (
         <article className="bg-nanocalc-blue rounded-md p-3 text-justify text-white animate-slideIn">
             If you used this tool in your data analysis, please indicate so by citing <b><Link href={config.doi}>{config.title}</Link></b> in your work.
