@@ -69,7 +69,7 @@ jobs:
 
     - name: Run end to end tests 
       run: | 
-        python test_nanocalc_e2e.py
+        python test_e2e_nanocalc.py
 
     - name: Clean up
       run: |

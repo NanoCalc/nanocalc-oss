@@ -1,7 +1,6 @@
 # NanoCalc Open Source Repository
-![NanoCalc Logo](https://github.com/NanoCalc/nanocalc-oss/assets/34662089/ccfab544-a9ab-4043-bf98-251da4179e90)
 
-## Standard usage (Docker container):
+## Getting started:
 
 ### Build the image:
 ```shell 
@@ -12,8 +11,6 @@ docker build -t nanocalc-image . --network=host
 ```shell
 docker run --rm --name nanocalc-container \
 -e DEBUG=True -p 8080:8080 \
--v $(pwd)/GeoIP.dat:/app/GeoIP.dat \
--v $(pwd)/visitors.db:/app/visitors.db \
 nanocalc-image
 ```
 
@@ -22,34 +19,7 @@ nanocalc-image
 ```shell
 docker run --rm -d --name nanocalc-container \
 -e DEBUG=False -p 8080:8080 \
--v $(pwd)/GeoIP.dat:/app/GeoIP.dat \
--v $(pwd)/visitors.db:/app/visitors.db \
 nanocalc-image
-```
-
-## Direct usage (with Python virtual environment):
-
-### First, create a virtual environment and activate it:
-```shell
-python3 -m venv env
-source env/bin/activate
-```
-
-### Install project and test dependencies:
-```shell
-pip install -r requirements.txt
-pip install -r test_requirements.txt
-```
-
-### Setup local environment:
-
-```shell
-./setup_local_env.sh
-```
-
-### Start the server in debug mode:
-```shell
-DEBUG=True PORT=8080 UPLOAD_FOLDER="app/upload" python flaskapp.py
 ```
 
 ## Running tests:
@@ -68,4 +38,21 @@ pip install -r test_requirements.txt
 ### Run the test suite:
 ```shell
 coverage run -m unittest discover
+```
+
+
+## Running with Python `venv` (for debugging):
+
+Create a virtual environment, activate it and install dependencies:
+```
+python3 -m venv env
+source env/bin/activate
+pip install -r requirements.txt
+```
+
+Create local folders and run the main script:
+```
+./setup_local_env.sh
+
+DEBUG=True PORT=8080 UPLOAD_FOLDER="nanocalc_uploads" python flaskapp.py
 ```

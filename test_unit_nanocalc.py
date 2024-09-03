@@ -1,83 +1,67 @@
-from helper_functions import *
+from helper_functions import save_file_with_uuid, generate_zip
 from flask import Flask
-from visitor import db, Visitor
 from config import TestConfig
 import unittest
-import hashlib
 import unittest.mock as mock
-import tempfile 
+import os
+import tempfile
+import zipfile
+import uuid
 
 class TestHelperFunctions(unittest.TestCase):
-    def test_allowed_file(self):
-        self.assertTrue(allowed_file("test.jpg", ["jpg", "jpeg"]))
-        self.assertFalse(allowed_file("test.txt", ["jpg", "jpeg"])) 
-        self.assertFalse(allowed_file("test.txt", [])) 
-
 
     @mock.patch('uuid.uuid4')
     def test_save_file_with_uuid(self, mock_uuid4):
-        mock_uuid4.return_value = uuid.UUID('d'*32)  
+        mock_uuid4.return_value = "mockUUID"
+        filename_mock = "testfile.csv"
 
-        with tempfile.TemporaryDirectory() as tmpdirname:
+        with tempfile.TemporaryDirectory() as tmpdir:
             file_mock = mock.MagicMock()
-            filepath = save_file_with_uuid(tmpdirname, file_mock, 'txt')
+            file_mock.filename = filename_mock
 
-            expected_path = os.path.join(tmpdirname, "dddddddd-dddd-dddd-dddd-dddddddddddd.txt")
-            self.assertEqual(filepath, expected_path)
+            finalPath = save_file_with_uuid(tmpdir, file_mock)
+            finalFileName = finalPath.split("/").pop()
+            
+            self.assertEqual(finalFileName, "mockUUID.csv")
+            mock_uuid4.assert_called_once()
+            self.assertTrue(finalPath.startswith(tmpdir))
+            self.assertTrue(finalPath.endswith(".csv"))
 
-            file_mock.save.assert_called_once_with(expected_path)
-             
+            
 
     @mock.patch('uuid.uuid4')
     def test_generate_zip(self, mock_uuid4):
-        with tempfile.TemporaryDirectory() as tmpdirname:
-            with open(os.path.join(tmpdirname, "dummy.txt"), 'w') as f:
-                f.write("Hello World")
+        mock_uuid4.return_value = "mockUUID"
+        webAppName_mock = "randomNanocalcApp"
 
-            zip_filename = generate_zip(tmpdirname, 'fret', TestConfig.UPLOAD_FOLDER)
-            zip_path = os.path.join(TestConfig.UPLOAD_FOLDER, 'fret', zip_filename)
-            self.assertTrue(os.path.exists(zip_path))
-            
-            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-                self.assertIn("dummy.txt", zip_ref.namelist()) 
+        with tempfile.TemporaryDirectory() as sourceDir, tempfile.TemporaryDirectory() as targetDir:
+            file_mock1 = mock.MagicMock()
+            file_mock2 = mock.MagicMock()   
+            file_mock1.filename = "myPicture.png"
+            file_mock2.filename = "myData.dat"
 
+            with open(os.path.join(sourceDir, "myPicture.png"), 'w') as f:
+                f.write("0xFF")
+            with open(os.path.join(sourceDir, "myData.dat"), 'w') as f:
+                f.write("Data | in | columns")
 
-    def test_log_vistor(self):
-        pass 
-    def test_get_ip_count(self):
-        pass
-    def test_get_unique_sessions(self):
-        pass
-    
+            finalZipFilePath = generate_zip(sourceDir, webAppName_mock, targetDir)
+            finalZipFileName = finalZipFilePath.split("/").pop()
 
-class TestDatabase(unittest.TestCase):
-    def setUp(self):
-        self.app = Flask(__name__)
-        self.app.config.from_object(TestConfig)
-        self.app_context = self.app.app_context()
-        self.app_context.push()
-        db.init_app(self.app)
-        db.create_all()
+            self.assertEqual(finalZipFileName, "mockUUID" + "-generated-data.zip")
 
+            with zipfile.ZipFile(finalZipFilePath, 'r') as zip_ref:
+                self.assertIn("myPicture.png", zip_ref.namelist()) 
+                self.assertIn("myData.dat", zip_ref.namelist())
 
-    def tearDown(self):
-        db.session.remove()
-        db.drop_all()
-        self.app_context.pop()
+                with zip_ref.open("myPicture.png") as file:
+                    content = file.read().decode('utf-8')
+                    self.assertEqual(content, "0xFF")
 
-    
-    def test_visitor_creation(self):
-        visitor = Visitor(ip_address='192.168.1.1', user_agent='Mozilla/5.0', operating_system='Linux', country='USA')
-        db.session.add(visitor)
-        db.session.commit()
+                with zip_ref.open("myData.dat") as file:
+                    content = file.read().decode('utf-8')
+                    self.assertEqual(content, "Data | in | columns")
 
-        saved_visitor = Visitor.query.filter_by(ip_address=visitor.ip_address).first()
-        self.assertIsNotNone(saved_visitor)
-        self.assertNotEqual(saved_visitor.ip_address, '192.168.1.1')
-        self.assertEqual(saved_visitor.ip_address, hashlib.sha256('192.168.1.1'.encode()).hexdigest())
-        self.assertEqual(saved_visitor.user_agent, 'Mozilla/5.0')
-        self.assertEqual(saved_visitor.operating_system, 'Linux')
-        self.assertEqual(saved_visitor.country, 'USA')
 
 
 

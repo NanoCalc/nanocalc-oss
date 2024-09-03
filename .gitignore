@@ -4,10 +4,10 @@ ri_calc.py
 tmm_sim.py
 *.pem
 env
-app/
 instance/
 *.pyc
 __pycache__
 GeoIP*.dat
 *.db
 .coverage
+nanocalc_uploads
