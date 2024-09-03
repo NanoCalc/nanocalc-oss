@@ -28,102 +28,75 @@ export class NanocalcViewModel {
         return appIdentifiers;
     }
 
-    validateAppFiles(appId: string, selectedFiles: SelectedFiles): boolean {
-        const expectedIds = this.getAppIdentifiers(appId);
-        if (!expectedIds) {
-            return false;
+
+    validateFiles(selectedFiles: SelectedFiles, appId: string): string | null {
+        if (Object.keys(selectedFiles).length === 0) {
+            return `Please fill in all necessary files.`
         }
+        const appConfig = Object.values(nanocalcApps).find(app => app.appId === appId);
         const actualIds = Object.keys(selectedFiles);
+        if (!appConfig) return 'Invalid application ID.';
 
-        // Every web app needs an input file (first expectedId)
-        if (!actualIds.includes(expectedIds[0])) {
-            return false;
+        const requiredIdentifiers = appConfig.buttons
+            .filter(button => !button.isCalculate)
+            .map(button => button.identifier);
+        
+        if (!actualIds.includes(requiredIdentifiers[0])) {
+            return `Please enter an input file.`;
         }
 
-        // file extension check
-        for (const id of expectedIds) {
-            if (!actualIds.includes(id)) {
-                return false;
-            }
-
-            const appConfig = Object.values(this.nanocalcAppConfig).find(app => app.appId === appId);
-            if (!appConfig) {
-                return false;
-            }
-
-            const expectedButton = appConfig.buttons.find((button): button is RegularButton => !button.isCalculate && button.identifier === id);
-            if (!expectedButton) {
-                return false;
-            }
-
-            // Validate file extensions for each selected file
-            const filesArray = selectedFiles[id];
-            const expectedExtension = expectedButton.expectedExtension;
-
-            for (const file of filesArray) {
-                const fileExtension = file.name.split('.').pop()?.toLowerCase();
-                if (fileExtension !== expectedExtension) {
-                    return false;
-                }
-            }
-        }
-
-        // necessary files check
-        switch (appId) {
-            case "fretcalc":
-                for (const id of expectedIds) {
-                    if (!actualIds.includes(id)) {
-                        return false;
+        for (const button of appConfig.buttons) {
+            if (!button.isCalculate) {
+                const files = selectedFiles[button.identifier];
+                if (files) {
+                    for (const file of files) {
+                        const fileExtension = file.name.split('.').pop()?.toLowerCase();
+                        if (fileExtension !== button.expectedExtension) {
+                            return `File ${file.name} must have the .${button.expectedExtension} extension.`;
+                        }
                     }
                 }
-                return true;
-            case "ricalc":
+            }
+        }
+        
+        switch (appId) {
+            case 'fretcalc':
+                if (Object.keys(selectedFiles).length !== requiredIdentifiers.length) {
+                    return 'All files are required for FRET-Calc.';
+                }
+                break;
+            case 'ricalc':
                 const datFiles = ['decadicCoefficient', 'constantK'];
                 const foundOptions = datFiles.filter(option => actualIds.includes(option));
                 if (foundOptions.length !== 1) {
-                    return false;
+                    return 'You must provide either the Decadic Abs or K file for RI-Calc.';
                 }
-                return true;
-            case "plqsim":
-                return true;
-            case "tmmsim":
-                return true;
+                break;
+            case 'plqsim':
+                if (Object.keys(selectedFiles).length !== 1) {
+                    return 'PLQ-Sim requires exactly one file.';
+                }
+                break;
+            case 'tmmsim':
+                if (selectedFiles['layerFiles'] && selectedFiles['layerFiles'].length > 10) {
+                    return 'You can upload up to 10 layer files for TMM-Sim.';
+                }
+                break;
             default:
-                return false;
-        }
-    }
-
-
-
-    validateFiles(selectedFiles: SelectedFiles, appId: string): string | null {
-        // specific app files validation: which keys (files) are required and their extensions
-        if (!this.validateAppFiles(appId, selectedFiles)) {
-            return `Please select all required files and check their extensions.`;
+                return 'Invalid application ID.';
         }
 
-        // general app files validation: size and quantity
+
+        // Validate file size
         for (const key in selectedFiles) {
-            if (selectedFiles.hasOwnProperty(key)) {
-                const filesArray = selectedFiles[key];
-
-
-                if (key === 'layerFiles') {
-                    if (filesArray.length > 10) {
-                        return `Too many files selected. Max limit is 10 files.`;
-                    }
-                } else if (filesArray.length > 1) {
-                    return `Too many files selected. Only one file is allowed.`;
-                }
-
-                for (const file of filesArray) {
-                    const fileSizeMB = file.size / 1024 / 1024;
-
-                    if (fileSizeMB > MAX_FILE_SIZE_MB) {
-                        return `${file.name} is too large. Max size is ${MAX_FILE_SIZE_MB} MB.`;
-                    }
+            const files = selectedFiles[key];
+            for (const file of files) {
+                if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+                    return `File ${file.name} exceeds the maximum size of ${MAX_FILE_SIZE_MB} MB.`;
                 }
             }
         }
+
         return null;
     }
 
@@ -133,6 +106,7 @@ export class NanocalcViewModel {
             return validationError;
         }
 
+        //const API_ENDPOINT = `https://nanocalc.org/upload/${appId}`;
         const API_ENDPOINT = `http://127.0.0.1:8080/upload/${appId}`;
 
         const FILE_ID_FORM_FIELD = 'NANOCALC_FILE_ID_FORM_FIELD'
