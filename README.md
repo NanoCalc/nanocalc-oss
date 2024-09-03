@@ -11,8 +11,6 @@ docker build -t nanocalc-image . --network=host
 ```shell
 docker run --rm --name nanocalc-container \
 -e DEBUG=True -p 8080:8080 \
--v $(pwd)/GeoIP.dat:/app/GeoIP.dat \
--v $(pwd)/visitors.db:/app/visitors.db \
 nanocalc-image
 ```
 
@@ -21,8 +19,6 @@ nanocalc-image
 ```shell
 docker run --rm -d --name nanocalc-container \
 -e DEBUG=False -p 8080:8080 \
--v $(pwd)/GeoIP.dat:/app/GeoIP.dat \
--v $(pwd)/visitors.db:/app/visitors.db \
 nanocalc-image
 ```
 
