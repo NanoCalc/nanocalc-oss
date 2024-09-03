@@ -1,4 +1,4 @@
-name: Nano Calc test suite
+name: Nano Calc build and test suite
 
 on:
   push:
@@ -11,9 +11,8 @@ on:
       - develop
 
 jobs:
-  build:
+  backend-build-and-tests:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
 
@@ -22,7 +21,10 @@ jobs:
       with:
         python-version: '3.x'
 
-    - name: Set up mocks 
+    - name: Enter backend folder
+      run: cd backend
+    
+    - name: Set up web apps mocks 
       run: |
         cp mocks/fret_calc_mock.py fret_calc.py
         cp mocks/plq_sim_mock.py plq_sim.py
@@ -65,3 +67,48 @@ jobs:
     - name: Clean up
       run: |
         killall python
+  
+  frontend-build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+    - name: Enter backend folder
+      run: cd frontend
+
+    - name: Install dependencies
+      run: npm ci
+    
+    
+    - name: Build frontend prod bundle
+      run: npm run build
+
+  build-docker-compose:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Cache Docker layers
+      uses: actions/cache@v3
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
+    
+    - name: Build compose project
+      run: docker-compose build
+
+    - name: Run services
+      run: docker-compose up -d
+
+    - name: Cleanup
+      run: docker-compose down
