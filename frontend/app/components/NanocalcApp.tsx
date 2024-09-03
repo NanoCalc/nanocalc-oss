@@ -151,7 +151,7 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 						))}
 					</>)}
 					{errorMessage && (
-                        <div className="text-red-500 mt-4">
+                        <div className="text-red-600 mt-4">
                             {errorMessage}
                         </div>
                     )}

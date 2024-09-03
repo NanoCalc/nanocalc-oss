@@ -1,3 +1,6 @@
+import { RegularButton } from "../model/NanocalcAppConfig";
+import nanocalcApps from "../nanocalc_apps";
+
 interface SelectedFiles {
     [key: string]: File[]
 }
@@ -6,23 +9,75 @@ const ALLOWED_EXTENSIONS = ['xlsx', 'dat', 'csv'];
 
 export class NanocalcViewModel {
     private mode: string = '';
+    private nanocalcAppConfig = nanocalcApps
 
     setMode(newMode: string) {
         this.mode = newMode;
     }
 
-    validateFiles(selectedFiles: SelectedFiles): string | null {
-        if (Object.keys(selectedFiles).length === 0) {
-            return `Please enter a non-empty input.`;
+    getAppIdentifiers(appId: string): string[] | null {
+        const appConfig = Object.values(this.nanocalcAppConfig).find(app => app.appId === appId);
+
+        if (!appConfig) {
+            return null;
         }
-        console.log(`selectedFiles: ${JSON.stringify(selectedFiles, null, 2)}`)
+
+        const appIdentifiers: string[] = appConfig.buttons
+            .filter((button): button is RegularButton => !button.isCalculate)
+            .map(button => button.identifier);
+
+        return appIdentifiers;
+    }
+
+    validateAppFiles(appId: string, selectedFiles: SelectedFiles): boolean {
+        const expectedIds = this.getAppIdentifiers(appId);
+        if (!expectedIds) {
+            return false;
+        }
+        const actualIds = Object.keys(selectedFiles);
+
+        // Every web app needs an input file (first expectedId)
+        if (!actualIds.includes(expectedIds[0])) {
+            return false;
+        }
+
+        switch (appId) {
+            case "fretcalc":
+                for (const id of expectedIds) {
+                    if (!actualIds.includes(id)) {
+                        return false;
+                    }
+                }
+                return true;
+            case "ricalc":
+                const datFiles = ['decadicCoefficient', 'constantK'];
+                const foundOptions = datFiles.filter(option => actualIds.includes(option));
+                if (foundOptions.length !== 1) {
+                    return false;
+                }
+                return true;
+            case "plqsim":
+                return true;
+            case "tmmsim":
+                return true;
+            default:
+                return false;
+        }
+    }
+
+
+
+    validateFiles(selectedFiles: SelectedFiles, appId: string): string | null {
+        // specific app files validation: which keys are required
+        if (!this.validateAppFiles(appId, selectedFiles)) {
+            return `Please select all required files.`;
+        }
+
+        // general app files validation: size, extension and quantity
         for (const key in selectedFiles) {
             if (selectedFiles.hasOwnProperty(key)) {
                 const filesArray = selectedFiles[key];
 
-                if (!filesArray || filesArray.length === 0) {
-                    return `Please select all required files.`;
-                }
 
                 if (key === 'layerFiles') {
                     if (filesArray.length > 10) {
@@ -50,7 +105,7 @@ export class NanocalcViewModel {
     }
 
     async uploadFiles(appId: string, selectedFiles: SelectedFiles) {
-        const validationError = this.validateFiles(selectedFiles);
+        const validationError = this.validateFiles(selectedFiles, appId);
         if (validationError) {
             return validationError;
         }
@@ -125,11 +180,13 @@ export class NanocalcViewModel {
 
                 return null;
             } else {
-                const parsedResponse = await response.json();
-                return `Error uploading files: ${response.statusText}. Server message: ${parsedResponse.message}`;
+                // const parsedResponse = await response.json();
+                // console.error(`Error uploading files: ${response.statusText}. Server message: ${parsedResponse.message}`)
+                return `Error while processing data. Please double check your data and be sure it complies with the expected formatting.`;
             }
         } catch (error) {
-            return `Error during file upload: ${error.message}`;
+            // console.error(`Unknown error during file upload: ${error}`);
+            return `Unknown error during file upload. Please try again later.`
         }
     }
 }
