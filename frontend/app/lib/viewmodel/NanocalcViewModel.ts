@@ -5,7 +5,6 @@ interface SelectedFiles {
     [key: string]: File[]
 }
 const MAX_FILE_SIZE_MB = 1;
-const ALLOWED_EXTENSIONS = ['xlsx', 'dat', 'csv'];
 
 export class NanocalcViewModel {
     private mode: string = '';
@@ -41,6 +40,35 @@ export class NanocalcViewModel {
             return false;
         }
 
+        // file extension check
+        for (const id of expectedIds) {
+            if (!actualIds.includes(id)) {
+                return false;
+            }
+
+            const appConfig = Object.values(this.nanocalcAppConfig).find(app => app.appId === appId);
+            if (!appConfig) {
+                return false;
+            }
+
+            const expectedButton = appConfig.buttons.find((button): button is RegularButton => !button.isCalculate && button.identifier === id);
+            if (!expectedButton) {
+                return false;
+            }
+
+            // Validate file extensions for each selected file
+            const filesArray = selectedFiles[id];
+            const expectedExtension = expectedButton.expectedExtension;
+
+            for (const file of filesArray) {
+                const fileExtension = file.name.split('.').pop()?.toLowerCase();
+                if (fileExtension !== expectedExtension) {
+                    return false;
+                }
+            }
+        }
+
+        // necessary files check
         switch (appId) {
             case "fretcalc":
                 for (const id of expectedIds) {
@@ -68,12 +96,12 @@ export class NanocalcViewModel {
 
 
     validateFiles(selectedFiles: SelectedFiles, appId: string): string | null {
-        // specific app files validation: which keys are required
+        // specific app files validation: which keys (files) are required and their extensions
         if (!this.validateAppFiles(appId, selectedFiles)) {
-            return `Please select all required files.`;
+            return `Please select all required files and check their extensions.`;
         }
 
-        // general app files validation: size, extension and quantity
+        // general app files validation: size and quantity
         for (const key in selectedFiles) {
             if (selectedFiles.hasOwnProperty(key)) {
                 const filesArray = selectedFiles[key];
@@ -89,14 +117,9 @@ export class NanocalcViewModel {
 
                 for (const file of filesArray) {
                     const fileSizeMB = file.size / 1024 / 1024;
-                    const fileExtension = file.name.split('.').pop()?.toLowerCase();
 
                     if (fileSizeMB > MAX_FILE_SIZE_MB) {
                         return `${file.name} is too large. Max size is ${MAX_FILE_SIZE_MB} MB.`;
-                    }
-
-                    if (!ALLOWED_EXTENSIONS.includes(fileExtension || '')) {
-                        return `${file.name} has an invalid file extension. Allowed extensions are: ${ALLOWED_EXTENSIONS.join(', ')}.`;
                     }
                 }
             }
