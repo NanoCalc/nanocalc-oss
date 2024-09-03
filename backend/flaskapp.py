@@ -32,11 +32,11 @@ def respond_client(message, code):
     }), code
 
 
-# Client side caching
-@app.after_request
-def set_cache_headers(response):
-    response.headers['Cache-Control'] = 'public, max-age=86400' 
-    return response
+@app.route('/health', methods=['GET'])
+def health():
+    return respond_client(
+        'Up and running!', 200
+    )
 
 
 def handle_fretcalc(files_bundle):
