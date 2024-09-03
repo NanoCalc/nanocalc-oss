@@ -82,7 +82,7 @@ jobs:
       run: cd frontend
 
     - name: Install dependencies
-      run: npm ci
+      run: npm install --production
     
     - name: Build frontend prod bundle
       run: npm run build
@@ -94,6 +94,11 @@ jobs:
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
+
+    - name: Install Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install docker-compose -y
 
     - name: Cache Docker layers
       uses: actions/cache@v3
