@@ -34,7 +34,7 @@ export default function NanocalcApp({ config }: NanocalcAppProps) {
 
 	const handleFileChange = (fileIdentifier: string, event: React.ChangeEvent<HTMLInputElement>) => {
 		const newFileList = event.target.files;
-
+		setErrorMessage(null);
 		if (newFileList && newFileList.length > 0) {
 			const fileNames = Array.from(newFileList).map(file => file.name).join(', ');
 			setSelectedFileNames(prevState => ({

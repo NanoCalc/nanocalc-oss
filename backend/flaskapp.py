@@ -12,7 +12,7 @@ from werkzeug.exceptions import RequestEntityTooLarge
 from apps_definitions import allowed_extensions, get_max_files, get_allowed_extensions
 from helper_functions import save_file_with_uuid, generate_zip
 from config import Config
-
+from shutil import rmtree
 
 # App configuration
 app = Flask(__name__)
@@ -32,11 +32,9 @@ def respond_client(message, code):
     }), code
 
 
-# Client side caching
-@app.after_request
-def set_cache_headers(response):
-    response.headers['Cache-Control'] = 'public, max-age=86400' 
-    return response
+@app.route('/health', methods=['GET'])
+def health():
+    return respond_client('Up and running!', 200)
 
 
 def handle_fretcalc(files_bundle):
@@ -48,13 +46,20 @@ def handle_fretcalc(files_bundle):
         emission_coefficient_path = save_file_with_uuid(fretcalc_folder, files_bundle['emissionCoefficient'])
         refractive_index_path = save_file_with_uuid(fretcalc_folder, files_bundle['refractiveIndex'])
 
-        data = overlap_calculation(input_excel_path, extinction_coefficient_path, emission_coefficient_path, refractive_index_path, UPLOAD_FOLDER)
-        zip_file_name = generate_zip(data, 'fretcalc', app.config['UPLOAD_FOLDER'])
+        dataFolderPath = overlap_calculation(input_excel_path, extinction_coefficient_path, emission_coefficient_path, refractive_index_path, UPLOAD_FOLDER)
+        zip_file_name = generate_zip(dataFolderPath, 'fretcalc', app.config['UPLOAD_FOLDER'])
         return zip_file_name
 
     except Exception as e: 
         logging.error(f"handle_fretcalc.error: {e}")
         raise e
+    finally:
+        os.remove(input_excel_path)
+        os.remove(extinction_coefficient_path)
+        os.remove(emission_coefficient_path)
+        os.remove(refractive_index_path)
+        rmtree(dataFolderPath, ignore_errors=True)
+        
 
 
 def handle_ricalc(files_bundle):
@@ -81,6 +86,10 @@ def handle_ricalc(files_bundle):
     except Exception as e: 
         logging.error(f"handle_ricalc.error: {e}")
         raise e
+    finally:
+        os.remove(input_excel_path)
+        os.remove(coefficient_path)
+        rmtree(dataFolderPath, ignore_errors=True)
 
 def handle_plqsim(files_bundle):
     plqsim_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'plqsim')
@@ -104,18 +113,22 @@ def handle_plqsim(files_bundle):
     except Exception as e:
         logging.error(f"handle_plqsim.error: {e}")
         raise e
+    finally:
+        os.remove(input_excel_path)
+        rmtree(dataFolderPath, ignore_errors=True)
 
 
 def handle_tmmsim(files_bundle):
-    tmmsim_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim', 'input_files')
-
+    tmmsim_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim')
+    csv_paths = []
     try:
         input_excel_path = save_file_with_uuid(tmmsim_folder, files_bundle['inputExcel'])
 
-        layerFiles = [layerFile for layerFile in files_bundle['layerFiles'] if layerFile]
+        layerFiles = [layerFile for layerFile in files_bundle.get('layerFiles', []) if layerFile]
         for layerFile in layerFiles:
             csv_path = os.path.join(tmmsim_folder, secure_filename(layerFile.filename))
             layerFile.save(csv_path)
+            csv_paths.append(csv_path)
 
         dataFolderPath = calculation(input_excel_path, UPLOAD_FOLDER, tmmsim_folder)
         zip_file_name = generate_zip(dataFolderPath, 'tmmsim', app.config['UPLOAD_FOLDER'])
@@ -124,6 +137,12 @@ def handle_tmmsim(files_bundle):
     except Exception as e:
         logging.error(f"handle_tmmsim.error: {e}")
         raise e
+    finally:
+        os.remove(input_excel_path)
+        rmtree(dataFolderPath, ignore_errors=True)
+        for csv_path in csv_paths:
+            os.remove(csv_path)
+        
 
 
 app_handlers = {
@@ -180,19 +199,15 @@ def upload_file(app_name):
         
         zip_file_path = app_handlers[app_name](files_bundle)
         
-        if zip_file_path:
-            try:
-                directory = os.path.dirname(zip_file_path)
-                filename = os.path.basename(zip_file_path)
+        try:
+            directory = os.path.dirname(zip_file_path)
+            filename = os.path.basename(zip_file_path)
 
-                return send_from_directory(directory=directory, path=filename, as_attachment=True)
-            except Exception as e:
-                logging.error(f"Error in sending file: {e}")
-                return respond_client('Failed to send zip file', 500)
-        else:
-            return respond_client('Failed to process files', 500)
-        
-        #return respond_client(f'Processed the following files: {files}', 200)
+            return send_from_directory(directory=directory, path=filename, as_attachment=True)
+        except Exception as e:
+            logging.error(f"Error in sending file: {e}")
+            return respond_client('Failed to send zip file', 500) 
+
 
     except RequestEntityTooLarge as e:
         return respond_client('tooLargeRequest', 413)
@@ -201,7 +216,8 @@ def upload_file(app_name):
         return respond_client('internalServerError', 500)
 
 
-# Run the web app
+
+
 if __name__ == "__main__":
     debug_mode = os.environ.get('DEBUG', 'False').lower() == 'true'
     port = int(os.environ.get('PORT', 8080)) 

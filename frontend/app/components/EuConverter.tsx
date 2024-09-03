@@ -76,7 +76,7 @@ export default function EuConverter({ units }: EnergyUnitsArrayProps) {
         }, 350);
 
         setDebounceTimer(newTimer);
-    }, [debounceTimer]);
+    }, [debounceTimer, units]);
 
 
 

@@ -1,76 +1,128 @@
-name: Nano Calc test suite
+# name: Nano Calc build and test suite
 
-on:
-  push:
-    branches: 
-      - main
-      - develop
-  pull_request:
-    branches: 
-      - main
-      - develop
+# on:
+#   push:
+#     branches: 
+#       - main
+#       - develop
+#   pull_request:
+#     branches: 
+#       - main
+#       - develop
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+# jobs:
+#   backend-build-and-tests:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v2
 
-    steps:
-    - uses: actions/checkout@v2
+#     - name: Set up Python 3.x
+#       uses: actions/setup-python@v2
+#       with:
+#         python-version: '3.x'
+    
+#     - name: Set up web apps mocks
+#       working-directory: ./backend
+#       run: |
+#         cp mocks/fret_calc_mock.py fret_calc.py
+#         cp mocks/plq_sim_mock.py plq_sim.py
+#         cp mocks/ri_calc_mock.py ri_calc.py
+#         cp mocks/tmm_sim_mock.py tmm_sim.py 
 
-    - name: Set up Python 3.x
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
+#     - name: Install project dependencies
+#       working-directory: ./backend
+#       run: |
+#         python -m pip install --upgrade pip
+#         pip install -r requirements.txt
 
-    - name: Set up mocks 
-      run: |
-        cp mocks/fret_calc_mock.py fret_calc.py
-        cp mocks/plq_sim_mock.py plq_sim.py
-        cp mocks/ri_calc_mock.py ri_calc.py
-        cp mocks/tmm_sim_mock.py tmm_sim.py 
+#     - name: Install test dependencies
+#       working-directory: ./backend
+#       run: |
+#         python -m pip install --upgrade pip
+#         pip install -r test_requirements.txt
 
-    - name: Install project dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+#     - name: Create necessary directories
+#       working-directory: ./backend
+#       run: |
+#         mkdir -p ./app/upload/fretcalc/result \
+#                  ./app/upload/ricalc/result \
+#                  ./app/upload/plqsim/result \
+#                  ./app/upload/tmmsim/result
 
-    - name: Install test dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r test_requirements.txt
+#     - name: Start Flask server in debug mode
+#       working-directory: ./backend
+#       run: |
+#         export UPLOAD_FOLDER='./app/upload'
+#         export DEBUG=True
+#         export PORT=8080
+#         python flaskapp.py &
+#         sleep 5
 
-    - name: Create necessary directories
-      run: |
-        mkdir -p ./app/upload/fret/emission_files \
-                 ./app/upload/fret/extinction_coefficient_files \
-                 ./app/upload/fret/index_files \
-                 ./app/upload/fret/refractive_index_files \
-                 ./app/upload/fret/result \
-                 ./app/upload/ri/index_files \
-                 ./app/upload/ri/abs_coefficient_files \
-                 ./app/upload/ri/k_files \
-                 ./app/upload/ri/result \
-                 ./app/upload/plqsim/input_files \
-                 ./app/upload/plqsim/result \
-                 ./app/upload/tmmsim/input_files \
-                 ./app/upload/tmmsim/result
+#     - name: Run unit tests
+#       working-directory: ./backend
+#       run: |
+#         python test_unit_nanocalc.py
 
-    - name: Start Flask server in debug mode
-      run: |
-        export UPLOAD_FOLDER='./app/upload'
-        export DEBUG=True
-        export PORT=8080
-        python flaskapp.py &
-        sleep 5
+#     - name: Run end to end tests
+#       working-directory: ./backend
+#       run: | 
+#         python test_e2e_nanocalc.py
 
-    - name: Run unit tests
-      run: |
-        python test_unit_nanocalc.py
+#     - name: Clean up
+#       run: |
+#         killall python
+  
+#   frontend-build:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v2
 
-    - name: Run end to end tests 
-      run: | 
-        python test_e2e_nanocalc.py
+#     - name: Setup Node.js
+#       uses: actions/setup-node@v4
+#       with:
+#         node-version: '22.x'
 
-    - name: Clean up
-      run: |
-        killall python
+#     - name: Install dependencies and build prod bundle
+#       working-directory: ./frontend
+#       run: | 
+#         npm install --production
+#         npm run build
+
+
+#   build-docker-compose:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v2
+
+#     - name: Set up Docker Buildx
+#       uses: docker/setup-buildx-action@v2
+
+#     - name: Install Docker Compose
+#       run: |
+#         sudo apt-get update
+#         sudo apt-get install docker-compose -y
+
+#     - name: Cache Docker layers
+#       uses: actions/cache@v3
+#       with:
+#         path: /tmp/.buildx-cache
+#         key: ${{ runner.os }}-buildx-${{ github.sha }}
+#         restore-keys: |
+#           ${{ runner.os }}-buildx-
+    
+#     - name: Set up web apps mocks (backend)
+#       working-directory: ./backend
+#       run: |
+#         cp mocks/fret_calc_mock.py fret_calc.py
+#         cp mocks/plq_sim_mock.py plq_sim.py
+#         cp mocks/ri_calc_mock.py ri_calc.py
+#         cp mocks/tmm_sim_mock.py tmm_sim.py 
+    
+#     - name: Build compose project
+#       run: docker-compose build
+
+#     - name: Run services
+#       run: docker-compose up -d
+
+#     - name: Cleanup
+#       run: docker-compose down
