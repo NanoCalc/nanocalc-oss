@@ -36,8 +36,8 @@ const nanocalcApps: NanocalcAppConfig = {
         articleBanner: {
             title: "FRET-Calc: A free software and web server for Förster Resonance Energy Transfer Calculation",
             doi: "https://doi.org/10.1016/j.cpc.2023.108715",
-            sampleData: "https://github.com/NanoCalc/FRETCalc/releases/download/FRETCalc-1.0-alpha/data-sample.zip",
-            spectralData: "https://github.com/NanoCalc/FRETCalc/releases/download/FRETCalc-1.0-alpha/spectral-data.zip",
+            sampleData: "https://github.com/NanoCalc/FRETCalc/releases/download/1.0/data-sample.zip",
+            spectralData: "https://github.com/NanoCalc/FRETCalc/releases/download/1.0/spectral-data.zip",
             binaries: "https://github.com/NanoCalc/FRETCalc/releases"
         }
     },
