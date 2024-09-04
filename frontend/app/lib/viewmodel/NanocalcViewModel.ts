@@ -106,8 +106,7 @@ export class NanocalcViewModel {
             return validationError;
         }
 
-        //const API_ENDPOINT = `https://nanocalc.org/upload/${appId}`;
-        const API_ENDPOINT = `http://127.0.0.1:8080/upload/${appId}`;
+        const API_ENDPOINT = `https://nanocalc.org/upload/${appId}`;
 
         const FILE_ID_FORM_FIELD = 'NANOCALC_FILE_ID_FORM_FIELD'
         const FILES_FORM_FIELD = 'NANOCALC_USER_UPLOADED_FILES';
