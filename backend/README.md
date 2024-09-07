@@ -18,6 +18,8 @@ Next, create local folders (for processing user data) and run the main script in
 DEBUG=True PORT=8080 UPLOAD_FOLDER="nanocalc_uploads" python flaskapp.py
 ```
 
+This should run the development server at [localhost port 8080](http://localhost:8080).
+
 You can also run unit and end to end tests by doing the following commands in the virtual environment:
 ```
 pip install -r test_requirements.txt
