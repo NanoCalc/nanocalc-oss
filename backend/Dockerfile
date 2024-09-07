@@ -1,11 +1,5 @@
 FROM python:3-alpine
 
-LABEL maintainer="OmarMesqq" 
-LABEL contact="omarmsqt@gmail.com" 
-LABEL description="nanocalc.org Flask application"
-LABEL version="1.0"
-
-EXPOSE 8080
 ENV PATH="/home/nanocalc/.local/bin:${PATH}"
 
 RUN adduser -D nanocalc
@@ -32,4 +26,5 @@ RUN mkdir -p /app/upload/fretcalc/result \
     /app/upload/tmmsim/result
 
 
+EXPOSE 8080
 CMD ["python", "flaskapp.py"]
