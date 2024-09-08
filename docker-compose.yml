@@ -15,7 +15,7 @@ services:
   backend:
     build: ./backend
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
     restart: unless-stopped
 
   frontend:
@@ -23,5 +23,5 @@ services:
     environment:
       - NODE_ENV=production
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     restart: unless-stopped
