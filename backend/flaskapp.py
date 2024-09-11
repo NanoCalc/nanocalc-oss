@@ -4,7 +4,6 @@ from plq_sim import energy_level, donor_excitation, acceptor_excitation
 from tmm_sim import calculation
 import os 
 import logging
-from flask_caching import Cache
 from waitress import serve
 from flask import Flask, request, url_for, send_from_directory, render_template, jsonify
 from werkzeug.utils import secure_filename
@@ -18,7 +17,6 @@ from shutil import rmtree
 app = Flask(__name__)
 app.config.from_object(Config)
 logging.basicConfig(level=Config.LOGGING_LEVEL, format=Config.LOGGING_FORMAT)
-cache = Cache(app)
 UPLOAD_FOLDER = app.config['UPLOAD_FOLDER']
 
 FILE_ID_FORM_FIELD = 'NANOCALC_FILE_ID_FORM_FIELD'
