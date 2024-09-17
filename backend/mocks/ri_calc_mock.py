@@ -3,7 +3,7 @@ import pandas as pd
 
 def create_folder(xif, folder_suffix, appdir):
     try:
-        RESULT_FOLDER = os.path.join(appdir, "ri", "result")
+        RESULT_FOLDER = os.path.join(appdir, "ricalc", "result")
         input_kk = pd.read_excel(xif)
 
         name = input_kk.iloc[0, 1]
