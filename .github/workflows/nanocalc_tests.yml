@@ -87,6 +87,14 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
             ${{ runner.os }}-node-
+    
+    - name: Cache Next.js build cache
+      uses: actions/cache@v3
+      with:
+        path: ./frontend/.next/cache
+        key: ${{ runner.os }}-nextjs-${{ hashFiles('frontend/.next/cache/**/*') }}
+        restore-keys: |
+          ${{ runner.os }}-nextjs-
 
     - name: Install dependencies
       working-directory: ./frontend
