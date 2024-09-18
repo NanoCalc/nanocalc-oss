@@ -31,7 +31,7 @@ jobs:
     
     - name: Set up web apps mocks
       working-directory: ./backend
-      run: ./copy_mocks
+      run: ./copy_mocks.sh
 
     - name: Install project dependencies
       working-directory: ./backend
