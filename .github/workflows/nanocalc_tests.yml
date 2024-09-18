@@ -31,11 +31,7 @@ jobs:
     
     - name: Set up web apps mocks
       working-directory: ./backend
-      run: |
-        cp mocks/fret_calc_mock.py fret_calc.py
-        cp mocks/plq_sim_mock.py plq_sim.py
-        cp mocks/ri_calc_mock.py ri_calc.py
-        cp mocks/tmm_sim_mock.py tmm_sim.py 
+      run: ./copy_mocks
 
     - name: Install project dependencies
       working-directory: ./backend
@@ -43,19 +39,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Install test dependencies
-      working-directory: ./backend
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r test_requirements.txt
-
     - name: Create necessary directories
       working-directory: ./backend
-      run: |
-        mkdir -p ./app/upload/fretcalc/result \
-                 ./app/upload/ricalc/result \
-                 ./app/upload/plqsim/result \
-                 ./app/upload/tmmsim/result
+      run: ./setup_local_env.sh
 
   backend-tests:
     runs-on: ubuntu-latest
@@ -76,10 +62,20 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pip-
 
+    - name: Set up web apps mocks
+      working-directory: ./backend
+      run: ./copy_mocks
+
+    - name: Install test dependencies
+      working-directory: ./backend
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r test_requirements.txt
+
     - name: Start Flask server in debug mode
       working-directory: ./backend
       run: |
-        export UPLOAD_FOLDER='./app/upload'
+        export UPLOAD_FOLDER='./nanocalc_uploads'
         export DEBUG=True
         export PORT=8080
         python flaskapp.py &
