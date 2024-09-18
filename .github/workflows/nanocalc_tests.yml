@@ -1,4 +1,4 @@
-name: Nano Calc build and test suite
+name: Nanocalc build and test suite
 
 on:
   push:
@@ -136,25 +136,3 @@ jobs:
 
     - name: Cleanup
       run: docker-compose down
-
-  production-deploy:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch'
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Deploy to VPS
-      uses: appleboy/ssh-action@v0.1.9
-      with:
-        host: ${{ secrets.VPS_HOST }}
-        username: ${{ secrets.VPS_USER }}
-        key: ${{ secrets.VPS_SSH_KEY }}
-        port: ${{ secrets.VPS_SSH_PORT }}
-        script: |
-          exit
-          cd ~/src/nanocalc-oss
-          git pull
-          docker-compose down
-          docker-compose build
-          docker-compose up -d
