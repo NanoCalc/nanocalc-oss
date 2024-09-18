@@ -1,0 +1,27 @@
+name: Nanocalc production flows
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  production-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Deploy to VPS
+      uses: appleboy/ssh-action@v0.1.9
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USER }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        port: ${{ secrets.VPS_SSH_PORT }}
+        script: |
+          exit
+          cd ~/src/nanocalc-oss
+          git pull
+          docker-compose down
+          docker-compose build
+          docker-compose up -d
