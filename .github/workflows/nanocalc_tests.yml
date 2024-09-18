@@ -9,10 +9,9 @@ on:
     branches: 
       - main
       - develop
-  workflow_dispatch:
 
 jobs:
-  backend-build-and-tests:
+  backend-build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -21,6 +20,14 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
+
+    - name: Cache pip packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
     
     - name: Set up web apps mocks
       working-directory: ./backend
@@ -49,6 +56,25 @@ jobs:
                  ./app/upload/ricalc/result \
                  ./app/upload/plqsim/result \
                  ./app/upload/tmmsim/result
+
+  backend-tests:
+    runs-on: ubuntu-latest
+    needs: backend-build
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Cache pip packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
 
     - name: Start Flask server in debug mode
       working-directory: ./backend
@@ -86,7 +112,7 @@ jobs:
     - name: Cache npm packages
       uses: actions/cache@v3
       with:
-        path: './frontend/node_modules'
+        path: ~/.npm
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
             ${{ runner.os }}-node-
@@ -98,41 +124,3 @@ jobs:
     - name: Build production bundle
       working-directory: ./frontend
       run: npm run build
-
-  build-docker-compose:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-
-    - name: Install Docker Compose
-      run: |
-        sudo apt-get update
-        sudo apt-get install docker-compose -y
-
-    - name: Cache Docker layers
-      uses: actions/cache@v3
-      with:
-        path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ github.sha }}
-        restore-keys: |
-          ${{ runner.os }}-buildx-
-    
-    - name: Set up web apps mocks (backend)
-      working-directory: ./backend
-      run: |
-        cp mocks/fret_calc_mock.py fret_calc.py
-        cp mocks/plq_sim_mock.py plq_sim.py
-        cp mocks/ri_calc_mock.py ri_calc.py
-        cp mocks/tmm_sim_mock.py tmm_sim.py 
-    
-    - name: Build compose project
-      run: docker-compose build
-
-    - name: Run services
-      run: docker-compose up -d
-
-    - name: Cleanup
-      run: docker-compose down
