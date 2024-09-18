@@ -9,6 +9,7 @@ on:
     branches: 
       - main
       - develop
+  workflow_dispatch:
 
 jobs:
   backend-build-and-tests:
@@ -81,6 +82,14 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '22.x'
+
+    - name: Cache npm packages
+      uses: actions/cache@v3
+      with:
+        path: './frontend/node_modules'
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+            ${{ runner.os }}-node-
 
     - name: Install dependencies
       working-directory: ./frontend
