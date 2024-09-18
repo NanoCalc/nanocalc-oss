@@ -1,6 +1,5 @@
 from helper_functions import save_file_with_uuid, generate_zip
 from flask import Flask
-from config import TestConfig
 import unittest
 import unittest.mock as mock
 import os
