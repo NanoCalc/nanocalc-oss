@@ -82,11 +82,13 @@ jobs:
       with:
         node-version: '22.x'
 
-    - name: Install dependencies and build prod bundle
+    - name: Install dependencies
       working-directory: ./frontend
-      run: | 
-        npm install --production
-        npm run build
+      run: npm install
+    
+    - name: Build production bundle
+      working-directory: ./frontend
+      run: npm run build
 
   build-docker-compose:
     runs-on: ubuntu-latest
