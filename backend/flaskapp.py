@@ -30,11 +30,6 @@ def respond_client(message, code):
     }), code
 
 
-@app.route('/health', methods=['GET'])
-def health():
-    return respond_client('Up and running!', 200)
-
-
 def handle_fretcalc(files_bundle):
     fretcalc_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'fretcalc')
     
@@ -57,7 +52,6 @@ def handle_fretcalc(files_bundle):
         os.remove(emission_coefficient_path)
         os.remove(refractive_index_path)
         rmtree(dataFolderPath, ignore_errors=True)
-        
 
 
 def handle_ricalc(files_bundle):
@@ -88,6 +82,7 @@ def handle_ricalc(files_bundle):
         os.remove(input_excel_path)
         os.remove(coefficient_path)
         rmtree(dataFolderPath, ignore_errors=True)
+
 
 def handle_plqsim(files_bundle):
     plqsim_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'plqsim')
@@ -142,7 +137,6 @@ def handle_tmmsim(files_bundle):
             os.remove(csv_path)
         
 
-
 app_handlers = {
     'fretcalc': handle_fretcalc,
     'ricalc': handle_ricalc,
@@ -151,6 +145,11 @@ app_handlers = {
 }
 
 
+@app.route('/health', methods=['GET'])
+def health():
+    return respond_client('Up and running!', 200)
+
+#TODO: implement queueing system
 @app.route('/upload/<app_name>', methods=['POST'])
 def upload_file(app_name):
     try:
@@ -201,6 +200,7 @@ def upload_file(app_name):
             directory = os.path.dirname(zip_file_path)
             filename = os.path.basename(zip_file_path)
 
+            #TODO: binary stream here instead of loading from memory 
             return send_from_directory(directory=directory, path=filename, as_attachment=True)
         except Exception as e:
             logging.error(f"Error in sending file: {e}")
@@ -212,8 +212,6 @@ def upload_file(app_name):
     except Exception as e:
         logging.exception(f"uploadFileError.genericError")
         return respond_client('internalServerError', 500)
-
-
 
 
 if __name__ == "__main__":
