@@ -19,7 +19,12 @@ jobs:
         key: ${{ secrets.VPS_SSH_KEY }}
         port: ${{ secrets.VPS_SSH_PORT }}
         script: |
-          cd ~/src/nanocalc-oss
+          cd ~/src
+          echo "Updating webapp scripts..."
+          git fetch main
+          git checkout main apps/
+          ./copy-nanocalc-apps.sh
+          cd nanocalc-oss
           git pull
           docker-compose down
           docker-compose build
