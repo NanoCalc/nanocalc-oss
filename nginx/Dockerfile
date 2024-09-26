@@ -1,4 +1,4 @@
-FROM nginx:latest
+FROM nginx:stable-alpine
 
 COPY conf.d/nanocalc.conf /etc/nginx/conf.d/
 
