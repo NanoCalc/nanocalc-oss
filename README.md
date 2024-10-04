@@ -32,23 +32,3 @@ for cleanup:
 docker-compose down
 ```
 
-## Architecture overview
-```mermaid
-sequenceDiagram
-    participant User
-    participant NGINX
-    participant Frontend as Next.js (Frontend)
-    participant Backend as Flask (Backend)
-
-    User->>NGINX: Visit website
-    NGINX->>Frontend: Route to frontend (Next.js)
-    Frontend-->>NGINX: Response (webpage)
-    NGINX-->>User: Response (webpage)
-
-    User->>NGINX: Upload files
-    NGINX->>Backend: Route to backend (Flask)
-    Backend-->>NGINX: Response (generated data or error)
-    NGINX-->>Frontend: Pass response to frontend (Next.js)
-    Frontend-->>NGINX: Final response (result or error)
-    NGINX-->>User: Response (result or error)
-```
