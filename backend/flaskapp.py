@@ -200,11 +200,12 @@ def upload_file(app_name):
             directory = os.path.dirname(zip_file_path)
             filename = os.path.basename(zip_file_path)
 
-            #TODO: binary stream here instead of loading from memory 
             return send_from_directory(directory=directory, path=filename, as_attachment=True)
         except Exception as e:
             logging.error(f"Error in sending file: {e}")
-            return respond_client('Failed to send zip file', 500) 
+            return respond_client('Failed to send zip file', 500)
+        finally:
+            os.remove(zip_file_path)
 
 
     except RequestEntityTooLarge as e:
