@@ -67,6 +67,7 @@ class NanoCalcE2ETest(unittest.TestCase):
         return form_data
 
     def test_fret_calc_upload_success(self):
+        print("Testing FRET-Calc successful upload.")
         url = f'{self.HOST}/upload/fretcalc' 
         with open('samples/fretcalc/input.xlsx', 'rb') as xif, \
              open('samples/fretcalc/emission.dat', 'rb') as ef, \
@@ -85,6 +86,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
 
     def test_fret_calc_upload_error(self):
+        print("Testing FRET-Calc error upload.")
         url = f'{self.HOST}/upload/fretcalc' 
         with open('samples/broken/broken_input.xlsx', 'rb') as xif, \
              open('samples/broken/broken_data.dat', 'rb') as ef, \
@@ -102,6 +104,7 @@ class NanoCalcE2ETest(unittest.TestCase):
             self.error_validator(url, files, 'FRET-Calc', data=mode)
 
     def test_ri_calc_optical_constants_upload_success(self):
+        print("Testing RI-Calc Optical Constants successful upload.")
         url = f'{self.HOST}/upload/ricalc'
 
         with open('samples/ricalc/input.xlsx', 'rb') as inputExcel, \
@@ -116,6 +119,7 @@ class NanoCalcE2ETest(unittest.TestCase):
             self.validator(url, files, 'RI-Calc Optical Constants', data=mode)
 
     def test_ri_calc_optical_constants_upload_error(self):
+        print("Testing RI-Calc Optical Constants error upload.")
         url = f'{self.HOST}/upload/ricalc'
 
         with open('samples/broken/broken_input.xlsx', 'rb') as inputExcel, \
@@ -130,6 +134,7 @@ class NanoCalcE2ETest(unittest.TestCase):
             self.error_validator(url, files, 'RI-Calc Optical Constants', data=mode)
 
     def test_ri_calc_refractive_index_upload_success(self):
+        print("Testing RI-Calc Refractive Index successful upload.")
         url = f'{self.HOST}/upload/ricalc'
         
         with open('samples/ricalc/input.xlsx', 'rb') as inputExcel, \
@@ -144,6 +149,7 @@ class NanoCalcE2ETest(unittest.TestCase):
             self.validator(url, files, 'RI-Calc Refractive Index', data=mode)
 
     def test_ri_calc_refractive_index_upload_error(self):
+        print("Testing RI-Calc Refractive Index error upload.")
         url = f'{self.HOST}/upload/ricalc'
 
         with open('samples/broken/broken_input.xlsx', 'rb') as inputExcel, \
@@ -158,6 +164,7 @@ class NanoCalcE2ETest(unittest.TestCase):
             self.error_validator(url, files, 'RI-Calc Refractive Index', data=mode)
 
     def test_plq_sim_acceptor_upload_success(self):
+        print("Testing PLQ-Sim Acceptor successful upload.")
         url = f'{self.HOST}/upload/plqsim'
         with open('samples/plqsim/input.xlsx', 'rb') as xif: 
             files = {'inputExcel': [xif]}
@@ -166,6 +173,7 @@ class NanoCalcE2ETest(unittest.TestCase):
             self.validator(url, files, 'PLQ-Sim Acceptor Calculation', mode)
 
     def test_plq_sim_acceptor_upload_error(self):
+        print("Testing PLQ-Sim Acceptor error upload.")
         url = f'{self.HOST}/upload/plqsim'
         with open('samples/broken/broken_input.xlsx', 'rb') as xif: 
             files = {'inputExcel': [xif]}
@@ -175,6 +183,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
 
     def test_plq_sim_donor_upload_success(self):
+        print("Testing PLQ-Sim Donor successful upload.")
         url = f'{self.HOST}/upload/plqsim' 
         with open('samples/plqsim/input.xlsx', 'rb') as xif: 
             files = {'inputExcel': [xif]}
@@ -184,6 +193,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
 
     def test_plq_sim_donor_upload_error(self):
+        print("Testing PLQ-Sim Donor error upload.")
         url = f'{self.HOST}/upload/plqsim' 
         with open('samples/broken/broken_input.xlsx', 'rb') as xif: 
             files = {'inputExcel': [xif]}
@@ -193,6 +203,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
 
     def test_tmm_sim_bhj_upload_success(self):
+        print("Testing TMM-Sim successful upload.")
         url = f'{self.HOST}/upload/tmmsim' 
         files = []
         try: 
@@ -224,6 +235,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
         
         def test_tmm_sim_bilayer_upload_success(self):
+            print("Testing TMM-Sim Bilayer successful upload.")
             url = f'{self.HOST}/upload/tmmsim' 
             files = []
             try: 
@@ -255,4 +267,6 @@ class NanoCalcE2ETest(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    print("--------------------------------------NANOCALC E2E TEST SUITE--------------------------------------")
     unittest.main()
+    print("--------------------------------------END NANOCALC E2E TEST SUITE--------------------------------------")
