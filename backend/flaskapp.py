@@ -32,7 +32,12 @@ def respond_client(message, code):
 
 def handle_fretcalc(files_bundle):
     fretcalc_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'fretcalc')
-    
+    input_excel_path = None
+    extinction_coefficient_path = None
+    emission_coefficient_path = None
+    refractive_index_path = None 
+    dataFolderPath = None
+
     try:
         input_excel_path = save_file_with_uuid(fretcalc_folder, files_bundle['inputExcel'])
         extinction_coefficient_path = save_file_with_uuid(fretcalc_folder, files_bundle['extinctionCoefficient'])
@@ -47,15 +52,23 @@ def handle_fretcalc(files_bundle):
         logging.error(f"handle_fretcalc.error: {e}")
         raise e
     finally:
-        os.remove(input_excel_path)
-        os.remove(extinction_coefficient_path)
-        os.remove(emission_coefficient_path)
-        os.remove(refractive_index_path)
-        rmtree(dataFolderPath, ignore_errors=True)
+        if input_excel_path and os.path.exists(input_excel_path):
+            os.remove(input_excel_path)
+        if extinction_coefficient_path and os.path.exists(extinction_coefficient_path):
+            os.remove(extinction_coefficient_path)
+        if emission_coefficient_path and os.path.exists(emission_coefficient_path):
+            os.remove(emission_coefficient_path)
+        if refractive_index_path and os.path.exists(refractive_index_path):
+            os.remove(refractive_index_path)
+        if dataFolderPath and os.path.exists(dataFolderPath):
+            rmtree(dataFolderPath, ignore_errors=True)
 
 
 def handle_ricalc(files_bundle):
     ricalc_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'ricalc')
+    input_excel_path = None
+    coefficient_path = None
+    dataFolderPath = None
 
     try:
         input_excel_path = save_file_with_uuid(ricalc_folder, files_bundle['inputExcel'])
@@ -79,13 +92,18 @@ def handle_ricalc(files_bundle):
         logging.error(f"handle_ricalc.error: {e}")
         raise e
     finally:
-        os.remove(input_excel_path)
-        os.remove(coefficient_path)
-        rmtree(dataFolderPath, ignore_errors=True)
+        if input_excel_path and os.path.exists(input_excel_path):
+            os.remove(input_excel_path)
+        if coefficient_path and os.path.exists(coefficient_path):
+            os.remove(coefficient_path)
+        if dataFolderPath and os.path.exists(dataFolderPath):
+            rmtree(dataFolderPath, ignore_errors=True)
 
 
 def handle_plqsim(files_bundle):
     plqsim_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'plqsim')
+    input_excel_path = None
+    dataFolderPath = None
 
     try:
         input_excel_path = save_file_with_uuid(plqsim_folder, files_bundle['inputExcel'])
@@ -107,13 +125,18 @@ def handle_plqsim(files_bundle):
         logging.error(f"handle_plqsim.error: {e}")
         raise e
     finally:
-        os.remove(input_excel_path)
-        rmtree(dataFolderPath, ignore_errors=True)
+        if input_excel_path and os.path.exists(input_excel_path):
+            os.remove(input_excel_path)
+        if dataFolderPath and os.path.exists(dataFolderPath):
+            rmtree(dataFolderPath, ignore_errors=True)
 
 
 def handle_tmmsim(files_bundle):
     tmmsim_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim')
+    input_excel_path = None
+    dataFolderPath = None
     csv_paths = []
+    
     try:
         input_excel_path = save_file_with_uuid(tmmsim_folder, files_bundle['inputExcel'])
 
@@ -131,11 +154,14 @@ def handle_tmmsim(files_bundle):
         logging.error(f"handle_tmmsim.error: {e}")
         raise e
     finally:
-        os.remove(input_excel_path)
-        rmtree(dataFolderPath, ignore_errors=True)
+        if input_excel_path and os.path.exists(input_excel_path):
+            os.remove(input_excel_path)
+        if dataFolderPath and os.path.exists(dataFolderPath):
+            rmtree(dataFolderPath, ignore_errors=True)
         for csv_path in csv_paths:
-            os.remove(csv_path)
-        
+            if csv_path and os.path.exists(csv_path):
+                os.remove(csv_path)
+       
 
 app_handlers = {
     'fretcalc': handle_fretcalc,
@@ -205,7 +231,8 @@ def upload_file(app_name):
             logging.error(f"Error in sending file: {e}")
             return respond_client('Failed to send zip file', 500)
         finally:
-            os.remove(zip_file_path)
+            if zip_file_path and os.path.exists(zip_file_path):
+                os.remove(zip_file_path)
 
 
     except RequestEntityTooLarge as e:
