@@ -11,6 +11,7 @@ from werkzeug.exceptions import RequestEntityTooLarge
 from apps_definitions import allowed_extensions, get_max_files, get_allowed_extensions
 from helper_functions import save_file_with_uuid, generate_zip
 from config import Config
+from shutil import rmtree
 
 # App configuration
 app = Flask(__name__)
@@ -45,6 +46,12 @@ def handle_fretcalc(files_bundle):
     except Exception as e: 
         logging.error(f"handle_fretcalc.error: {e}")
         raise e
+    finally:
+        os.remove(input_excel_path)
+        os.remove(extinction_coefficient_path)
+        os.remove(emission_coefficient_path)
+        os.remove(refractive_index_path)
+        rmtree(dataFolderPath, ignore_errors=True)
 
 
 def handle_ricalc(files_bundle):
@@ -71,6 +78,10 @@ def handle_ricalc(files_bundle):
     except Exception as e: 
         logging.error(f"handle_ricalc.error: {e}")
         raise e
+    finally:
+        os.remove(input_excel_path)
+        os.remove(coefficient_path)
+        rmtree(dataFolderPath, ignore_errors=True)
 
 
 def handle_plqsim(files_bundle):
@@ -95,6 +106,9 @@ def handle_plqsim(files_bundle):
     except Exception as e:
         logging.error(f"handle_plqsim.error: {e}")
         raise e
+    finally:
+        os.remove(input_excel_path)
+        rmtree(dataFolderPath, ignore_errors=True)
 
 
 def handle_tmmsim(files_bundle):
@@ -116,7 +130,12 @@ def handle_tmmsim(files_bundle):
     except Exception as e:
         logging.error(f"handle_tmmsim.error: {e}")
         raise e
-
+    finally:
+        os.remove(input_excel_path)
+        rmtree(dataFolderPath, ignore_errors=True)
+        for csv_path in csv_paths:
+            os.remove(csv_path)
+        
 
 app_handlers = {
     'fretcalc': handle_fretcalc,
@@ -185,6 +204,8 @@ def upload_file(app_name):
         except Exception as e:
             logging.error(f"Error in sending file: {e}")
             return respond_client('Failed to send zip file', 500)
+        finally:
+            os.remove(zip_file_path)
 
 
     except RequestEntityTooLarge as e:
