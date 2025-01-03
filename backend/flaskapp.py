@@ -1,7 +1,7 @@
-from fret_calc import overlap_calculation
-from ri_calc import n_calculation, n_k_calculation
-from plq_sim import energy_level, donor_excitation, acceptor_excitation
-from tmm_sim import calculation
+from fretcalc_core import overlap_calculation
+from ricalc_core import n_calculation, n_k_calculation
+from plqsim_core import energy_level, donor_excitation, acceptor_excitation
+from tmmsim_core import calculation
 import os 
 import logging
 from waitress import serve

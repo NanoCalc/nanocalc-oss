@@ -1,7 +1,10 @@
-fret_calc.py  
-plq_sim.py  
-ri_calc.py
-tmm_sim.py
+fretcalc_core.py
+plqsim_core.py
+plqsim_fix.py
+ricalc_core.py
+tmmsim_auxiliary_functions.py
+tmmsim_computation_functions.py
+tmmsim_core.py
 *.pem
 env
 instance/
