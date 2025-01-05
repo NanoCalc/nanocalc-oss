@@ -105,7 +105,8 @@ export class NanocalcViewModel {
         if (validationError) {
             return validationError;
         }
-
+        
+        // const API_ENDPOINT = `http://127.0.0.1/upload/${appId}`;
         const API_ENDPOINT = `https://nanocalc.org/upload/${appId}`;
 
         const FILE_ID_FORM_FIELD = 'NANOCALC_FILE_ID_FORM_FIELD'
@@ -128,35 +129,7 @@ export class NanocalcViewModel {
                 });
             }
         }
-
-        // for devtime - prints the detailed upload object
-        // const formDataObject = {};
-        // for (let [key, value] of formData.entries()) {
-        //     let displayValue = value;
-
-        //     if (value instanceof File) {
-        //         displayValue = {
-        //             name: value.name,
-        //             size: value.size,
-        //             type: value.type,
-        //         };
-        //     }
-
-        //     if (formDataObject.hasOwnProperty(key)) {
-        //         if (Array.isArray(formDataObject[key])) {
-        //             formDataObject[key].push(displayValue);
-        //         } else {
-        //             formDataObject[key] = [formDataObject[key], displayValue];
-        //         }
-        //     } else {
-        //         formDataObject[key] = displayValue;
-        //     }
-        // }
-        // console.group('Structured FormData Contents');
-        // console.log(JSON.stringify(formDataObject, null, 2));
-        // console.groupEnd();
-
-
+        
         try {
             const response = await fetch(API_ENDPOINT, {
                 method: 'POST',
