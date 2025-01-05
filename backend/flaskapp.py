@@ -145,7 +145,7 @@ def handle_tmmsim(files_bundle):
             layerFile.save(csv_path)
             csv_paths.append(csv_path)
 
-        dataFolderPath = calculation(input_excel_path, UPLOAD_FOLDER, tmmsim_folder)
+        dataFolderPath = calculation(tmmsim_folder, input_excel_path, UPLOAD_FOLDER, None)
         zip_file_name = generate_zip(dataFolderPath, 'tmmsim', app.config['UPLOAD_FOLDER'])
         return zip_file_name
 
