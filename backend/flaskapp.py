@@ -1,6 +1,6 @@
 from fretcalc_core import overlap_calculation
 from ricalc_core import n_calculation, n_k_calculation
-from plqsim_core import energy_level, donor_excitation, acceptor_excitation
+from plqsim_facade import execute_plqsim_operation, PlqSimOperation
 from tmmsim_core import calculation
 import os 
 import logging
@@ -108,12 +108,12 @@ def handle_plqsim(files_bundle):
     try:
         input_excel_path = save_file_with_uuid(plqsim_folder, files_bundle['inputExcel'])
         mode = files_bundle['mode']
-        energy_level(input_excel_path, None, UPLOAD_FOLDER)
+        execute_plqsim_operation(PlqSimOperation.ENERGY_LEVEL, input_excel_path, None, UPLOAD_FOLDER)
 
         if mode == 'donorExcitation':
-            dataFolderPath = donor_excitation(input_excel_path, None, UPLOAD_FOLDER)
+            dataFolderPath = execute_plqsim_operation(PlqSimOperation.DONOR_EXCITATION, input_excel_path, None, UPLOAD_FOLDER)
         elif mode == 'acceptorExcitation':
-            dataFolderPath = acceptor_excitation(input_excel_path, None, UPLOAD_FOLDER)
+            dataFolderPath = execute_plqsim_operation(PlqSimOperation.ACCEPTOR_EXCITATION, input_excel_path, None, UPLOAD_FOLDER)
         else:
             #TODO: throw?
             pass

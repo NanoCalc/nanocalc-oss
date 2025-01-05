@@ -11,6 +11,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY flaskapp.py \
     plqsim_core.py \
+    plqsim_facade.py \
     fretcalc_core.py \
     ricalc_core.py \
     tmmsim_core.py \
