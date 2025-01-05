@@ -108,13 +108,12 @@ def handle_plqsim(files_bundle):
     try:
         input_excel_path = save_file_with_uuid(plqsim_folder, files_bundle['inputExcel'])
         mode = files_bundle['mode']
+        energy_level(input_excel_path, None, UPLOAD_FOLDER)
 
         if mode == 'donorExcitation':
-            energy_level(input_excel_path, UPLOAD_FOLDER)
-            dataFolderPath = donor_excitation(input_excel_path, UPLOAD_FOLDER)
+            dataFolderPath = donor_excitation(input_excel_path, None, UPLOAD_FOLDER)
         elif mode == 'acceptorExcitation':
-            energy_level(input_excel_path, UPLOAD_FOLDER)
-            dataFolderPath = acceptor_excitation(input_excel_path, UPLOAD_FOLDER)
+            dataFolderPath = acceptor_excitation(input_excel_path, None, UPLOAD_FOLDER)
         else:
             #TODO: throw?
             pass
