@@ -77,11 +77,11 @@ def handle_ricalc(files_bundle):
         if mode == 'opticalConstants':
             # calculate nk
             coefficient_path = save_file_with_uuid(ricalc_folder, files_bundle['decadicCoefficient'])
-            dataFolderPath = n_k_calculation(input_excel_path, coefficient_path, UPLOAD_FOLDER)
+            dataFolderPath = n_k_calculation(input_excel_path, coefficient_path, None, UPLOAD_FOLDER)
         elif mode == 'refractiveIndex':
             # calculate n
             coefficient_path = save_file_with_uuid(ricalc_folder, files_bundle['constantK'])
-            dataFolderPath = n_calculation(input_excel_path, coefficient_path, UPLOAD_FOLDER)
+            dataFolderPath = n_calculation(input_excel_path, coefficient_path, None, UPLOAD_FOLDER)
         else:
             #TODO: throw?
             pass
