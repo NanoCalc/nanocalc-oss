@@ -2,7 +2,7 @@ import os
 import logging
 
 class Config:
-    LOGGING_LEVEL = logging.ERROR
+    LOGGING_LEVEL = logging.INFO
     LOGGING_FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
 
     UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', '/app/upload')
