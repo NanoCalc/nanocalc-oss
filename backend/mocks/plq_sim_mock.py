@@ -23,5 +23,5 @@ def create_result_folder(xif, appdir):
     except Exception :
         raise
 
-def execute_plqsim_operation(plqSimOperation, xif, appdir):
+def execute_plqsim_operation(plqSimOperation, xif, callback, appdir):
     return create_result_folder(xif, appdir)

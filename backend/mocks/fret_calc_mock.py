@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 
-def overlap_calculation(xif, ecf, ef, rfi, appdir):
+def overlap_calculation(xif, ecf, ef, rfi, appdir, callback = None):
     try:
         RESULT_FOLDER = os.path.join(appdir, "fretcalc", "result")
         input_fret_df = pd.read_excel(xif)

@@ -17,8 +17,8 @@ def create_folder(xif, folder_suffix, appdir):
     except Exception:
         raise
 
-def n_calculation(xif, kf, appdir):
+def n_calculation(xif, kf, callback, appdir):
     return create_folder(xif, 'from_k', appdir)
 
-def n_k_calculation(xif, dacf, appdir):
+def n_k_calculation(xif, dacf, callback, appdir):
     return create_folder(xif, 'from_Abs_Coef', appdir)

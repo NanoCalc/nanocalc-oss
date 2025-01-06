@@ -1,10 +1,10 @@
 import os
 import pandas as pd
 
-def calculation(xif, appdir, inputDir):
+def calculation(input_tmm_filepath, input_tmm_filename, output_folder_path, status_callback):
     try:
-        RESULT_FOLDER = os.path.join(appdir, "tmmsim", "result")
-        input_tmm = pd.read_excel(xif)
+        RESULT_FOLDER = os.path.join(output_folder_path, "tmmsim", "result")
+        input_tmm = pd.read_excel(input_tmm_filename)
         
         device = input_tmm.iloc[15, 2]
         active_layer_bhj = input_tmm.iloc[22, 1]
