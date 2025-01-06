@@ -1,6 +1,11 @@
 import os
 import pandas as pd
 
+class PlqSimOperation(Enum):
+    ENERGY_LEVEL = "energy_level"
+    DONOR_EXCITATION = "donor_excitation"
+    ACCEPTOR_EXCITATION = "acceptor_excitation"
+
 def create_result_folder(xif, appdir):
     try:
         RESULT_FOLDER = os.path.join(appdir, "plqsim", "result")
