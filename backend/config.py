@@ -2,7 +2,8 @@ import os
 import logging
 
 class Config:
-    LOGGING_LEVEL = logging.ERROR
+    ENV = os.environ.get('ENV', 'prod')
+    LOGGING_LEVEL = logging.INFO if ENV == 'dev' else logging.WARN
     LOGGING_FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
 
     UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', '/app/upload')

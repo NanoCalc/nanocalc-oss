@@ -1,7 +1,7 @@
-from fret_calc import overlap_calculation
-from ri_calc import n_calculation, n_k_calculation
-from plq_sim import energy_level, donor_excitation, acceptor_excitation
-from tmm_sim import calculation
+from fretcalc_core import overlap_calculation
+from ricalc_core import n_calculation, n_k_calculation
+from plqsim_facade import execute_plqsim_operation, PlqSimOperation
+from tmmsim_core import calculation
 import os 
 import logging
 from waitress import serve
@@ -16,7 +16,32 @@ from shutil import rmtree
 # App configuration
 app = Flask(__name__)
 app.config.from_object(Config)
-logging.basicConfig(level=Config.LOGGING_LEVEL, format=Config.LOGGING_FORMAT)
+
+# Logging configuration
+log_file_path = os.path.join('/app/backend/logs', 'backend.log')
+os.makedirs(os.path.dirname(log_file_path), exist_ok=True)
+
+# Create a custom logger
+logger = logging.getLogger()
+logger.setLevel(Config.LOGGING_LEVEL)
+
+# Create handlers
+file_handler = logging.FileHandler(log_file_path)
+file_handler.setLevel(Config.LOGGING_LEVEL)
+
+console_handler = logging.StreamHandler()
+console_handler.setLevel(Config.LOGGING_LEVEL)
+
+# Create formatter and add it to handlers
+formatter = logging.Formatter(Config.LOGGING_FORMAT)
+file_handler.setFormatter(formatter)
+console_handler.setFormatter(formatter)
+
+# Add handlers to the logger
+logger.addHandler(file_handler)
+logger.addHandler(console_handler)
+
+
 UPLOAD_FOLDER = app.config['UPLOAD_FOLDER']
 
 FILE_ID_FORM_FIELD = 'NANOCALC_FILE_ID_FORM_FIELD'
@@ -77,11 +102,11 @@ def handle_ricalc(files_bundle):
         if mode == 'opticalConstants':
             # calculate nk
             coefficient_path = save_file_with_uuid(ricalc_folder, files_bundle['decadicCoefficient'])
-            dataFolderPath = n_k_calculation(input_excel_path, coefficient_path, UPLOAD_FOLDER)
+            dataFolderPath = n_k_calculation(input_excel_path, coefficient_path, None, UPLOAD_FOLDER)
         elif mode == 'refractiveIndex':
             # calculate n
             coefficient_path = save_file_with_uuid(ricalc_folder, files_bundle['constantK'])
-            dataFolderPath = n_calculation(input_excel_path, coefficient_path, UPLOAD_FOLDER)
+            dataFolderPath = n_calculation(input_excel_path, coefficient_path, None, UPLOAD_FOLDER)
         else:
             #TODO: throw?
             pass
@@ -108,13 +133,12 @@ def handle_plqsim(files_bundle):
     try:
         input_excel_path = save_file_with_uuid(plqsim_folder, files_bundle['inputExcel'])
         mode = files_bundle['mode']
+        execute_plqsim_operation(PlqSimOperation.ENERGY_LEVEL, input_excel_path, None, UPLOAD_FOLDER)
 
         if mode == 'donorExcitation':
-            energy_level(input_excel_path, UPLOAD_FOLDER)
-            dataFolderPath = donor_excitation(input_excel_path, UPLOAD_FOLDER)
+            dataFolderPath = execute_plqsim_operation(PlqSimOperation.DONOR_EXCITATION, input_excel_path, None, UPLOAD_FOLDER)
         elif mode == 'acceptorExcitation':
-            energy_level(input_excel_path, UPLOAD_FOLDER)
-            dataFolderPath = acceptor_excitation(input_excel_path, UPLOAD_FOLDER)
+            dataFolderPath = execute_plqsim_operation(PlqSimOperation.ACCEPTOR_EXCITATION, input_excel_path, None, UPLOAD_FOLDER)
         else:
             #TODO: throw?
             pass
@@ -146,7 +170,7 @@ def handle_tmmsim(files_bundle):
             layerFile.save(csv_path)
             csv_paths.append(csv_path)
 
-        dataFolderPath = calculation(input_excel_path, UPLOAD_FOLDER, tmmsim_folder)
+        dataFolderPath = calculation(tmmsim_folder, input_excel_path, UPLOAD_FOLDER, None)
         zip_file_name = generate_zip(dataFolderPath, 'tmmsim', app.config['UPLOAD_FOLDER'])
         return zip_file_name
 

@@ -1,0 +1,36 @@
+services:
+  nginx:
+    build:
+      context: ./nginx
+      args:
+        ENV: dev
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - backend
+      - frontend
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    environment:
+      - ENV=dev
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - ./logs/backend:/app/backend/logs
+    restart: unless-stopped
+
+  frontend:
+    build: 
+      context: ./frontend
+      args:
+        - NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "127.0.0.1:3000:3000"
+    restart: unless-stopped

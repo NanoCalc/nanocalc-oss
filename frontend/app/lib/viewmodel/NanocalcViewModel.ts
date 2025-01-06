@@ -106,7 +106,11 @@ export class NanocalcViewModel {
             return validationError;
         }
 
-        const API_ENDPOINT = `https://nanocalc.org/upload/${appId}`;
+        const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+        if (!API_BASE_URL) {
+            return `Unable to connect to the server. Please try again later.`
+        }
+        const API_ENDPOINT = `${API_BASE_URL}/upload/${appId}`;
 
         const FILE_ID_FORM_FIELD = 'NANOCALC_FILE_ID_FORM_FIELD'
         const FILES_FORM_FIELD = 'NANOCALC_USER_UPLOADED_FILES';
@@ -128,35 +132,7 @@ export class NanocalcViewModel {
                 });
             }
         }
-
-        // for devtime - prints the detailed upload object
-        // const formDataObject = {};
-        // for (let [key, value] of formData.entries()) {
-        //     let displayValue = value;
-
-        //     if (value instanceof File) {
-        //         displayValue = {
-        //             name: value.name,
-        //             size: value.size,
-        //             type: value.type,
-        //         };
-        //     }
-
-        //     if (formDataObject.hasOwnProperty(key)) {
-        //         if (Array.isArray(formDataObject[key])) {
-        //             formDataObject[key].push(displayValue);
-        //         } else {
-        //             formDataObject[key] = [formDataObject[key], displayValue];
-        //         }
-        //     } else {
-        //         formDataObject[key] = displayValue;
-        //     }
-        // }
-        // console.group('Structured FormData Contents');
-        // console.log(JSON.stringify(formDataObject, null, 2));
-        // console.groupEnd();
-
-
+        
         try {
             const response = await fetch(API_ENDPOINT, {
                 method: 'POST',
@@ -176,12 +152,9 @@ export class NanocalcViewModel {
 
                 return null;
             } else {
-                // const parsedResponse = await response.json();
-                // console.error(`Error uploading files: ${response.statusText}. Server message: ${parsedResponse.message}`)
                 return `Error while processing data. Please double check your data and be sure it complies with the expected formatting.`;
             }
         } catch (error) {
-            // console.error(`Unknown error during file upload: ${error}`);
             return `Unknown error during file upload. Please try again later.`
         }
     }

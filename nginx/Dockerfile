@@ -1,6 +1,7 @@
 FROM nginx:stable-alpine
 
-COPY conf.d/nanocalc.conf /etc/nginx/conf.d/
+ARG ENV=prod
+COPY conf.d/nanocalc.${ENV}.conf /etc/nginx/conf.d/nanocalc.conf
 
 EXPOSE 80
 EXPOSE 443

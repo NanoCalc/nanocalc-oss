@@ -1,12 +1,15 @@
 services:
   nginx:
-    build: ./nginx
+    build:
+      context: ./nginx
+      args:
+        ENV: prod
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
       - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/log/nanocalc/nginx:/var/log/nginx
     depends_on:
       - backend
       - frontend
@@ -14,12 +17,19 @@ services:
 
   backend:
     build: ./backend
+    environment:
+      - ENV=prod
     ports:
       - "127.0.0.1:8080:8080"
+    volumes:
+      - /var/log/nanocalc/backend:/app/backend/logs
     restart: unless-stopped
 
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
+      args:
+        - NEXT_PUBLIC_API_BASE_URL=https://nanocalc.org
     environment:
       - NODE_ENV=production
     ports:
