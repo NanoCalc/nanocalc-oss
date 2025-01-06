@@ -105,9 +105,13 @@ export class NanocalcViewModel {
         if (validationError) {
             return validationError;
         }
-        
-        // const API_ENDPOINT = `http://127.0.0.1/upload/${appId}`;
-        const API_ENDPOINT = `https://nanocalc.org/upload/${appId}`;
+
+        // const API_BASE_URL = 'http://127.0.0.1:8080';
+        const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+        if (!API_BASE_URL) {
+            return `Unknown error during file upload. Please try again later.`
+        }
+        const API_ENDPOINT = `${API_BASE_URL}/upload/${appId}`;
 
         const FILE_ID_FORM_FIELD = 'NANOCALC_FILE_ID_FORM_FIELD'
         const FILES_FORM_FIELD = 'NANOCALC_USER_UPLOADED_FILES';

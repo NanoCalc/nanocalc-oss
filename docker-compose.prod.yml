@@ -21,7 +21,10 @@ services:
     restart: unless-stopped
 
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
+      args:
+        - NEXT_PUBLIC_API_BASE_URL=https://nanocalc.org
     environment:
       - NODE_ENV=production
     ports:
