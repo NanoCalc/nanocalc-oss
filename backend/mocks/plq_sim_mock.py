@@ -23,11 +23,5 @@ def create_result_folder(xif, appdir):
     except Exception :
         raise
 
-def energy_level(xif, appdir):
-    return create_result_folder(xif, appdir)
-
-def donor_excitation(xif, appdir):
-    return create_result_folder(xif, appdir)
-
-def acceptor_excitation(xif, appdir):
+def execute_plqsim_operation(plqSimOperation, xif, appdir):
     return create_result_folder(xif, appdir)
