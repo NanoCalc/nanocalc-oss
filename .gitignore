@@ -5,12 +5,9 @@ ricalc_core.py
 tmmsim_auxiliary_functions.py
 tmmsim_computation_functions.py
 tmmsim_core.py
-*.pem
 env
-instance/
 *.pyc
 __pycache__
-GeoIP*.dat
-*.db
 .coverage
 nanocalc_uploads
+logs

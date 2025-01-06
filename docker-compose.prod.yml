@@ -9,6 +9,7 @@ services:
       - "443:443"
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/log/nanocalc/nginx:/var/log/nginx
     depends_on:
       - backend
       - frontend
@@ -21,7 +22,7 @@ services:
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
-      - ./logs/backend:/app/logs
+      - /var/log/nanocalc/backend:/app/backend/logs
     restart: unless-stopped
 
   frontend:

@@ -106,10 +106,9 @@ export class NanocalcViewModel {
             return validationError;
         }
 
-        // const API_BASE_URL = 'http://127.0.0.1:8080';
         const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
         if (!API_BASE_URL) {
-            return `Unknown error during file upload. Please try again later.`
+            return `Unable to connect to the server. Please try again later.`
         }
         const API_ENDPOINT = `${API_BASE_URL}/upload/${appId}`;
 
@@ -153,12 +152,9 @@ export class NanocalcViewModel {
 
                 return null;
             } else {
-                // const parsedResponse = await response.json();
-                // console.error(`Error uploading files: ${response.statusText}. Server message: ${parsedResponse.message}`)
                 return `Error while processing data. Please double check your data and be sure it complies with the expected formatting.`;
             }
         } catch (error) {
-            // console.error(`Unknown error during file upload: ${error}`);
             return `Unknown error during file upload. Please try again later.`
         }
     }
