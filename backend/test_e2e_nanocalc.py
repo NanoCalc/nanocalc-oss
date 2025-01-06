@@ -203,7 +203,7 @@ class NanoCalcE2ETest(unittest.TestCase):
 
 
     def test_tmm_sim_bhj_upload_success(self):
-        print("Testing TMM-Sim successful upload.")
+        print("Testing TMM-Sim BHJ successful upload.")
         url = f'{self.HOST}/upload/tmmsim' 
         files = []
         try: 
@@ -234,39 +234,37 @@ class NanoCalcE2ETest(unittest.TestCase):
                     file_obj.close()
 
         
-        def test_tmm_sim_bilayer_upload_success(self):
-            print("Testing TMM-Sim Bilayer successful upload.")
-            url = f'{self.HOST}/upload/tmmsim' 
-            files = []
-            try: 
-                with open('samples/tmmsim/input_bilayer.xlsx', 'rb') as xif, \
-                     open('samples/tmmsim/AM15G.csv', 'rb') as am15g, \
-                     open('samples/tmmsim/nk_Air.csv', 'rb') as air, \
-                     open('samples/tmmsim/nk_Al.csv', 'rb') as al, \
-                     open('samples/tmmsim/nk_Ca.csv', 'rb') as ca, \
-                     open('samples/tmmsim/nk_ITO.csv', 'rb') as ito, \
-                     open('samples/tmmsim/nk_P3HT.csv', 'rb') as p3ht, \
-                     open('samples/tmmsim/nk_P3HTPCBM.csv', 'rb') as p3htpcbm, \
-                     open('samples/tmmsim/nk_PCBM.csv', 'rb') as pcbm, \
-                     open('samples/tmmsim/nk_PEDOT.csv', 'rb') as pedot, \
-                     open('samples/tmmsim/nk_SiO2.csv', 'rb') as sio2: 
+    def test_tmm_sim_bilayer_upload_success(self):
+        print("Testing TMM-Sim Bilayer successful upload.")
+        url = f'{self.HOST}/upload/tmmsim' 
+        files = []
+        try: 
+            with open('samples/tmmsim/input_bilayer.xlsx', 'rb') as xif, \
+                 open('samples/tmmsim/AM15G.csv', 'rb') as am15g, \
+                 open('samples/tmmsim/nk_Air.csv', 'rb') as air, \
+                 open('samples/tmmsim/nk_Al.csv', 'rb') as al, \
+                 open('samples/tmmsim/nk_Ca.csv', 'rb') as ca, \
+                 open('samples/tmmsim/nk_ITO.csv', 'rb') as ito, \
+                 open('samples/tmmsim/nk_P3HT.csv', 'rb') as p3ht, \
+                 open('samples/tmmsim/nk_P3HTPCBM.csv', 'rb') as p3htpcbm, \
+                 open('samples/tmmsim/nk_PCBM.csv', 'rb') as pcbm, \
+                 open('samples/tmmsim/nk_PEDOT.csv', 'rb') as pedot, \
+                 open('samples/tmmsim/nk_SiO2.csv', 'rb') as sio2: 
 
-                    files = {
-                        'inputExcel': [xif],
-                        'layerFiles': [
-                            am15g, air, al, ca, ito, p3ht, p3htpcbm, pcbm, pedot, sio2
-                        ]
-                    }
+                files = {
+                    'inputExcel': [xif],
+                    'layerFiles': [
+                        am15g, air, al, ca, ito, p3ht, p3htpcbm, pcbm, pedot, sio2
+                    ]
+                }
 
-                    self.validator(url, files, 'TMM-Sim Bilayer', data=None)
+                self.validator(url, files, 'TMM-Sim BHJ', data=None)
 
-            finally:
-                for file_list in files.values():
-                    for file_obj in file_list:
-                        file_obj.close()
+        finally:
+            for file_list in files.values():
+                for file_obj in file_list:
+                    file_obj.close()
 
 
 if __name__ == '__main__':
-    print("--------------------------------------NANOCALC E2E TEST SUITE--------------------------------------")
     unittest.main()
-    print("--------------------------------------END NANOCALC E2E TEST SUITE--------------------------------------")
