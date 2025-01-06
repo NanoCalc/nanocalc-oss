@@ -18,8 +18,8 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 # Logging configuration
-log_file_path = os.path.join('/app/backend/logs', 'backend.log')
-os.makedirs(os.path.dirname(Config.LOG_PATH), exist_ok=True)
+log_file_path = os.path.join(Config.LOG_PATH, 'backend.log')
+os.makedirs(os.path.dirname(log_file_path), exist_ok=True)
 
 # Create a custom logger
 logger = logging.getLogger()
