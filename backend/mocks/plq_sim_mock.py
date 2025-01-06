@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+from enum import Enum
 
 class PlqSimOperation(Enum):
     ENERGY_LEVEL = "energy_level"
