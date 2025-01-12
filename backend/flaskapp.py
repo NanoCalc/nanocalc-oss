@@ -41,7 +41,7 @@ console_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 logger.addHandler(console_handler)
 
-
+#TODO: create unique folders?
 UPLOAD_FOLDER = app.config['UPLOAD_FOLDER']
 
 FILE_ID_FORM_FIELD = 'NANOCALC_FILE_ID_FORM_FIELD'
