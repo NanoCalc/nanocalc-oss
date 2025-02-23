@@ -11,7 +11,11 @@ from werkzeug.exceptions import RequestEntityTooLarge
 from apps_definitions import allowed_extensions, get_max_files, get_allowed_extensions
 from helper_functions import save_file_with_uuid, generate_zip
 from config import Config
-from shutil import rmtree
+import redis
+from rq import Queue
+import uuid
+from tasks import run_heavy_task
+from rq.job import Job
 
 # App configuration
 app = Flask(__name__)
@@ -48,6 +52,11 @@ FILE_ID_FORM_FIELD = 'NANOCALC_FILE_ID_FORM_FIELD'
 FILES_FORM_FIELD = 'NANOCALC_USER_UPLOADED_FILES'
 MODE_FORM_FIELD = 'NANOCALC_USER_MODE'
 
+# Connect to Redis (make sure you have REDIS_URL in your Docker env)
+redis_url = os.getenv("REDIS_URL", "redis://redis:6379")
+conn = redis.from_url(redis_url)
+q = Queue("default", connection=conn)
+
 
 def respond_client(message, code):
     return jsonify({
@@ -55,151 +64,52 @@ def respond_client(message, code):
     }), code
 
 
-def handle_fretcalc(files_bundle):
-    fretcalc_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'fretcalc')
-    input_excel_path = None
-    extinction_coefficient_path = None
-    emission_coefficient_path = None
-    refractive_index_path = None 
-    dataFolderPath = None
-
-    try:
-        input_excel_path = save_file_with_uuid(fretcalc_folder, files_bundle['inputExcel'])
-        extinction_coefficient_path = save_file_with_uuid(fretcalc_folder, files_bundle['extinctionCoefficient'])
-        emission_coefficient_path = save_file_with_uuid(fretcalc_folder, files_bundle['emissionCoefficient'])
-        refractive_index_path = save_file_with_uuid(fretcalc_folder, files_bundle['refractiveIndex'])
-
-        dataFolderPath = overlap_calculation(input_excel_path, extinction_coefficient_path, emission_coefficient_path, refractive_index_path, UPLOAD_FOLDER)
-        zip_file_name = generate_zip(dataFolderPath, 'fretcalc', app.config['UPLOAD_FOLDER'])
-        return zip_file_name
-
-    except Exception as e: 
-        logging.error(f"handle_fretcalc.error: {e}")
-        raise e
-    finally:
-        if input_excel_path and os.path.exists(input_excel_path):
-            os.remove(input_excel_path)
-        if extinction_coefficient_path and os.path.exists(extinction_coefficient_path):
-            os.remove(extinction_coefficient_path)
-        if emission_coefficient_path and os.path.exists(emission_coefficient_path):
-            os.remove(emission_coefficient_path)
-        if refractive_index_path and os.path.exists(refractive_index_path):
-            os.remove(refractive_index_path)
-        if dataFolderPath and os.path.exists(dataFolderPath):
-            rmtree(dataFolderPath, ignore_errors=True)
-
-
-def handle_ricalc(files_bundle):
-    ricalc_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'ricalc')
-    input_excel_path = None
-    coefficient_path = None
-    dataFolderPath = None
-
-    try:
-        input_excel_path = save_file_with_uuid(ricalc_folder, files_bundle['inputExcel'])
-        mode = files_bundle['mode']
-
-        if mode == 'opticalConstants':
-            # calculate nk
-            coefficient_path = save_file_with_uuid(ricalc_folder, files_bundle['decadicCoefficient'])
-            dataFolderPath = n_k_calculation(input_excel_path, coefficient_path, None, UPLOAD_FOLDER)
-        elif mode == 'refractiveIndex':
-            # calculate n
-            coefficient_path = save_file_with_uuid(ricalc_folder, files_bundle['constantK'])
-            dataFolderPath = n_calculation(input_excel_path, coefficient_path, None, UPLOAD_FOLDER)
-        else:
-            #TODO: throw?
-            pass
-        
-        zip_file_name = generate_zip(dataFolderPath, 'ricalc', app.config['UPLOAD_FOLDER'])
-        return zip_file_name
-    except Exception as e: 
-        logging.error(f"handle_ricalc.error: {e}")
-        raise e
-    finally:
-        if input_excel_path and os.path.exists(input_excel_path):
-            os.remove(input_excel_path)
-        if coefficient_path and os.path.exists(coefficient_path):
-            os.remove(coefficient_path)
-        if dataFolderPath and os.path.exists(dataFolderPath):
-            rmtree(dataFolderPath, ignore_errors=True)
-
-
-def handle_plqsim(files_bundle):
-    plqsim_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'plqsim')
-    input_excel_path = None
-    dataFolderPath = None
-
-    try:
-        input_excel_path = save_file_with_uuid(plqsim_folder, files_bundle['inputExcel'])
-        mode = files_bundle['mode']
-        execute_plqsim_operation(PlqSimOperation.ENERGY_LEVEL, input_excel_path, None, UPLOAD_FOLDER)
-
-        if mode == 'donorExcitation':
-            dataFolderPath = execute_plqsim_operation(PlqSimOperation.DONOR_EXCITATION, input_excel_path, None, UPLOAD_FOLDER)
-        elif mode == 'acceptorExcitation':
-            dataFolderPath = execute_plqsim_operation(PlqSimOperation.ACCEPTOR_EXCITATION, input_excel_path, None, UPLOAD_FOLDER)
-        else:
-            #TODO: throw?
-            pass
-        
-        zip_file_name = generate_zip(dataFolderPath, 'plqsim', app.config['UPLOAD_FOLDER'])
-        return zip_file_name
-    except Exception as e:
-        logging.error(f"handle_plqsim.error: {e}")
-        raise e
-    finally:
-        if input_excel_path and os.path.exists(input_excel_path):
-            os.remove(input_excel_path)
-        if dataFolderPath and os.path.exists(dataFolderPath):
-            rmtree(dataFolderPath, ignore_errors=True)
-
-
-def handle_tmmsim(files_bundle):
-    tmmsim_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'tmmsim')
-    input_excel_path = None
-    dataFolderPath = None
-    csv_paths = []
-    
-    try:
-        input_excel_path = save_file_with_uuid(tmmsim_folder, files_bundle['inputExcel'])
-
-        layerFiles = [layerFile for layerFile in files_bundle.get('layerFiles', []) if layerFile]
-        for layerFile in layerFiles:
-            csv_path = os.path.join(tmmsim_folder, secure_filename(layerFile.filename))
-            layerFile.save(csv_path)
-            csv_paths.append(csv_path)
-
-        dataFolderPath = calculation(tmmsim_folder, input_excel_path, UPLOAD_FOLDER, None)
-        zip_file_name = generate_zip(dataFolderPath, 'tmmsim', app.config['UPLOAD_FOLDER'])
-        return zip_file_name
-
-    except Exception as e:
-        logging.error(f"handle_tmmsim.error: {e}")
-        raise e
-    finally:
-        if input_excel_path and os.path.exists(input_excel_path):
-            os.remove(input_excel_path)
-        if dataFolderPath and os.path.exists(dataFolderPath):
-            rmtree(dataFolderPath, ignore_errors=True)
-        for csv_path in csv_paths:
-            if csv_path and os.path.exists(csv_path):
-                os.remove(csv_path)
-       
-
-app_handlers = {
-    'fretcalc': handle_fretcalc,
-    'ricalc': handle_ricalc,
-    'plqsim': handle_plqsim,
-    'tmmsim': handle_tmmsim,
-}
-
-
 @app.route('/health', methods=['GET'])
 def health():
     return respond_client('Up and running!', 200)
 
-#TODO: implement queueing system
+@app.route("/status/<job_id>", methods=["GET"])
+def check_status(job_id):
+    try:
+        job = Job.fetch(job_id, connection=conn)
+    except Exception:
+        # RQ throws an error if job not found in Redis
+        return jsonify({"status": "not_found"}), 404
+
+    if job.is_queued:
+        return jsonify({"status": "queued"}), 200
+    elif job.is_started:
+        return jsonify({"status": "in-progress"}), 200
+    elif job.is_finished:
+        return jsonify({"status": "finished"}), 200
+    elif job.is_failed:
+        return jsonify({"status": "failed"}), 200
+    else:
+        return jsonify({"status": "unknown"}), 200
+
+@app.route("/download/<job_id>", methods=["GET"])
+def download_result(job_id):
+
+    try:
+        job = Job.fetch(job_id, connection=conn)
+    except Exception:
+        return jsonify({"error": "job not found"}), 404
+    
+    if not job.is_finished:
+        return jsonify({"error": f"Job not finished; status={job.get_status()}"}), 400
+
+    # The path to the ZIP was returned by run_heavy_task
+    zip_file_path = job.result  
+    # job.result is whatever run_heavy_task(...) returned
+    
+    if not zip_file_path or not os.path.exists(zip_file_path):
+        return jsonify({"error": "no result file found"}), 404
+
+    # Serve the file
+    # can also use send_from_directory if you want
+    return send_file(zip_file_path, as_attachment=True)
+
+
 @app.route('/upload/<app_name>', methods=['POST'])
 def upload_file(app_name):
     try:
@@ -231,32 +141,43 @@ def upload_file(app_name):
 
 
         files_bundle = {}
-        mode = requestForm.get(MODE_FORM_FIELD)
-        if mode:
-            files_bundle['mode'] = mode
-        
         for file_id, file in zip(file_ids, files):
+            # 1) Save the file *now* in the web request
+            directory_for_app = os.path.join(UPLOAD_FOLDER, app_name) 
+            os.makedirs(directory_for_app, exist_ok=True)
+
+            secure_name = secure_filename(file.filename)
+            _, extension = os.path.splitext(secure_name)
+            unique_filename = f"{uuid.uuid4()}{extension}"
+
+            saved_path = os.path.join(directory_for_app, unique_filename)
+            file.save(saved_path)
+
+            # 2) Instead of storing the FileStorage, store the path
             if file_id == 'layerFiles':
                 if file_id not in files_bundle:
                     files_bundle[file_id] = []
-                files_bundle[file_id].append(file)
+                files_bundle[file_id].append(saved_path)
             else:
-                files_bundle[file_id] = file
+                files_bundle[file_id] = saved_path
 
-        
-        zip_file_path = app_handlers[app_name](files_bundle)
-        
-        try:
-            directory = os.path.dirname(zip_file_path)
-            filename = os.path.basename(zip_file_path)
 
-            return send_from_directory(directory=directory, path=filename, as_attachment=True)
-        except Exception as e:
-            logging.error(f"Error in sending file: {e}")
-            return respond_client('Failed to send zip file', 500)
-        finally:
-            if zip_file_path and os.path.exists(zip_file_path):
-                os.remove(zip_file_path)
+        logging.info(f">>>> files_bundle = {files_bundle}")
+        job_id = str(uuid.uuid4())
+        job = q.enqueue(
+            run_heavy_task,
+            app_name,
+            files_bundle,      # now this is just dict of paths
+            job_id,
+            job_timeout=1200
+        )
+
+
+        # Return the job ID so the client can poll or check status
+        return jsonify({
+            "status": "queued",
+            "job_id": job.get_id()
+        }), 202
 
 
     except RequestEntityTooLarge as e:
