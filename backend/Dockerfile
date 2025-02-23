@@ -20,6 +20,9 @@ COPY flaskapp.py \
     config.py \
     helper_functions.py \
     apps_definitions.py \
+    computation_handlers.py \
+    tasks.py \
+    worker.py \
     /app/
 
     
