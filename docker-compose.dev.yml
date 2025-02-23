@@ -18,10 +18,15 @@ services:
     build: ./backend
     environment:
       - ENV=dev
+      - REDIS_URL=redis://redis:6379
+      - UPLOAD_FOLDER=/app/upload
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
       - ./logs/backend:/app/backend/logs
+      - ./upload:/app/upload
+    depends_on:
+      - redis
     restart: unless-stopped
 
   frontend:
@@ -33,4 +38,23 @@ services:
       - NODE_ENV=production
     ports:
       - "127.0.0.1:3000:3000"
+    restart: unless-stopped
+
+  redis:
+    image: redis:6.2
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6379:6379"
+
+  rqworker:
+    build: ./backend
+    environment:
+      - ENV=dev
+      - REDIS_URL=redis://redis:6379
+      - UPLOAD_FOLDER=/app/upload
+    command: python worker.py
+    depends_on:
+      - redis
+    volumes:
+      - ./upload:/app/upload
     restart: unless-stopped
