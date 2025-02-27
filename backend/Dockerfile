@@ -2,8 +2,10 @@ FROM python:3.12-alpine3.20
 
 ENV PATH="/home/nanocalc/.local/bin:${PATH}"
 
+# Alpine assigns 1000 as UID and GID for the first non root user
 RUN adduser -D nanocalc
 USER nanocalc
+
 WORKDIR /app
 
 COPY requirements.txt /app/
