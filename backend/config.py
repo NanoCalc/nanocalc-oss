@@ -3,7 +3,7 @@ import logging
 
 class Config:
     ENV = os.environ.get('ENV', 'prod')
-    LOG_PATH = '/app/backend/logs'
+    LOG_PATH = '/app/logs'
     UPLOAD_FOLDER = '/app/upload'
 
     LOGGING_LEVEL = logging.INFO if ENV == 'dev' else logging.WARN

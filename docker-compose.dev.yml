@@ -22,7 +22,7 @@ services:
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
-      - ./logs/backend:/app/backend/logs
+      - ./logs/backend:/app/logs
     depends_on:
       - redis
     restart: unless-stopped

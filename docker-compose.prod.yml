@@ -22,7 +22,7 @@ services:
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
-      - /var/log/nanocalc/backend:/app/backend/logs
+      - /var/log/nanocalc/backend:/app/logs
     restart: unless-stopped
 
   frontend:
