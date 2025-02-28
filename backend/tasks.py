@@ -1,7 +1,5 @@
-from apps_definitions import get_max_files, get_allowed_extensions
 from computation_handlers import handle_fretcalc, handle_ricalc, handle_plqsim, handle_tmmsim
 import logging
-import os
 
 def run_heavy_task(app_name, files_bundle, job_id):
     """

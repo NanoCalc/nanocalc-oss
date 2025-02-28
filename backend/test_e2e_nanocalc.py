@@ -2,7 +2,6 @@ import unittest
 import requests
 import zipfile
 import io
-from bs4 import BeautifulSoup
 
 class NanoCalcE2ETest(unittest.TestCase):
     HOST = "http://localhost:8080"

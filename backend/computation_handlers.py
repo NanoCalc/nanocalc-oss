@@ -1,13 +1,11 @@
 import os
 import logging
-
 from config import Config
 from helper_functions import generate_zip
 from fretcalc_core import overlap_calculation
 from ricalc_core import n_calculation, n_k_calculation
 from plqsim_facade import execute_plqsim_operation, PlqSimOperation
 from tmmsim_core import calculation
-from werkzeug.utils import secure_filename
 
 UPLOAD_FOLDER = Config.UPLOAD_FOLDER
 

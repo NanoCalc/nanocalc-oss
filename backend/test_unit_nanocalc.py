@@ -1,11 +1,9 @@
 from helper_functions import save_file_with_uuid, generate_zip
-from flask import Flask
 import unittest
 import unittest.mock as mock
 import os
 import tempfile
 import zipfile
-import uuid
 
 class TestHelperFunctions(unittest.TestCase):
 
