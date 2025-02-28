@@ -13,6 +13,7 @@ import uuid
 from tasks import run_heavy_task
 from rq.job import Job
 
+
 # App configuration
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -44,8 +45,9 @@ def health():
 def check_status(job_id):
     try:
         job = Job.fetch(job_id, connection=conn)
-    except Exception:
+    except Exception as e:
         # RQ throws an error if job not found in Redis
+        logging.error(f"/status/<job_id> route check_status RQ exception: {e}")
         return jsonify({"status": "not_found"}), 404
 
     if job.is_queued:
@@ -64,7 +66,8 @@ def download_result(job_id):
 
     try:
         job = Job.fetch(job_id, connection=conn)
-    except Exception:
+    except Exception as e:
+        logging.error(f"/download/<job_id> route download_result RQ exception: {e}")
         return jsonify({"error": "job not found"}), 404
     
     if not job.is_finished:
@@ -133,24 +136,24 @@ def upload_file(app_name):
             else:
                 files_bundle[file_id] = saved_path
 
-
-        logging.info(f">>>> files_bundle = {files_bundle}")
+        mode = requestForm.get(MODE_FORM_FIELD)
+        if mode:
+            files_bundle['mode'] = mode
+        
         job_id = str(uuid.uuid4())
         job = q.enqueue(
             run_heavy_task,
             app_name,
-            files_bundle,      # now this is just dict of paths
+            files_bundle,
             job_id,
             job_timeout=1200
         )
-
 
         # Return the job ID so the client can poll or check status
         return jsonify({
             "status": "queued",
             "job_id": job.get_id()
         }), 202
-
 
     except RequestEntityTooLarge as e:
         return respond_client('tooLargeRequest', 413)
