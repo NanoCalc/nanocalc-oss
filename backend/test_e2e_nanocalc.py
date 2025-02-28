@@ -2,24 +2,59 @@ import unittest
 import requests
 import zipfile
 import io
+import time
 
 class NanoCalcE2ETest(unittest.TestCase):
     HOST = "http://localhost:8080"
     
+    def poll_job_status(self, job_id, timeout=60, interval=2):
+        """
+        Polls the job status until it is finished or fails.
+        """
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            response = requests.get(f"{self.HOST}/status/{job_id}")
+            self.assertEqual(response.status_code, 200)
+            status = response.json().get("status")
+            
+            if status == "finished":
+                return True
+            elif status == "failed":
+                self.fail(f"Job {job_id} failed.")
+            elif status == "not_found":
+                self.fail(f"Job {job_id} not found.")
+            
+            time.sleep(interval)
+        
+        self.fail(f"Job {job_id} did not complete within {timeout} seconds.")
+
+    def download_result(self, job_id):
+        """
+        Downloads the result of a finished job.
+        """
+        response = requests.get(f"{self.HOST}/download/{job_id}")
+        self.assertEqual(response.status_code, 200)
+        return response.content
+
     def validator(self, url, files, webapp, data): 
         """
         Asserts: 
-        - response status code is 200 OK 
-        - downloaded file is a zip file
+        - response status code is 202 Accepted 
+        - job completes successfully
+        - downloaded file is a valid ZIP file
         """
-
         form_data = self.build_form_data(files, data)
         response = requests.post(url, files=form_data['files'], data=form_data['data'])
-        # print(f"Server message: {response.text}")
         
-        self.assertEqual(response.status_code, 200)
-                
-        download_response = response.content
+        self.assertEqual(response.status_code, 202)
+        job_id = response.json().get("job_id")
+        self.assertIsNotNone(job_id, "Job ID not returned in response.")
+        
+        # Poll job status
+        self.poll_job_status(job_id)
+        
+        # Download result
+        download_response = self.download_result(job_id)
         self.assertTrue(download_response.startswith(b'PK'), "Downloaded content is not a valid ZIP file.")
 
         with zipfile.ZipFile(io.BytesIO(download_response)) as zip_file:
@@ -49,7 +84,6 @@ class NanoCalcE2ETest(unittest.TestCase):
         FILE_ID_FORM_FIELD = 'NANOCALC_FILE_ID_FORM_FIELD'
         FILES_FORM_FIELD = 'NANOCALC_USER_UPLOADED_FILES'
         
-
         form_data = {
             'files': [],    # request.files
             'data': {}      # request.form
