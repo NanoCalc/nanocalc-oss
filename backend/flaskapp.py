@@ -124,7 +124,6 @@ def upload_file(app_name):
 
             file.save(saved_path)
 
-            # 2) Instead of storing the FileStorage, store the path
             if file_id == 'layerFiles':
                 if file_id not in files_bundle:
                     files_bundle[file_id] = []
@@ -146,7 +145,6 @@ def upload_file(app_name):
             job_timeout=1200
         )
 
-        # Return the job ID so the client can poll or check status
         return jsonify({
             "status": "queued",
             "job_id": job.get_id()
