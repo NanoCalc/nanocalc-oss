@@ -14,18 +14,14 @@ from tasks import run_heavy_task
 from rq.job import Job
 
 
-# App configuration
 app = Flask(__name__)
 app.config.from_object(Config)
 
-#TODO: create unique folders?
 UPLOAD_FOLDER = app.config['UPLOAD_FOLDER']
-
 FILE_ID_FORM_FIELD = 'NANOCALC_FILE_ID_FORM_FIELD'
 FILES_FORM_FIELD = 'NANOCALC_USER_UPLOADED_FILES'
 MODE_FORM_FIELD = 'NANOCALC_USER_MODE'
 
-# Connect to Redis (make sure you have REDIS_URL in your Docker env)
 redis_url = os.getenv("REDIS_URL", "redis://redis:6379")
 conn = redis.from_url(redis_url)
 q = Queue("default", connection=conn)

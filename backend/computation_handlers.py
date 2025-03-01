@@ -1,14 +1,11 @@
 import os
 import logging_config
 import logging
-from config import Config
 from helper_functions import generate_zip
 from fretcalc_core import overlap_calculation
 from ricalc_core import n_calculation, n_k_calculation
 from plqsim_facade import execute_plqsim_operation, PlqSimOperation
 from tmmsim_core import calculation
-
-UPLOAD_FOLDER = Config.UPLOAD_FOLDER
 
 
 def handle_fretcalc(files_bundle, input_fretcalc_filepath):
@@ -42,8 +39,7 @@ def handle_ricalc(files_bundle, input_ricalc_filepath):
 
     try:
         input_excel_path = files_bundle['inputExcel']
-        mode = files_bundle.get('mode')  # 'opticalConstants' or 'refractiveIndex'
-        dataFolderPath = None
+        mode = files_bundle.get('mode')
 
         if mode == 'opticalConstants':
             coefficient_path = files_bundle['decadicCoefficient']
@@ -52,8 +48,7 @@ def handle_ricalc(files_bundle, input_ricalc_filepath):
             coefficient_path = files_bundle['constantK']
             dataFolderPath = n_calculation(input_excel_path, coefficient_path, None, ricalc_result_folder)
         else:
-            # TODO: handle error or unexpected mode
-            pass
+            raise ValueError(f"unexptected ricalc mode: {mode}")
 
         zip_file_name = generate_zip(dataFolderPath, ricalc_result_folder)
         return zip_file_name
@@ -70,6 +65,7 @@ def handle_plqsim(files_bundle, input_plqsim_filepath):
         input_excel_path = files_bundle['inputExcel']
         mode = files_bundle.get('mode')
         
+        # Calculate the energy level for both choices
         execute_plqsim_operation(PlqSimOperation.ENERGY_LEVEL, input_excel_path, None, plqsim_result_folder)
 
         if mode == 'donorExcitation':
@@ -77,8 +73,7 @@ def handle_plqsim(files_bundle, input_plqsim_filepath):
         elif mode == 'acceptorExcitation':
             dataFolderPath = execute_plqsim_operation(PlqSimOperation.ACCEPTOR_EXCITATION, input_excel_path, None, plqsim_result_folder)
         else:
-            # TODO: handle unknown mode
-            dataFolderPath = None
+            raise ValueError(f"unexptected plqsim mode: {mode}")
         
         zip_file_name = generate_zip(dataFolderPath, plqsim_result_folder)
         return zip_file_name
