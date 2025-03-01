@@ -171,11 +171,11 @@ class NanoCalcE2ETest(unittest.TestCase):
         url = f'{self.HOST}/upload/ricalc'
         
         with open('samples/ricalc/input.xlsx', 'rb') as inputExcel, \
-             open('samples/ricalc/decadic.dat', 'rb') as decadicCoefficient:
+             open('samples/ricalc/k.dat', 'rb') as kFile:
 
             files = {
                 'inputExcel': [inputExcel],
-                'constantK': [decadicCoefficient],
+                'constantK': [kFile],
             }
 
             mode = 'refractiveIndex' 
@@ -186,11 +186,11 @@ class NanoCalcE2ETest(unittest.TestCase):
         url = f'{self.HOST}/upload/ricalc'
 
         with open('samples/broken/broken_input.xlsx', 'rb') as inputExcel, \
-             open('samples/broken/broken_data.dat', 'rb') as decadicCoefficient:
+             open('samples/broken/broken_data.dat', 'rb') as kFile:
 
             files = {
                 'inputExcel': [inputExcel],
-                'decadicCoefficient': [decadicCoefficient],
+                'constantK': [kFile],
             }
 
             mode = 'refractiveIndex' 
