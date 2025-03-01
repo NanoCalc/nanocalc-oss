@@ -1,4 +1,6 @@
 import os
+import uuid
+import logging_config
 import logging
 from config import Config
 from helper_functions import generate_zip
@@ -101,26 +103,19 @@ def handle_plqsim(files_bundle):
         raise e
 
 
-def handle_tmmsim(files_bundle):
+def handle_tmmsim(files_bundle, input_tmm_filepath):
     """
     files_bundle['inputExcel'] => path
     files_bundle['layerFiles'] => list of CSV file paths
     We pass them along to the TMM calculation if needed.
     """
-    tmmsim_folder = os.path.join(UPLOAD_FOLDER, 'tmmsim')
+    tmm_result_folder = os.path.join(input_tmm_filepath, "result")
+    os.makedirs(tmm_result_folder, exist_ok=True)
 
     try:
-        input_excel_path = files_bundle['inputExcel']
-        layer_files = files_bundle.get('layerFiles', [])
-
-        # We already saved those CSVs in the route, so there's no need to re-save them here.
-        # If the 'calculation' function needs the actual path, we already have them in layer_files.
-
-        # For example, if you need them for 'calculation', you could pass them in or do something like:
-        # dataFolderPath = calculation(tmmsim_folder, input_excel_path, UPLOAD_FOLDER, layer_files)
-        # But if your existing 'calculation' function only needs input_excel_path + UPLOAD_FOLDER, keep it as is.
+        input_tmm_filename = files_bundle['inputExcel']
         
-        dataFolderPath = calculation(tmmsim_folder, input_excel_path, UPLOAD_FOLDER, None)
+        dataFolderPath = calculation(input_tmm_filepath, input_tmm_filename, tmm_result_folder, None)
         zip_file_name = generate_zip(dataFolderPath, 'tmmsim', UPLOAD_FOLDER)
         return zip_file_name
     except Exception as e:

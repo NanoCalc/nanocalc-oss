@@ -116,16 +116,12 @@ def upload_file(app_name):
 
 
         files_bundle = {}
+        directory_for_app = os.path.join(UPLOAD_FOLDER, app_name, f"{uuid.uuid4()}")
+        os.makedirs(directory_for_app, exist_ok=True)
         for file_id, file in zip(file_ids, files):
-            # 1) Save the file *now* in the web request
-            directory_for_app = os.path.join(UPLOAD_FOLDER, app_name) 
-            os.makedirs(directory_for_app, exist_ok=True)
-
             secure_name = secure_filename(file.filename)
-            _, extension = os.path.splitext(secure_name)
-            unique_filename = f"{uuid.uuid4()}{extension}"
+            saved_path = os.path.join(directory_for_app, secure_name)
 
-            saved_path = os.path.join(directory_for_app, unique_filename)
             file.save(saved_path)
 
             # 2) Instead of storing the FileStorage, store the path
@@ -146,6 +142,7 @@ def upload_file(app_name):
             app_name,
             files_bundle,
             job_id,
+            directory_for_app,
             job_timeout=1200
         )
 

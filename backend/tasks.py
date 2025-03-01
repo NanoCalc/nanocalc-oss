@@ -17,7 +17,7 @@ def run_heavy_task(app_name, files_bundle, job_id):
     elif app_name == 'plqsim':
         zip_file_path = handle_plqsim(files_bundle)
     elif app_name == 'tmmsim':
-        zip_file_path = handle_tmmsim(files_bundle)
+        zip_file_path = handle_tmmsim(files_bundle, directory_for_app)
     else:
         logging.error(f"Unknown app_name: {app_name}")
 

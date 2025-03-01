@@ -29,10 +29,10 @@ COPY flaskapp.py \
     /app/
 
     
-RUN mkdir -p /app/upload/fretcalc/result \
-    /app/upload/ricalc/result \
-    /app/upload/plqsim/result \
-    /app/upload/tmmsim/result \
+RUN mkdir -p /app/upload/fretcalc \
+    /app/upload/ricalc \
+    /app/upload/plqsim \
+    /app/upload/tmmsim \
     /app/logs
 
 
