@@ -89,8 +89,8 @@ def handle_tmmsim(files_bundle, input_tmmsim_filepath):
     try:
         input_tmm_filename = files_bundle['inputExcel']
         
-        dataFolderPath = calculation(input_tmmsim_filepath, input_tmm_filename, tmm_result_folder, None)
-        zip_file_name = generate_zip(dataFolderPath, tmm_result_folder)
+        dataFolderPath1, dataFolderPath2 = calculation(input_tmmsim_filepath, input_tmm_filename, tmm_result_folder, None)
+        zip_file_name = generate_zip([dataFolderPath1, dataFolderPath2], tmm_result_folder)
         return zip_file_name
     except Exception as e:
         logging.error(f"handle_tmmsim.error: {e}")
