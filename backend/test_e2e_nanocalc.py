@@ -1,12 +1,13 @@
+import threading
 import unittest
 import requests
 import zipfile
 import io
 import time
 
-class NanoCalcE2ETest(unittest.TestCase):
+class NanocalcE2ETestBaseClass(unittest.TestCase):
     HOST = "http://localhost:8080"
-    
+
     def poll_job_status(self, job_id, timeout=60, interval=2):
         """
         Polls the job status until it is finished or fails.
@@ -99,6 +100,8 @@ class NanoCalcE2ETest(unittest.TestCase):
 
         return form_data
 
+
+class A_NanocalcE2ESequentialTests(NanocalcE2ETestBaseClass):
     def test_fret_calc_upload_success(self):
         print("Testing FRET-Calc successful upload.")
         url = f'{self.HOST}/upload/fretcalc' 
@@ -298,6 +301,134 @@ class NanoCalcE2ETest(unittest.TestCase):
                 for file_obj in file_list:
                     file_obj.close()
 
+    
+class B_NanoCalcE2EAsynchronousTests(NanocalcE2ETestBaseClass):
+    def test_asynchronicity(self):
+            print("Testing server asynchronicity with multiple simultaneous requests.")
+            
+            test_cases = [
+                {
+                    'url': f'{self.HOST}/upload/fretcalc',
+                    'files': {
+                        'inputExcel': [open('samples/fretcalc/input.xlsx', 'rb')],
+                        'emissionCoefficient': [open('samples/fretcalc/emission.dat', 'rb')],
+                        'refractiveIndex': [open('samples/fretcalc/refractive.dat', 'rb')],
+                        'extinctionCoefficient': [open('samples/fretcalc/extinction.dat', 'rb')]
+                    },
+                    'mode': None,
+                    'webapp': 'FRET-Calc'
+                },
+                {
+                    'url': f'{self.HOST}/upload/ricalc',
+                    'files': {
+                        'inputExcel': [open('samples/ricalc/input.xlsx', 'rb')],
+                        'decadicCoefficient': [open('samples/ricalc/decadic.dat', 'rb')]
+                    },
+                    'mode': 'opticalConstants',
+                    'webapp': 'RI-Calc Optical Constants'
+                },
+                {
+                    'url': f'{self.HOST}/upload/ricalc',
+                    'files': {
+                        'inputExcel': [open('samples/ricalc/input.xlsx', 'rb')],
+                        'constantK': [open('samples/ricalc/k.dat', 'rb')]
+                    },
+                    'mode': 'refractiveIndex',
+                    'webapp': 'RI-Calc Refractive Index'
+                },
+                {
+                    'url': f'{self.HOST}/upload/plqsim',
+                    'files': {
+                        'inputExcel': [open('samples/plqsim/input.xlsx', 'rb')]
+                    },
+                    'mode': 'acceptorExcitation',
+                    'webapp': 'PLQ-Sim Acceptor Calculation'
+                },
+                {
+                    'url': f'{self.HOST}/upload/plqsim',
+                    'files': {
+                        'inputExcel': [open('samples/plqsim/input.xlsx', 'rb')]
+                    },
+                    'mode': 'donorExcitation',
+                    'webapp': 'PLQ-Sim Donor Calculation'
+                },
+                {
+                    'url': f'{self.HOST}/upload/tmmsim',
+                    'files': {
+                        'inputExcel': [open('samples/tmmsim/input_bhj.xlsx', 'rb')],
+                        'layerFiles': [
+                            open('samples/tmmsim/AM15G.csv', 'rb'),
+                            open('samples/tmmsim/nk_Air.csv', 'rb'),
+                            open('samples/tmmsim/nk_Al.csv', 'rb'),
+                            open('samples/tmmsim/nk_Ca.csv', 'rb'),
+                            open('samples/tmmsim/nk_ITO.csv', 'rb'),
+                            open('samples/tmmsim/nk_P3HT.csv', 'rb'),
+                            open('samples/tmmsim/nk_P3HTPCBM.csv', 'rb'),
+                            open('samples/tmmsim/nk_PCBM.csv', 'rb'),
+                            open('samples/tmmsim/nk_PEDOT.csv', 'rb'),
+                            open('samples/tmmsim/nk_SiO2.csv', 'rb')
+                        ]
+                    },
+                    'mode': None,
+                    'webapp': 'TMM-Sim BHJ'
+                },
+                {
+                    'url': f'{self.HOST}/upload/tmmsim',
+                    'files': {
+                        'inputExcel': [open('samples/tmmsim/input_bilayer.xlsx', 'rb')],
+                        'layerFiles': [
+                            open('samples/tmmsim/AM15G.csv', 'rb'),
+                            open('samples/tmmsim/nk_Air.csv', 'rb'),
+                            open('samples/tmmsim/nk_Al.csv', 'rb'),
+                            open('samples/tmmsim/nk_Ca.csv', 'rb'),
+                            open('samples/tmmsim/nk_ITO.csv', 'rb'),
+                            open('samples/tmmsim/nk_P3HT.csv', 'rb'),
+                            open('samples/tmmsim/nk_P3HTPCBM.csv', 'rb'),
+                            open('samples/tmmsim/nk_PCBM.csv', 'rb'),
+                            open('samples/tmmsim/nk_PEDOT.csv', 'rb'),
+                            open('samples/tmmsim/nk_SiO2.csv', 'rb')
+                        ]
+                    },
+                    'mode': None,
+                    'webapp': 'TMM-Sim Bilayer'
+                }
+            ]
+
+            # Function to run the validator in a thread
+            def run_validator(test_case):
+                self.validator(test_case['url'], test_case['files'], test_case['webapp'], test_case['mode'])
+
+            # Create and start threads for each test case
+            threads = []
+            for test_case in test_cases:
+                thread = threading.Thread(target=run_validator, args=(test_case,))
+                threads.append(thread)
+                thread.start()
+
+            # Wait for all threads to complete
+            for thread in threads:
+                thread.join()
+
+            # Close all opened files
+            for test_case in test_cases:
+                for file_list in test_case['files'].values():
+                    for file_obj in file_list:
+                        file_obj.close()
+
+            print("All requests completed successfully.")
+
+
+
+def suite():
+    loader = unittest.TestLoader()
+    suite = unittest.TestSuite()
+
+    suite.addTests(loader.loadTestsFromTestCase(A_NanocalcE2ESequentialTests))
+    suite.addTests(loader.loadTestsFromTestCase(B_NanoCalcE2EAsynchronousTests))
+
+    return suite
+
 
 if __name__ == '__main__':
-    unittest.main()
+    runner = unittest.TextTestRunner()
+    runner.run(suite())
