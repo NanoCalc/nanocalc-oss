@@ -2,8 +2,10 @@ FROM python:3.12-alpine3.20
 
 ENV PATH="/home/nanocalc/.local/bin:${PATH}"
 
+# Alpine assigns 1000 as UID and GID for the first non root user
 RUN adduser -D nanocalc
 USER nanocalc
+
 WORKDIR /app
 
 COPY requirements.txt /app/
@@ -20,14 +22,18 @@ COPY flaskapp.py \
     config.py \
     helper_functions.py \
     apps_definitions.py \
+    computation_handlers.py \
+    tasks.py \
+    worker.py \
+    logging_config.py \
     /app/
 
     
-RUN mkdir -p /app/upload/fretcalc/result \
-    /app/upload/ricalc/result \
-    /app/upload/plqsim/result \
-    /app/upload/tmmsim/result \
-    /app/backend/logs
+RUN mkdir -p /app/upload/fretcalc \
+    /app/upload/ricalc \
+    /app/upload/plqsim \
+    /app/upload/tmmsim \
+    /app/logs
 
 
 EXPOSE 8080

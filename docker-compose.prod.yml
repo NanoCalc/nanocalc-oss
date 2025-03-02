@@ -19,10 +19,14 @@ services:
     build: ./backend
     environment:
       - ENV=prod
+      - REDIS_URL=redis://redis:6379
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
-      - /var/log/nanocalc/backend:/app/backend/logs
+      - upload_data:/app/upload
+      - /var/log/nanocalc/backend:/app/logs
+    depends_on:
+      - redis
     restart: unless-stopped
 
   frontend:
@@ -35,3 +39,24 @@ services:
     ports:
       - "127.0.0.1:3000:3000"
     restart: unless-stopped
+  
+  redis:
+    image: redis:6.2
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6379:6379"
+
+  rqworker:
+    build: ./backend
+    environment:
+      - ENV=dev
+      - REDIS_URL=redis://redis:6379
+    command: python worker.py
+    depends_on:
+      - redis
+    volumes:
+      - upload_data:/app/upload
+    restart: unless-stopped
+
+volumes:
+  upload_data:

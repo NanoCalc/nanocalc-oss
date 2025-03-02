@@ -108,11 +108,10 @@ export class NanocalcViewModel {
 
         const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
         if (!API_BASE_URL) {
-            return `Unable to connect to the server. Please try again later.`
+            return `Unable to connect to the server. Please try again later.`;
         }
-        const API_ENDPOINT = `${API_BASE_URL}/upload/${appId}`;
 
-        const FILE_ID_FORM_FIELD = 'NANOCALC_FILE_ID_FORM_FIELD'
+        const FILE_ID_FORM_FIELD = 'NANOCALC_FILE_ID_FORM_FIELD';
         const FILES_FORM_FIELD = 'NANOCALC_USER_UPLOADED_FILES';
         const MODE_FORM_FIELD = 'NANOCALC_USER_MODE';
 
@@ -132,15 +131,46 @@ export class NanocalcViewModel {
                 });
             }
         }
-        
+
         try {
-            const response = await fetch(API_ENDPOINT, {
+            // Step 1: Submit files and get job_id
+            const uploadResponse = await fetch(`${API_BASE_URL}/upload/${appId}`, {
                 method: 'POST',
                 body: formData,
             });
 
-            if (response.ok) {
-                const blob = await response.blob();
+            if (!uploadResponse.ok) {
+                return `Error while submitting files to the server. Please try again later.`;
+            }
+
+            const { job_id } = await uploadResponse.json();
+
+            // Step 2: Poll for job status
+            let jobStatus = 'queued';
+            while (jobStatus === 'queued' || jobStatus === 'in-progress') {
+                const statusResponse = await fetch(`${API_BASE_URL}/status/${job_id}`);
+                if (!statusResponse.ok) {
+                    return `Error while checking calculation job status. Please try again later.`;
+                }
+
+                const { status } = await statusResponse.json();
+                jobStatus = status;
+
+                if (jobStatus === 'queued' || jobStatus === 'in-progress') {
+                    // Wait for 2 seconds before polling again
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                }
+            }
+
+            // Step 3: Handle job result
+            if (jobStatus === 'finished') {
+                // Download the result
+                const downloadResponse = await fetch(`${API_BASE_URL}/download/${job_id}`);
+                if (!downloadResponse.ok) {
+                    return `Error while downloading result. Please try again later.`;
+                }
+
+                const blob = await downloadResponse.blob();
                 const downloadUrl = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = downloadUrl;
@@ -150,12 +180,14 @@ export class NanocalcViewModel {
                 a.remove();
                 window.URL.revokeObjectURL(downloadUrl);
 
-                return null;
+                return null; // No error
+            } else if (jobStatus === 'failed') {
+                return `Job failed. Please check your files and try again.`;
             } else {
-                return `Error while processing data. Please double check your data and be sure it complies with the expected formatting.`;
+                return `Unknown job status. Please check your files and try again.`;
             }
         } catch (error) {
-            return `Unknown error during file upload. Please try again later.`
+            return `Unknown error during file upload. Please try again later.`;
         }
     }
 }

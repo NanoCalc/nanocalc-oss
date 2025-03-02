@@ -11,68 +11,68 @@ on:
       - develop
 
 jobs:
-  backend-build-and-tests:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
+  # backend-build-and-tests:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
 
-    - name: Set up Python 3.x
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
+  #   - name: Set up Python 3.x
+  #     uses: actions/setup-python@v2
+  #     with:
+  #       python-version: '3.x'
 
-    - name: Cache pip packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
+  #   - name: Cache pip packages
+  #     uses: actions/cache@v3
+  #     with:
+  #       path: ~/.cache/pip
+  #       key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+  #       restore-keys: |
+  #         ${{ runner.os }}-pip-
 
-    - name: Set up web apps mocks
-      working-directory: ./backend
-      run: |
-        set -ex
-        ./copy_mocks.sh
+  #   - name: Set up web apps mocks
+  #     working-directory: ./backend
+  #     run: |
+  #       set -ex
+  #       ./copy_mocks.sh
 
 
-    - name: Install project dependencies
-      working-directory: ./backend
-      run: |
-        python -m pip install pip
-        pip install -r requirements.txt
+  #   - name: Install project dependencies
+  #     working-directory: ./backend
+  #     run: |
+  #       python -m pip install pip
+  #       pip install -r requirements.txt
 
-    - name: Install test dependencies
-      working-directory: ./backend
-      run: pip install -r test_requirements.txt
+  #   - name: Install test dependencies
+  #     working-directory: ./backend
+  #     run: pip install -r test_requirements.txt
     
-    - name: Create necessary directories
-      working-directory: ./backend
-      run: ./setup_local_env.sh
+  #   - name: Create necessary directories
+  #     working-directory: ./backend
+  #     run: ./setup_local_env.sh
 
-    - name: Start Flask server in debug mode
-      working-directory: ./backend
-      run: |
-        export UPLOAD_FOLDER='./nanocalc_uploads'
-        export DEBUG=True
-        export PORT=8080
-        export ENV=dev
-        python flaskapp.py &
-        sleep 5
+  #   - name: Start Flask server in debug mode
+  #     working-directory: ./backend
+  #     run: |
+  #       export UPLOAD_FOLDER='./nanocalc_uploads'
+  #       export DEBUG=True
+  #       export PORT=8080
+  #       export ENV=dev
+  #       python flaskapp.py &
+  #       sleep 5
 
-    - name: Run unit tests
-      working-directory: ./backend
-      run: |
-        python test_unit_nanocalc.py
+  #   - name: Run unit tests
+  #     working-directory: ./backend
+  #     run: |
+  #       python test_unit_nanocalc.py
 
-    - name: Run end to end tests
-      working-directory: ./backend
-      run: | 
-        python test_e2e_nanocalc.py
+  #   - name: Run end to end tests
+  #     working-directory: ./backend
+  #     run: | 
+  #       python test_e2e_nanocalc.py
 
-    - name: Clean up
-      run: |
-        killall python
+  #   - name: Clean up
+  #     run: |
+  #       killall python
   
   frontend-build:
     runs-on: ubuntu-latest

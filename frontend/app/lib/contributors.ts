@@ -22,7 +22,7 @@ const contributors: ContributorConfig[] = [
     {
         imagePath: `${contributorsPath}omar.jpg`,
         name: "Omar Mesquita",
-        text: "is the developer and administrator of the Nanocalc project website. He currently studies Computer Science at PUC-RIO. You can contact him at his email address or social networks :)",
+        text: "is the developer and sysadmin of the Nanocalc project. He currently studies Computer Science at PUC-RIO. You can contact him at his email address or social networks below.",
         lattes: "https://lattes.cnpq.br/4555122711141650",
         github: "https://github.com/OmarMesqq",
         orcid: "https://orcid.org/0000-0002-6656-5683",
