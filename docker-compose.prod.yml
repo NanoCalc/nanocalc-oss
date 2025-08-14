@@ -10,6 +10,7 @@ services:
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - /var/log/nanocalc/nginx:/var/log/nginx
+      - /var/www/letsencrypt:/var/www/letsencrypt
     depends_on:
       - backend
       - frontend
