@@ -5,8 +5,8 @@ services:
       args:
         ENV: prod
     ports:
-      - "80:80"
-      - "443:443"
+      - "80:80/tcp"
+      - "443:443/tcp"
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - /var/log/nanocalc/nginx:/var/log/nginx
@@ -21,8 +21,6 @@ services:
     environment:
       - ENV=prod
       - REDIS_URL=redis://redis:6379
-    ports:
-      - "127.0.0.1:8080:8080"
     volumes:
       - upload_data:/app/upload
       - /var/log/nanocalc/backend:/app/logs
@@ -37,15 +35,11 @@ services:
         - NEXT_PUBLIC_API_BASE_URL=https://nanocalc.org
     environment:
       - NODE_ENV=production
-    ports:
-      - "127.0.0.1:3000:3000"
     restart: unless-stopped
   
   redis:
     image: redis:6.2
     restart: unless-stopped
-    ports:
-      - "127.0.0.1:6379:6379"
 
   rqworker:
     build: ./backend
